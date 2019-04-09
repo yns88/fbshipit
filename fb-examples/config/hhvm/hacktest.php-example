@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/vwzc8pra
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{
   FBSourceBranchConfig,
   FBShipItCLIStaticConfig,
   GetPathMappingsFn,
@@ -22,7 +28,8 @@ final class HhvmHacktest extends FBWWWBase {
   public static function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       static::ROOT.'__github__/tests/' => 'tests/',
-      static::ROOT.'__github__/src/HackTestCLI_dot_php' => 'src/HackTestCLI.php',
+      static::ROOT.'__github__/src/HackTestCLI_dot_php' =>
+        'src/HackTestCLI.php',
       static::ROOT.'__github__/src/Retriever/' => 'src/Retriever/',
       static::ROOT.'__github__/src/Runner/' => 'src/Runner/',
       static::ROOT.'__github__/dot_' => '.',
@@ -39,7 +46,7 @@ final class HhvmHacktest extends FBWWWBase {
     return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
       |> ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \str_replace('_dot_php', '.php', $path),
+        $path ==> Str\replace($path, '_dot_php', '.php'),
       );
   }
 
@@ -54,14 +61,20 @@ final class HhvmHacktest extends FBWWWBase {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \preg_replace('@^tests/@', '__github__/tests/', $path)
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+        $path ==> \preg_replace('@^tests/@', '__github__/tests/', $path),
       )
       |> ShipItPathFilters::rewritePaths(
         $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $path ==> \preg_replace('/^\\./', 'dot_', $path),
       )
       |> ShipItPathFilters::rewritePaths(
         $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $path ==> \preg_replace(
           '@^((src/(Retriever|Runner)|__github__/tests)/.+)\.php$@',
           '\1_dot_php',
@@ -71,7 +84,7 @@ final class HhvmHacktest extends FBWWWBase {
       |> parent::projectImportChangeset($$, $branch_config)
       |> ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \str_replace('__github__/__github__', '__github__', $path),
+        $path ==> Str\replace($path, '__github__/__github__', '__github__'),
       );
   }
 

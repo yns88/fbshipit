@@ -5,12 +5,19 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/mxrtk0pl
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\{Str, C};
 
 class ShipItRepoException extends \Exception {
   public function __construct(?ShipItRepo $repo, string $message) {
     if ($repo !== null) {
-      $message = \get_class($repo) . ": $message";
+      $message = \get_class($repo).": $message";
     }
     parent::__construct($message);
   }
@@ -26,10 +33,7 @@ abstract class ShipItRepo {
   /**
    * @param $path the path to the repository
    */
-  public function __construct(
-    protected string $path,
-    string $branch,
-  ) {
+  public function __construct(protected string $path, string $branch) {
     $this->lock = self::createSharedLockForPath($path);
     $this->setBranch($branch);
   }
@@ -51,10 +55,10 @@ abstract class ShipItRepo {
   // Level of verbosity for -v option
   const VERBOSE_STANDARD = 3;
 
-  static public int $VERBOSE = 0;
+  static public int $verbose = 0;
 
   const TYPE_GIT = 'git';
-  const TYPE_HG  = 'hg';
+  const TYPE_HG = 'hg';
 
   public function getPath(): string {
     return $this->path;
@@ -68,9 +72,9 @@ abstract class ShipItRepo {
     );
   }
 
-  public static function getLockFilePathForRepoPath(
-    string $repo_path,
-  ): string {
+  public static function getLockFilePathForRepoPath(string $repo_path): string {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     return \dirname($repo_path).'/'.\basename($repo_path).'.fbshipit-lock';
   }
 
@@ -95,8 +99,8 @@ abstract class ShipItRepo {
    * push lfs support
    */
   public abstract function pushLfs(
-    string $lfsPullEndpoint,
-    string $lfsPushEndpoint,
+    string $lfs_pull_endpoint,
+    string $lfs_push_endpoint,
   ): void;
 
   /**
@@ -111,28 +115,27 @@ abstract class ShipItRepo {
   ): Trepo {
     $repo = ShipItRepo::open($path, $branch);
     invariant(
-      /* HH_FIXME[4162]: Instanceof on a generic classname is now an error.
-       * Consider using different logic to avoid use of classname<Trepo>.
-       */
-      $repo instanceof $interface,
+      \is_a($repo, $interface),
       '%s is a %s, needed a %s',
       $path,
       \get_class($repo),
       $interface,
     );
+    /* HH_FIXME[4110] */
     return $repo;
   }
 
   /**
    * Factory
    */
-  public static function open(
-    string $path,
-    string $branch,
-  ): ShipItRepo {
+  public static function open(string $path, string $branch): ShipItRepo {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\file_exists($path.'/.git')) {
       return new ShipItRepoGIT($path, $branch);
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\file_exists($path.'/.hg')) {
       return new ShipItRepoHG($path, $branch);
     }
@@ -146,14 +149,18 @@ abstract class ShipItRepo {
    * Convert a hunk to a ShipItDiff shape
    */
   protected static function parseDiffHunk(string $hunk): ?ShipItDiff {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     list($header, $body) = \explode("\n", $hunk, 2);
-    $matches = array();
+    $matches = varray[];
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \preg_match(
       '@^diff --git [ab]/(.*?) [ab]/(.*?)$@',
-      \trim($header),
+      Str\trim($header),
       &$matches,
     );
-    if (\count($matches) === 0) {
+    if (C\is_empty($matches)) {
       return null;
     }
     return shape(

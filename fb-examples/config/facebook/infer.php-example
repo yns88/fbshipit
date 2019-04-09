@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/bf2fgirt
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -30,16 +36,18 @@ final class FacebookInfer extends FBShipItConfig {
     return $changeset
       |> FBCommonFilters::stripSummariesByDefault($$)
       |> FBCommonFilters::applyAll(
-          $$,
-          shape(
-            'stripCommonFiles/exceptions'
-              => static::getStripCommonFilesExceptions(),
-          ),
-        )
+        $$,
+        shape(
+          'stripCommonFiles/exceptions' =>
+            static::getStripCommonFilesExceptions(),
+        ),
+      )
       |> $$->withSubject($subject)
-      |> $$->withDiffs($$->getDiffs()->filter(
-          $diff ==> !self::matchesPrefixList($diff, self::getBlacklist())
-      ));
+      |> $$->withDiffs(
+        $$->getDiffs()->filter(
+          $diff ==> !self::matchesPrefixList($diff, self::getBlacklist()),
+        ),
+      );
   }
 
   <<__Override>>
@@ -72,7 +80,7 @@ final class FacebookInfer extends FBShipItConfig {
   ): ImmVector<ShipItPhase> {
     // The SanityCheck is incompatible with the whitelist approach
     return parent::getPhases($branch_config)->filter(
-      $phase ==> !($phase instanceof ShipItFilterSanityCheckPhase)
+      $phase ==> !($phase is ShipItFilterSanityCheckPhase),
     );
   }
 
@@ -82,7 +90,7 @@ final class FacebookInfer extends FBShipItConfig {
   ): bool {
     $path = $diff['path'];
     foreach ($list as $entry) {
-      if (\strpos($path, $entry) === 0) {
+      if (Str\search($path, $entry) === 0) {
         return true;
       }
     }

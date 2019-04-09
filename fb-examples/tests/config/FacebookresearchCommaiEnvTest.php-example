@@ -5,14 +5,21 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/828zfa03
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookresearchCommaiEnvTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       'fbcode/experimental/commai/env/README' => 'README',
-      'fbcode/experimental/commai/env/src/run_tournament.py' => 'src/run_tournament.py',
+      'fbcode/experimental/commai/env/src/run_tournament.py' =>
+        'src/run_tournament.py',
       'fbcode/experimental/foo' => null,
       'fbcode/experimental/commai/env/src/experimental/__init__.py' => null,
     };

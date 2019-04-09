@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/vadl8osy
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookFacebookObjcSdkTest extends FBConfigBaseTest {
   const string ROOT = 'fbobjc/ios-sdk/';
 
@@ -18,24 +24,21 @@ final class FacebookFacebookObjcSdkTest extends FBConfigBaseTest {
       self::ROOT.'.hgsubstate' => null,
       self::ROOT.'BUCK' => null,
       self::ROOT.'README.fb' => null,
+      self::ROOT.'README.fb.md' => null,
       self::ROOT.'AccountKit/AccountKit/AccountKit.h' => null,
       self::ROOT.'AccountKit' => null,
       self::ROOT.'Carthage' => null,
       self::ROOT.'Carthage/Checkouts/Bolts-ObjC/README.md' => null,
       self::ROOT.'ads' => null,
       self::ROOT.'internal' => null,
-      self::ROOT.
-        'samples/LoginSample/Entitlements/Entitlements-Dev.plist' =>
+      self::ROOT.'samples/LoginSample/Entitlements/Entitlements-Dev.plist' =>
+        null,
+      self::ROOT.'samples/LoginSample/Entitlements/Entitlements-Master.plist' =>
         null,
       self::ROOT.
-        'samples/LoginSample/Entitlements/Entitlements-Master.plist' =>
-        null,
+      'samples/LoginSample/Entitlements/Entitlements-Release.plist' => null,
       self::ROOT.
-        'samples/LoginSample/Entitlements/Entitlements-Release.plist' =>
-        null,
-      self::ROOT.
-        'samples/LoginSample/LoginSample/SupportingFiles/Buck-Info.plist' =>
-        null,
+      'samples/LoginSample/LoginSample/SupportingFiles/Buck-Info.plist' => null,
       self::ROOT.'samples/LoginSample/build-buck.sh' => null,
       self::ROOT.'samples/LoginSample/LoginSample/AppDelegate.h' =>
         'samples/LoginSample/LoginSample/AppDelegate.h',

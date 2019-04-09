@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/p70heoox
+ */
 namespace Facebook\ShipIt;
 
-use type Facebook\ShipIt\Config\{FBShipItConfigRegistry, RepoArcanistProject};
+use namespace HH\Lib\{Str, C};
+use type Facebook\ShipIt\Config\{FBShipItConfigClasses, RepoArcanistProject};
 
 type ShipItPreviewInput = shape(
   'arcanistProject' => string,
@@ -33,13 +39,15 @@ final class FBShipItPreview {
   // TODO consider using a streaming json parser
   const string OBJECT_TERMINATOR = '===END===';
 
-  private ImmSet<classname<FBShipItConfig>> $allConfigClasses;
+  private keyset<classname<FBShipItConfig>> $allConfigClasses;
 
   public function __construct(): void {
-    $this->allConfigClasses = FBShipItConfigRegistry::getShipItConfigClasses();
+    $this->allConfigClasses = FBShipItConfigClasses::getClasses();
   }
 
   private static function decodeInput(string $in): ShipItPreviewInput {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     return \json_decode($in, true);
   }
 
@@ -55,7 +63,8 @@ final class FBShipItPreview {
   ): vec<ShipItPreviewOutput> {
     try {
       $repo = RepoArcanistProject::getRepo($arcanist_project);
-    } catch (InvariantException $e) {
+    // @oss-disable: } catch (\InvariantViolationException $_e) {
+      } catch (\HH\InvariantException $e) { // @oss-enable
       // If we don't recognize the arcanist project,
       // assume it will ship no commits.
       return vec[];
@@ -71,8 +80,8 @@ final class FBShipItPreview {
       $rename_str = 'rename from ';
       $no_renames = $diffs
         ->filter(
-          $diff ==>
-            (\substr($diff['body'], 0, \strlen($rename_str))) === $rename_str
+          $diff ==> (Str\slice($diff['body'], 0, Str\length($rename_str))) ===
+            $rename_str,
         )
         ->isEmpty();
       if ($no_renames) {
@@ -96,15 +105,19 @@ order to preview the full patch.';
             $branch_config ==> $branch_config['internal'] === $internal_branch,
           );
         foreach ($branch_configs as $branch_config) {
-          $transformed_changeset =
-            $config_class::filterChangeset($changeset, $branch_config);
+          $transformed_changeset = $config_class::filterChangeset(
+            $changeset,
+            $branch_config,
+          );
           // Does the changeset create any diffs on the open source project?
-          if (\count($transformed_changeset->getDiffs()) > 0) {
-            $commit_message =
-              ShipItRepoGIT::getCommitMessage($transformed_changeset);
+          if (!C\is_empty($transformed_changeset->getDiffs())) {
+            $commit_message = ShipItRepoGIT::getCommitMessage(
+              $transformed_changeset,
+            );
             if ($patch !== null) {
-              $transformed_patch =
-                ShipItRepoGIT::renderPatch($transformed_changeset);
+              $transformed_patch = ShipItRepoGIT::renderPatch(
+                $transformed_changeset,
+              );
             } else {
               $transformed_patch = null;
             }
@@ -131,12 +144,16 @@ order to preview the full patch.';
     if ($in_name === null) {
       $in_name = 'php://stdin';
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $resource = \fopen($in_name, 'r');
     invariant($resource !== false, 'Failed to open file: %s', $resource);
     return $resource;
   }
 
   private static function printHelp(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf(
 "Preview ShipIt actions for a given changeset.
 
@@ -150,15 +167,19 @@ Options:
   --help  Print this help message
 ",
       self::OBJECT_TERMINATOR,
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \basename(__FILE__, ""),
 );
   }
 
   final public function shipItPreview(resource $in_stream): void {
     $in_data = '';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $line = \fgets($in_stream);
     while ($line !== false) {
-      if (\trim($line) === self::OBJECT_TERMINATOR) {
+      if (Str\trim($line) === self::OBJECT_TERMINATOR) {
         $parsed = self::decodeInput($in_data);
         $result = $this->handleChangeset(
           $parsed['arcanistProject'],
@@ -166,16 +187,20 @@ Options:
           ShipItChangeset::fromData($parsed['changeset']),
           Shapes::idx($parsed, 'patch'),
         );
-        print (self::encodeOutput($result));
+        print(self::encodeOutput($result));
         $in_data = '';
       } else {
         $in_data = $in_data.$line;
       }
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $line = \fgets($in_stream);
     }
   }
 
   final public static function cliMain(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $opts = dict(\getopt('i::', vec['help']));
     if (idx($opts, 'help') !== null) {
       self::printHelp();

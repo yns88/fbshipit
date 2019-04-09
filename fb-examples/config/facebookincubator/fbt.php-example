@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/og2cmokb
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -24,14 +29,15 @@ final class FacebookincubatorFbt extends FBShipItConfig {
       self::BABEL.'/babel-plugin-fbt/' => 'transform/babel-plugin-fbt/',
       self::BABEL.'/babel-plugin-fbt-runtime/' =>
         'transform/babel-plugin-fbt-runtime/',
-      self::BABEL.'/util/' => 'transform/util/',
+      self::BABEL.'/fb-babel-plugin-utils/' =>
+        'transform/fb-babel-plugin-utils/',
       'html/shared/intl/fbt/' => 'runtime/shared/',
 
       // Unfacebookified mocks etc.
       'scripts/intl/js/oss-fbt/nonfb-runtime/' => 'runtime/nonfb/',
 
-      // Demo-app
-      'scripts/intl/js/oss-fbt/demo-app/' => 'demo-app/',
+      // Runtime
+      'scripts/intl/js/oss-fbt/runtime/' => 'runtime/',
 
       'scripts/intl/js/oss-fbt/__github__/' => '',
     };
@@ -45,6 +51,22 @@ final class FacebookincubatorFbt extends FBShipItConfig {
     return FBCommonFilters::stripSummariesByDefault($changeset)
       |> parent::defaultProjectFilterChangeset($$, $get_path_mappings);
   }
+
+
+  /**
+   * We have symlinks in 'scripts/intl/js/oss-fbt/demo-app/__github__' to mimic
+   * the top-level of the actual Github repo.  Don't pull these in.
+   */
+  <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      '#__github__/runtime$#',
+      '#scripts/intl/js/oss-fbt/runtime/nonfb$#',
+      '#scripts/intl/js/oss-fbt/runtime/shared$#',
+      '#__github__/transform$#',
+    };
+  }
+
 
   <<__Override>>
   public static function getStaticConfig(): FBShipItCLIStaticConfig {

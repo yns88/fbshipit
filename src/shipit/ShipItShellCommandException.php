@@ -5,23 +5,30 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/vl0gf10a
+ */
 namespace Facebook\ShipIt;
 
-class ShipItShellCommandException extends \Exception {
+use namespace HH\Lib\Str;
+
+final class ShipItShellCommandException extends \Exception {
   public function __construct(
     private string $command,
     private ShipItShellCommandResult $result,
   ) {
     $exitCode = $result->getExitCode();
     $error = $result->getStdErr();
-    if (((string) \trim($error)) === '') {
+    if (((string)Str\trim($error)) === '') {
       $error = $result->getStdOut();
     }
-    $message = \sprintf(
-      '%s returned exit code %s: %s',
+    $message = Str\format(
+      '%s returned exit code %d: %s',
       $command,
       $exitCode,
-      \trim($error),
+      Str\trim($error),
     );
     parent::__construct($message);
   }

@@ -5,19 +5,23 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/bol1gzts
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBCodeBuilder,
-};
+use type Facebook\ShipIt\{FBCodeBuilder};
 
+<<\Oncalls('open_source')>>
 final class FacebookFollyTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       'fbcode/folly/NormalFile.h' => 'folly/NormalFile.h',
       'fbcode/folly/public_tld/TLDFile.txt' => 'TLDFile.txt',
-      'fbcode/folly/folly-config.h' => null,  // Written by autoconf
+      'fbcode/folly/folly-config.h' => null, // Written by autoconf
       'fbcode/folly/facebook/secret' => null,
       // fbcode_builder is shared between several projects, but it's easiest
       // to just copy it into each project's Github repo.

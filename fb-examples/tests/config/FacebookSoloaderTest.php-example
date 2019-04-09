@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/x029av18
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookSoloaderTest extends FBConfigBaseTest {
   const string ROOT = 'fbandroid/libraries/soloader';
 
@@ -21,7 +27,8 @@ final class FacebookSoloaderTest extends FBConfigBaseTest {
       // Do not export FB-internal readmes.
       self::ROOT.'/README.facebook' => null,
       // Do export BUCK def files.
-      self::ROOT.'/tools/build_defs/oss/soloader_defs.bzl' => 'tools/build_defs/oss/soloader_defs.bzl',
+      self::ROOT.'/tools/build_defs/oss/soloader_defs.bzl' =>
+        'tools/build_defs/oss/soloader_defs.bzl',
       // Do export nested BUCK files.
       self::ROOT.'/java/com/facebook/soloader/BUCK' =>
         'java/com/facebook/soloader/BUCK',

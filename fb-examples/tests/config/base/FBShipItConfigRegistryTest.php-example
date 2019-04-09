@@ -5,19 +5,25 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/39xnpmo0
+ */
 namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\BaseTest;
 
+
+<<\Oncalls('open_source')>>
 final class FBShipItConfigRegistryTest extends BaseTest {
 
   public function testGetClassName(): void {
-    $this->assertEquals(
-      'CustomOrgNameWithDotsAndDashes',
+    \expect(
       FBShipItConfigRegistry::getClassName(
         'custom-ORG',
         'name_WITH_dots.and-dashes',
       ),
-    );
+    )->toBePHPEqual('CustomOrgNameWithDotsAndDashes');
   }
 }

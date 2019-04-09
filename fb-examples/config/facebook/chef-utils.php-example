@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/w34dxay9
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
   FBSourceBranchConfig,
@@ -20,15 +26,17 @@ use type Facebook\ShipIt\ {
 final class FacebookChefUtils extends FBShipItConfig {
   public static function getDirs(): ImmSet<string> {
     return ImmSet {
-       'chef-utils-github/',
-       'scripts/chef/',
+      'chef-utils-github/',
+      'scripts/chef/',
     };
   }
 
   public static function stripChefTestHostsHeader(
-    ShipItChangeset $changeset
+    ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_replace(
         '/\s*chef_test_hosts:.*/',
         '',
@@ -59,12 +67,12 @@ final class FacebookChefUtils extends FBShipItConfig {
     # works normally. But for scripts/chef/ we only include a single file, so
     # for that directory we ALSO have to explicitly allow the shipit test file
     # or it will crash.
-    $valid = array(
+    $valid = vec[
       'chef/chefctl.rb',
       'chef/shipit_test_file.txt',
-    );
+    ];
     return ImmVector {
-      '@^scripts\/(?!('.\implode('|', $valid).'))@',
+      '@^scripts\/(?!('.Str\join($valid, '|').'))@',
     };
   }
 

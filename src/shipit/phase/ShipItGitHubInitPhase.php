@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/5ky8o11m
+ */
 namespace Facebook\ShipIt;
 
 final class ShipItGitHubInitPhase extends ShipItPhase {
@@ -16,7 +21,7 @@ final class ShipItGitHubInitPhase extends ShipItPhase {
     private string $project,
     private ShipItRepoSide $side,
     private ShipItTransport $transport,
-    private classname<ShipItGitHubUtils> $github_utils,
+    private classname<ShipItGitHubUtils> $githubUtils,
   ): void {
   }
 
@@ -64,7 +69,8 @@ final class ShipItGitHubInitPhase extends ShipItPhase {
         'write' => $_ ==> {
           $this->transport = ShipItTransport::HTTPS;
           $this->anonymousHttps = true;
-        }
+          return true;
+        },
       ),
       shape(
         'long_name' => $this->side.'-use-system-credentials',
@@ -74,12 +80,9 @@ final class ShipItGitHubInitPhase extends ShipItPhase {
   }
 
   <<__Override>>
-  public function runImpl(
-    ShipItBaseConfig $config,
-  ): void {
-    $class = $this->github_utils;
-    $local_path =
-      $this->side === ShipItRepoSide::SOURCE
+  public function runImpl(ShipItBaseConfig $config): void {
+    $class = $this->githubUtils;
+    $local_path = $this->side === ShipItRepoSide::SOURCE
       ? $config->getSourcePath()
       : $config->getDestinationPath();
 

@@ -5,7 +5,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/vfbtaguj
+ */
 namespace Facebook\ShipIt;
+
 
 enum SymlinkTestOperation: string {
   DELETE_FILE = 'deleted file mode 100644';
@@ -14,27 +20,28 @@ enum SymlinkTestOperation: string {
   CREATE_SYMLINK = 'new file mode 120000';
 }
 
+<<\Oncalls('open_source')>>
 final class SymlinkTest extends BaseTest {
   public function getFileToFromSymlinkExamples(
-  ): array<string, (
+  ): dict<string, (
     classname<ShipItSourceRepo>,
     ImmVector<ImmVector<string>>,
     SymlinkTestOperation,
     SymlinkTestOperation,
     string,
   )> {
-    return [
+    return dict[
       'git file to symlink' => tuple(
         ShipItRepoGIT::class,
         ImmVector {
-          ImmVector { 'git', 'init' },
-          ImmVector { 'touch', 'foo' },
-          ImmVector { 'git', 'add', 'foo' },
-          ImmVector { 'git', 'commit', '-m', 'add file' },
-          ImmVector { 'git', 'rm', 'foo' },
-          ImmVector { 'ln', '-s', 'bar', 'foo' },
-          ImmVector { 'git', 'add', 'foo' },
-          ImmVector { 'git', 'commit', '-m', 'add symlink' },
+          ImmVector {'git', 'init'},
+          ImmVector {'touch', 'foo'},
+          ImmVector {'git', 'add', 'foo'},
+          ImmVector {'git', 'commit', '-m', 'add file'},
+          ImmVector {'git', 'rm', 'foo'},
+          ImmVector {'ln', '-s', 'bar', 'foo'},
+          ImmVector {'git', 'add', 'foo'},
+          ImmVector {'git', 'commit', '-m', 'add symlink'},
         },
         SymlinkTestOperation::DELETE_FILE,
         SymlinkTestOperation::CREATE_SYMLINK,
@@ -43,12 +50,12 @@ final class SymlinkTest extends BaseTest {
       'hg file to symlink' => tuple(
         ShipItRepoHG::class,
         ImmVector {
-          ImmVector { 'hg', 'init' },
-          ImmVector { 'touch', 'foo' },
-          ImmVector { 'hg', 'commit', '-Am', 'add file' },
-          ImmVector { 'hg', 'rm', 'foo' },
-          ImmVector { 'ln', '-s', 'bar', 'foo' },
-          ImmVector { 'hg', 'commit', '-Am', 'add symlink' },
+          ImmVector {'hg', 'init'},
+          ImmVector {'touch', 'foo'},
+          ImmVector {'hg', 'commit', '-Am', 'add file'},
+          ImmVector {'hg', 'rm', 'foo'},
+          ImmVector {'ln', '-s', 'bar', 'foo'},
+          ImmVector {'hg', 'commit', '-Am', 'add symlink'},
         },
         SymlinkTestOperation::DELETE_FILE,
         SymlinkTestOperation::CREATE_SYMLINK,
@@ -57,14 +64,14 @@ final class SymlinkTest extends BaseTest {
       'git symlink to file' => tuple(
         ShipItRepoGIT::class,
         ImmVector {
-          ImmVector { 'git', 'init' },
-          ImmVector { 'ln', '-s', 'bar', 'foo' },
-          ImmVector { 'git', 'add', 'foo' },
-          ImmVector { 'git', 'commit', '-m', 'add symlink' },
-          ImmVector { 'git', 'rm', 'foo' },
-          ImmVector { 'touch', 'foo' },
-          ImmVector { 'git', 'add', 'foo' },
-          ImmVector { 'git', 'commit', '-m', 'add file' },
+          ImmVector {'git', 'init'},
+          ImmVector {'ln', '-s', 'bar', 'foo'},
+          ImmVector {'git', 'add', 'foo'},
+          ImmVector {'git', 'commit', '-m', 'add symlink'},
+          ImmVector {'git', 'rm', 'foo'},
+          ImmVector {'touch', 'foo'},
+          ImmVector {'git', 'add', 'foo'},
+          ImmVector {'git', 'commit', '-m', 'add file'},
         },
         SymlinkTestOperation::DELETE_SYMLINK,
         SymlinkTestOperation::CREATE_FILE,
@@ -73,12 +80,12 @@ final class SymlinkTest extends BaseTest {
       'hg symlink to file' => tuple(
         ShipItRepoHG::class,
         ImmVector {
-          ImmVector { 'hg', 'init' },
-          ImmVector { 'ln', '-s', 'bar', 'foo' },
-          ImmVector { 'hg', 'commit', '-Am', 'add symlink' },
-          ImmVector { 'hg', 'rm', 'foo' },
-          ImmVector { 'touch', 'foo' },
-          ImmVector { 'hg', 'commit', '-Am', 'add file' },
+          ImmVector {'hg', 'init'},
+          ImmVector {'ln', '-s', 'bar', 'foo'},
+          ImmVector {'hg', 'commit', '-Am', 'add symlink'},
+          ImmVector {'hg', 'rm', 'foo'},
+          ImmVector {'touch', 'foo'},
+          ImmVector {'hg', 'commit', '-Am', 'add file'},
         },
         SymlinkTestOperation::DELETE_SYMLINK,
         SymlinkTestOperation::CREATE_FILE,
@@ -93,8 +100,8 @@ final class SymlinkTest extends BaseTest {
    * 1. delete the old thing
    * 2. create the new thing
    *
-   * @dataProvider getFileToFromSymlinkExamples
    */
+  <<\DataProvider('getFileToFromSymlinkExamples')>>
   public function testFileToFromSymlink(
     classname<ShipItSourceRepo> $repo_type,
     ImmVector<ImmVector<string>> $steps,
@@ -122,34 +129,27 @@ final class SymlinkTest extends BaseTest {
         ->runSynchronously();
     }
 
-    $repo = ShipItRepo::typedOpen(
-      $repo_type,
-      $temp_dir->getPath(),
-      'master',
-    );
+    $repo = ShipItRepo::typedOpen($repo_type, $temp_dir->getPath(), 'master');
 
     $changeset = $repo->getChangesetFromID($rev);
-    $this->assertNotNull($changeset);
-    assert($changeset !== null); // for typechecker
-    $this->assertTrue($changeset->isValid());
+    $changeset = \expect($changeset)->toNotBeNull();
+    \expect($changeset->isValid())->toBeTrue();
 
-    $this->assertEquals(
+    \expect($changeset->getDiffs()->count())->toBePHPEqual(
       2,
-      $changeset->getDiffs()->count(),
       'Expected a deletion chunk and a separate creation chunk',
     );
 
-    $this->assertEquals(
-      ImmVector { 'foo', 'foo' },
-      $changeset->getDiffs()->map($diff ==> $diff['path']),
+    \expect($changeset->getDiffs()->map($diff ==> $diff['path']))->toBePHPEqual(
+      ImmVector {'foo', 'foo'},
       'Expected chunks to affect the same file',
     );
 
     // Order is important: the old thing needs to be deleted before the new one
     // is created.
     $delete_file = $changeset->getDiffs()[0];
-    $this->assertContains($first_op, $delete_file['body']);
+    \expect($delete_file['body'])->toContainSubstring((string)$first_op);
     $create_symlink = $changeset->getDiffs()[1];
-    $this->assertContains($second_op, $create_symlink['body']);
+    \expect($create_symlink['body'])->toContainSubstring((string)$second_op);
   }
 }

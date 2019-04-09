@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/c1c26x5q
+ */
 namespace Facebook\ShipIt;
 
 final class ShipItPushPhase extends ShipItPhase {
@@ -36,7 +41,7 @@ final class ShipItPushPhase extends ShipItPhase {
       $config->getDestinationBranch(),
     );
     invariant(
-      $repo instanceof ShipItDestinationRepo,
+      $repo is ShipItDestinationRepo,
       '%s is not a writable repository type - got %s, needed %s',
       $config->getDestinationPath(),
       \get_class($repo),

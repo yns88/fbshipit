@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/xc9iyq81
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -29,13 +34,15 @@ final class FacebookMetro extends FBShipItConfig {
       |> FBCommonFilters::stripSummariesByDefault($$)
       |> FBCommonFilters::applyAll($$)
       |> ShipItPathFilters::rewritePaths(
-          $$,
+        $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace(
             '@/\.github\.flowconfig$@',
             '/.flowconfig',
             $path,
           ),
-        )
+      )
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings());
   }
 
@@ -46,17 +53,16 @@ final class FacebookMetro extends FBShipItConfig {
   ): ShipItChangeset {
     return $changeset
       |> \Facebook\ShipIt\ShipItPathFilters::rewritePaths(
-          $$,
+        $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace(
             '@(^|/)\.flowconfig$@',
             '\1.github.flowconfig',
             $path,
           ),
-        )
-      |> parent::projectImportChangeset(
-        $$,
-        $branch_config,
-      );
+      )
+      |> parent::projectImportChangeset($$, $branch_config);
   }
 
   <<__Override>>

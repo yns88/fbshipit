@@ -1,0 +1,38 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
+
+final class FbsamplesAccountKitSamplesForIos extends FBShipItConfig {
+  const string ROOT = 'fbobjc/ios-sdk/AccountKit/samples/';
+
+  <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      '@^'.self::ROOT.'AccountKitSample/BUCK$@',
+      '@^'.self::ROOT.'AccountKitSample/build-buck.sh$@',
+    };
+  }
+
+  <<__Override>>
+  public static function getDefaultPathMappings(): ImmMap<string, string> {
+    return ImmMap {
+      self::ROOT => '',
+    };
+  }
+
+  <<__Override>>
+  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+    return shape(
+      'internalRepo' => 'fbsource',
+      'githubOrg' => 'fbsamples',
+      'githubProject' => 'account-kit-samples-for-ios',
+    );
+  }
+}

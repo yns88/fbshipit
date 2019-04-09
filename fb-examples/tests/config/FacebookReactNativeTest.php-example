@@ -5,29 +5,29 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/1gt99p2k
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\{
-  ShipItRepoHG,
-};
 
+use type Facebook\ShipIt\{ShipItRepoHG};
+
+<<\Oncalls('open_source')>>
 final class FacebookReactNativeTest extends FBConfigBaseTest {
   const string ROOT = 'xplat/js/react-native-github';
 
   public function testPullRequestAuthorAttribution(): void {
     $in = ShipItRepoHG::getChangesetFromExportedPatch(
-      \file_get_contents(
-        __DIR__.'/hg-diffs/react-native-pull-request.header',
-      ),
-      \file_get_contents(
-        __DIR__.'/hg-diffs/react-native-pull-request.patch',
-      ),
+      \file_get_contents(__DIR__.'/hg-diffs/react-native-pull-request.header'),
+      \file_get_contents(__DIR__.'/hg-diffs/react-native-pull-request.patch'),
     );
-    $this->assertNotNull($in);
-    assert($in !== null); // for typechecker
+    $in = \expect($in)->toNotBeNull();
     $out = static::map($in);
 
-    $this->assertSame('Brent Vatne <brentvatne@gmail.com>', $out->getAuthor());
+    \expect($out->getAuthor())->toBeSame('Brent Vatne <brentvatne@gmail.com>');
   }
 
   <<__Override>>

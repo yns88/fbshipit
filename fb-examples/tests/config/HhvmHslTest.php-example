@@ -5,12 +5,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/hjfx4jsn
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  ShipItChangeset,
-};
 
+use type Facebook\ShipIt\{ShipItChangeset};
+
+<<\Oncalls('open_source')>>
 final class HhvmHslTest extends FBWWWConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -31,42 +36,40 @@ final class HhvmHslTest extends FBWWWConfigBaseTest {
   }
 
   public function testConditionalComments(): void {
-    $changeset = self::map((new ShipItChangeset())
-      ->withDiffs(ImmVector {
-        shape(
-          'path' => 'flib/core/hack/lib/foo.php',
-          'body' =>
-            " // @oss-enable: herp();\n".
-            " derp(); // @oss-disable\n".
-            " \n".
-            "+derp(); // @oss-disable\n".
-            "+  // @oss-enable:   ? \$x\n",
-        ),
-      }));
-    $this->assertSame(
+    $changeset = self::map(
+      (new ShipItChangeset())
+        ->withDiffs(ImmVector {
+          shape(
+            'path' => 'flib/core/hack/lib/foo.php',
+            'body' => " // @oss-enable: herp();\n".
+              " derp(); // @oss-disable\n".
+              " \n".
+              "+derp(); // @oss-disable\n".
+              "+  // @oss-enable:   ? \$x\n",
+          ),
+        }),
+    );
+    \expect($changeset->getDiffs()->at(0)['body'])->toBeSame(
       " herp(); // @oss-enable\n".
       " // @oss-disable: derp();\n".
       " \n".
       "+// @oss-disable: derp();\n".
       "+    ? \$x // @oss-enable\n",
-      $changeset->getDiffs()->at(0)['body'],
     );
   }
 
   public function testImportConditionalComments(): void {
-    $changeset = self::mapImport((new ShipItChangeset())
-      ->withDiffs(ImmVector {
-        shape(
-          'path' => 'src/foo.php',
-          'body' =>
-            " herp(); // @oss-enable\n".
-            " // @oss-disable: derp();\n",
-        ),
-      }));
-    $this->assertSame(
-      " // @oss-enable: herp();\n".
-      " derp(); // @oss-disable\n",
-      $changeset->getDiffs()->at(0)['body'],
+    $changeset = self::mapImport(
+      (new ShipItChangeset())
+        ->withDiffs(ImmVector {
+          shape(
+            'path' => 'src/foo.php',
+            'body' => " herp(); // @oss-enable\n"." // @oss-disable: derp();\n",
+          ),
+        }),
+    );
+    \expect($changeset->getDiffs()->at(0)['body'])->toBeSame(
+      " // @oss-enable: herp();\n"." derp(); // @oss-disable\n",
     );
   }
 }

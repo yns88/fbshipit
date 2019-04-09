@@ -5,12 +5,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/kbyrim2t
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  ShipItChangeset,
-};
 
+use type Facebook\ShipIt\{ShipItChangeset};
+
+<<\Oncalls('open_source')>>
 final class FacebookOpenbmcTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -48,8 +53,12 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
         'meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bb',
       'github/meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bbappend' =>
         'meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bbappend',
+      'github/meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bb' =>
+        'meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bb',
+      'github/meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bbappend' =>
+        'meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bbappend',
       'github/meta-aspeed/recipes-kernel/linux/linux-aspeed.inc' =>
-      'meta-aspeed/recipes-kernel/linux/linux-aspeed.inc',
+        'meta-aspeed/recipes-kernel/linux/linux-aspeed.inc',
       'github/sync_yocto.sh' => 'sync_yocto.sh',
       'github/yocto/.gitignore' => 'yocto/.gitignore',
     };
@@ -60,8 +69,10 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
   ): ImmMap<string, string> {
     $rejected_paths = FacebookOpenbmc::getUnsupportedImportPaths();
     return parent::getExampleImportPathMappings()
-      ->filterWithKey(($external_path, $internal_path) ==> {
+      ->filterWithKey(($external_path, $_internal_path) ==> {
         foreach ($rejected_paths as $reject) {
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           if (\preg_match($reject, $external_path)) {
             return false;
           }
@@ -84,11 +95,11 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
     $in = (new ShipItChangeset())
       ->withMessage(
         "Closes https://github.com/facebook/openbmc/pull/219\n".
-        "GitHub Author: Foo Bar <foobar@example.com>"
+        "GitHub Author: Foo Bar <foobar@example.com>",
       )
       ->withAuthor("Jubin Mehta <jmehta@fb.com>");
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
   }
 
   <<__Override>>
@@ -97,37 +108,37 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
       ->withMessage(
         "Closes https://github.com/facebook/openbmc/pull/219\n".
         "GitHub Author: Foo Bar <foobar@example.com>\n".
-        "Github PR Sync: foo"
+        "Github PR Sync: foo",
       )
       ->withAuthor("Jubin Mehta <jmehta@fb.com>");
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
   }
 
   <<__Override>>
   public function testPulledBy(): void {
-   $in = (new ShipItChangeset())
+    $in = (new ShipItChangeset())
       ->withMessage(
         "Closes https://github.com/facebook/openbmc/pull/219\n".
-        "GitHub Author: Foo Bar <foobar@example.com>"
+        "GitHub Author: Foo Bar <foobar@example.com>",
       )
       ->withAuthor("Jubin Mehta <jmehta@fb.com>");
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertContains('Pulled By: jmehta', $out->getMessage());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Pulled By: jmehta');
   }
 
   <<__Override>>
   public function testPulledByWithUnixnameDifferentToGithub(): void {
-   $in = (new ShipItChangeset())
-     ->withMessage(
-       "Closes https://github.com/facebook/openbmc/pull/219\n".
-       "GitHub Author: Foo Bar <foobar@example.com>"
-     )
-     ->withAuthor("Sai Dasari <sdasari@fb.com>");
+    $in = (new ShipItChangeset())
+      ->withMessage(
+        "Closes https://github.com/facebook/openbmc/pull/219\n".
+        "GitHub Author: Foo Bar <foobar@example.com>",
+      )
+      ->withAuthor("Sai Dasari <sdasari@fb.com>");
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertContains('Pulled By: sdasari73', $out->getMessage());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Pulled By: sdasari73');
   }
 
   <<__Override>>
@@ -136,59 +147,60 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
       ->withMessage(
         "Closes https://github.com/facebook/openbmc/pull/219\n".
         "GitHub Author: Foo Bar <foobar@example.com>\n\n".
-        "Reviewed By: jmehta"
+        "Reviewed By: jmehta",
       )
       ->withAuthor('svcscm <svcscm@fb.com>');
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertContains('Pulled By: jmehta', $out->getMessage());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Pulled By: jmehta');
   }
 
   <<__Override>>
   public function testPulledByWithBotAuthorAndMultipleReviewers(): void {
-   $in = (new ShipItChangeset())
+    $in = (new ShipItChangeset())
       ->withMessage(
         "Closes https://github.com/facebook/openbmc/pull/219\n".
         "GitHub Author: Foo Bar <foobar@example.com>\n\n".
-        "Reviewed By: jmehta, sdasari"
+        "Reviewed By: jmehta, sdasari",
       )
       ->withAuthor('svcscm <svcscm@fb.com>');
     $out = static::map($in);
-   $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertNotContains('Pulled By:', $out->getMessage());
-    $this->assertContains('Reviewed By: jmehta, sdasari73', $out->getMessage());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toNotContainSubstring('Pulled By:');
+    \expect($out->getMessage())
+      ->toContainSubstring('Reviewed By: jmehta, sdasari73');
   }
 
   <<__Override>>
   public function testNoPulledByIfNoGitHubAuthor(): void {
-  $in = (new ShipItChangeset())
+    $in = (new ShipItChangeset())
       ->withAuthor('Jubin Mehta <jmehta@fb.com>');
     $out = static::map($in);
-    $this->assertSame('Jubin Mehta <jmehta@fb.com>', $out->getAuthor());
+    \expect($out->getAuthor())->toBeSame('Jubin Mehta <jmehta@fb.com>');
   }
 
   public function testNoReviwedBy(): void {
-   $in = (new ShipItChangeset())
-     ->withMessage(
-       "Closes https://github.com/facebook/openbmc/pull/219\n".
-       "GitHub Author: Foo Bar <foobar@example.com>"
-     )
-    ->withAuthor('Jubin Mehta <jmehta@fb.com>');
-   $out = static::map($in);
-   $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-   $this->assertContains('Reviewed By: jmehta', $out->getMessage());
+    $in = (new ShipItChangeset())
+      ->withMessage(
+        "Closes https://github.com/facebook/openbmc/pull/219\n".
+        "GitHub Author: Foo Bar <foobar@example.com>",
+      )
+      ->withAuthor('Jubin Mehta <jmehta@fb.com>');
+    $out = static::map($in);
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Reviewed By: jmehta');
   }
 
   public function testBotReviwedBy(): void {
-   $in = (new ShipItChangeset())
-     ->withMessage(
-       "Closes https://github.com/facebook/openbmc/pull/219\n".
-       "GitHub Author: Foo Bar <foobar@example.com>\n\n".
-       "Reviewed By: svcscm"
-     )
-     ->withAuthor('Jubin Mehta <jmehta@fb.com>');
-   $out = static::map($in);
-   $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-   $this->assertContains('Reviewed By: jmehta', $out->getMessage());
+    $in = (new ShipItChangeset())
+      ->withMessage(
+        "Closes https://github.com/facebook/openbmc/pull/219\n".
+        "GitHub Author: Foo Bar <foobar@example.com>\n\n".
+        "Reviewed By: svcscm",
+      )
+      ->withAuthor('Jubin Mehta <jmehta@fb.com>');
+    $out = static::map($in);
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Reviewed By: jmehta');
   }
 }

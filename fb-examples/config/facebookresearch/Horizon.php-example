@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/1vs1bakw
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use namespace HH\Lib\{Str, Dict};
+use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
   FBSourceBranchConfig,
@@ -33,10 +39,11 @@ final class FacebookresearchHorizon extends FBShipItConfig {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \str_replace(
+        $path ==> Str\replace(
+          Str\replace($path, '/pom.xml', '/fb-pom.xml'),
           'oss-pom.xml',
           'pom.xml',
-          \str_replace('/pom.xml', '/fb-pom.xml', $path)),
+        ),
       )
       |> parent::defaultProjectFilterChangeset($$, $get_path_mappings);
   }
@@ -50,11 +57,7 @@ final class FacebookresearchHorizon extends FBShipItConfig {
       |> parent::projectImportChangeset($$, $branch_config)
       |> \Facebook\ShipIt\ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \str_replace(
-          'pom.xml',
-          'oss-pom.xml',
-          $path,
-        ),
+        $path ==> Str\replace($path, 'pom.xml', 'oss-pom.xml'),
       );
   }
 
@@ -64,11 +67,11 @@ final class FacebookresearchHorizon extends FBShipItConfig {
       # Put the oss directory into root
       "fbcode/ml/rl/oss/" => "",
 
-        # We want the contents of fbcode/ml/rl/... to appear in ml/rl/...
-        "fbcode/ml/rl/" => "ml/rl/",
+      # We want the contents of fbcode/ml/rl/... to appear in ml/rl/...
+      "fbcode/ml/rl/" => "ml/rl/",
 
-        # Put the dqn-preprocessing in preprocessing
-        "fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/" =>
+      # Put the dqn-preprocessing in preprocessing
+      "fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/" =>
         "preprocessing/",
     };
   }

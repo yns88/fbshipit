@@ -5,12 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/hslvgeuk
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
-};
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookRocksdb extends FBShipItConfig {
   const string ROOT = 'fbcode/internal_repo_rocksdb/repo/';
@@ -27,6 +29,7 @@ final class FacebookRocksdb extends FBShipItConfig {
     return ImmVector {
       '@\.mk$@',
       '@TARGETS$@',
+      '@defs\.bzl$@i',
     };
   }
 
@@ -34,8 +37,8 @@ final class FacebookRocksdb extends FBShipItConfig {
   protected static function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       // Ignore file containing sandcastle token
-      '@^' . self::ROOT . '.sandcastle$@',
-      '@^' . self::ROOT . 'util/build_version.cc$@',
+      '@^'.self::ROOT.'.sandcastle$@',
+      '@^'.self::ROOT.'util/build_version.cc$@',
     };
   }
 

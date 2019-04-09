@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/pvccftga
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 /**
  * Generate buck documentation from source repo into the destination repo.
@@ -24,20 +31,17 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
   }
 
   <<__Override>>
-  protected function runImpl(
-    ShipItBaseConfig $config,
-  ): void {
+  protected function runImpl(ShipItBaseConfig $config): void {
     $sourcePath = $config->getSourcePath();
     $docsPath = $config->getDestinationPath();
     $branch = $config->getDestinationBranch();
 
-    $verbose =
-      $config->isVerboseEnabled()
-        ? ShipItUtil::VERBOSE_SHELL_OUTPUT
-        : ShipItUtil::DONT_VERBOSE;
+    $verbose = $config->isVerboseEnabled()
+      ? ShipItUtil::VERBOSE_SHELL_OUTPUT
+      : ShipItUtil::DONT_VERBOSE;
 
     // Get out of our current branch so it can be deleted.
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,
@@ -46,7 +50,7 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
     );
 
     // Delete the current branch.
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,
@@ -55,7 +59,7 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
     );
 
     // Create a historyless branch in its place.
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,
@@ -64,7 +68,7 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
     );
 
     // Erase all existing files.
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,
@@ -72,21 +76,25 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       'git', 'rm', '--force', '-r', '.',
     );
 
-    $pipes = array();
+    $pipes = varray[];
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $proc = \proc_open(
       'docs/soyweb-prod.sh',
-      array(
-        0 => array('pipe', 'r'),
-        1 => array('file', '/dev/null', 'w'),
-        2 => array('file', '/dev/null', 'w'),
-      ),
+      darray[
+        0 => varray['pipe', 'r'],
+        1 => varray['file', '/dev/null', 'w'],
+        2 => varray['file', '/dev/null', 'w'],
+      ],
       &$pipes,
       $sourcePath
     );
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \fclose($pipes[0]);
 
     try {
-/* HH_FIXME[4128] Use ShipItShellCommand */
+      /* HH_FIXME[4128] Use ShipItShellCommand */
       ShipItUtil::shellExec(
         $sourcePath,
         /* stdin = */ null,
@@ -94,15 +102,19 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
         'docs/soy2html.sh', $docsPath,
       );
     } finally {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $status = \proc_get_status($proc);
       if ($status !== null) {
         // kill whole tree of docs/soyweb-prod.sh
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \exec('pstree -pl '.$status['pid'].
              ' | grep -o "([0-9]\+)" | sed "s/(\|)//g" | xargs kill');
       }
     }
 
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,
@@ -110,20 +122,20 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       'git', 'add', '.',
     );
 
-/* HH_FIXME[4128] Use ShipItShellCommand */
-    $sourceCommitHash = \rtrim(ShipItUtil::shellExec(
+    /* HH_FIXME[4128] Use ShipItShellCommand */
+    $sourceCommitHash = Str\trim_right(ShipItUtil::shellExec(
       $sourcePath,
       /* stdin = */ null,
       $verbose,
       'git', 'log', '-1', '--format=%H',
     ));
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,
       $verbose,
       'git', 'commit',
-      '-m', \sprintf('Updated HTML documentation to %s.', $sourceCommitHash),
+      '-m', Str\format('Updated HTML documentation to %s.', $sourceCommitHash),
     );
   }
 }

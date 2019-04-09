@@ -5,15 +5,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/a5gtgo0x
+ */
 namespace Facebook\ShipIt;
 
 final class BuckVerifyNoMoeOccurrencesPhase extends BuildAndTestPhase {
-  private static array<string> $testsWhitelist = array();
+  private static vec<string> $testsWhitelist = vec[];
 
   <<__Override>>
   protected function build(ShipItBaseConfig $config): void {
     $steps = ImmMap {
-      'clean' => ImmVector { 'git', 'clean', '-xffd' },
+      'clean' => ImmVector {'git', 'clean', '-xffd'},
     };
 
     self::runExecutableSteps($config, $steps);
@@ -21,14 +26,15 @@ final class BuckVerifyNoMoeOccurrencesPhase extends BuildAndTestPhase {
 
   <<__Override>>
   protected function test(ShipItBaseConfig $config): void {
-    $root = $config->getDestinationPath();
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     $moe_occurrences = ShipItUtil::shellExec(
       $config->getDestinationPath(),
       /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE | ShipItUtil::NO_THROW,
       'grep', '-r', 'MOE',
     );
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $moe_occurrences = \preg_replace("@^.*Binary.*\n@m", '', $moe_occurrences);
     invariant(
       !$moe_occurrences,

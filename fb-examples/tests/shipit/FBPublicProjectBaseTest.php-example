@@ -5,13 +5,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/naoesxuk
+ */
 namespace Facebook\ShipIt;
+
 
 abstract class FBPublicProjectBaseTest extends FBProjectBaseTest {
 
-  /**
-   * @dataProvider exampleMessagesWithDifferentialURLs
-   */
+  <<\DataProvider('exampleMessagesWithDifferentialURLs')>>
   public function testCollapsesDifferentialURLs(
     string $message_in,
     string $expected_message_out,
@@ -23,67 +27,42 @@ abstract class FBPublicProjectBaseTest extends FBProjectBaseTest {
     $in = (new ShipItChangeset())
       ->withMessage("Summary: ".$message_in);
     $out = static::map($in);
-    $this->assertSame(
-      "Summary: ".$expected_message_out,
-      $out->getMessage(),
-    );
+    \expect($out->getMessage())->toBeSame("Summary: ".$expected_message_out);
   }
 
-  /**
-   * @dataProvider examplesForSectionHandling
-   */
-  public function testSectionHandling(
-    string $in,
-    string $expected,
-  ): void {
+  <<\DataProvider('examplesForSectionHandling')>>
+  public function testSectionHandling(string $in, string $expected): void {
+    if ($this->removesSummariesByDefault()) {
+      return;
+    }
     $in = (new ShipItChangeset())->withMessage($in);
     $out = static::map($in);
-    $this->assertSame($expected, $out->getMessage());
+    \expect($out->getMessage())->toBeSame($expected);
   }
 
-  public function examplesForSectionHandling(
-  ): array<(string, string)> {
-    if ($this->removesSummariesByDefault()) {
-      $this->markTestSkipped("Does not apply to repositories using @public");
-    }
-
-    return [
+  public function examplesForSectionHandling(): vec<(string, string)> {
+    return vec[
       tuple('Summary: foo', 'Summary: foo'),
-      tuple(
-        "Summary: foo\nExample: bar",
-        "Summary:\nfoo\nExample: bar",
-      ),
-      tuple(
-        "Summary: foo\nFacebook: bar",
-        "Summary: foo",
-      ),
-      tuple(
-        "Summary: \nFacebook: bar",
-        '',
-      ),
-      tuple(
-        'Summary:Facebook: bar',
-        '',
-      ),
-      tuple(
-        'Summary: Facebook: bar',
-        '',
-      ),
+      tuple("Summary: foo\nExample: bar", "Summary:\nfoo\nExample: bar"),
+      tuple("Summary: foo\nFacebook: bar", "Summary: foo"),
+      tuple("Summary: \nFacebook: bar", ''),
+      tuple('Summary:Facebook: bar', ''),
+      tuple('Summary: Facebook: bar', ''),
     ];
   }
 
   public function testOptInPublicSummaries(): void {
     if (!$this->removesSummariesByDefault()) {
-      $this->markTestSkipped();
+      return;
     }
 
     $in = (new ShipItChangeset())->withMessage('Summary: foo');
     $out = static::map($in);
-    $this->assertEmpty($out->getMessage());
+    \expect($out->getMessage())->toBePHPEqual('');
 
     $in = (new ShipItChangeset())->withMessage('Summary: foo @public');
     $out = static::map($in);
-    $this->assertSame('Summary: foo', $out->getMessage());
+    \expect($out->getMessage())->toBeSame('Summary: foo');
   }
 
 }

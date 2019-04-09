@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/w1t25w2l
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCodeBuilderTrait,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -27,8 +32,8 @@ final class FacebookOpenr extends FBShipItConfig {
   }
 
   <<__Override>>
-    public static function getPathMappingsNonFBCodeBuilder(
-    ): ImmMap<string, string> {
+  public static function getPathMappingsNonFBCodeBuilder(
+  ): ImmMap<string, string> {
     return ImmMap {
       'fbcode/openr/public_tld/' => '',
       'fbcode/openr/' => 'openr/',

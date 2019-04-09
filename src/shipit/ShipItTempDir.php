@@ -6,6 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/v6y4kokw
+ */
+
 namespace Facebook\ShipIt;
 
 enum ShipItTempDirMode: string {
@@ -18,11 +23,15 @@ final class ShipItTempDir {
   private string $path;
   private ShipItTempDirMode $mode = ShipItTempDirMode::AUTO_REMOVE;
 
-  public function __construct(
-    string $component,
-  ) {
+  public function __construct(string $component) {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $path = \sys_get_temp_dir().'/shipit-'.$component.'-';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $path .= \bin2hex(\random_bytes(32));
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \mkdir($path);
     $this->path = $path;
   }
@@ -34,8 +43,10 @@ final class ShipItTempDir {
 
   public function remove(): void {
     $this->assertMode(ShipItTempDirMode::AUTO_REMOVE);
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \sys_get_temp_dir(),
       /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE,

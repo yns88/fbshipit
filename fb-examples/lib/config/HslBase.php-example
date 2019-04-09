@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/da5a7ab9
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBSourceBranchConfig,
   ShipItChangeset,
   ShipItConditionalLinesFilter,
@@ -34,17 +39,9 @@ abstract class HhvmHslBase extends FBWWWBase {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $path ==> \preg_replace('/^\\./', 'dot_', $path),
-      )
-      |> ShipItConditionalLinesFilter::uncommentLines(
-        $$,
-        '@oss-disable',
-        '//',
-      )
-      |> ShipItConditionalLinesFilter::commentLines(
-        $$,
-        '@oss-enable',
-        '//',
       )
       |> parent::projectImportChangeset($$, $branch_config);
   }

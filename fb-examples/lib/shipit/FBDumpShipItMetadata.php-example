@@ -5,13 +5,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/wn8ui3x2
+ */
 namespace Facebook\ShipIt;
 
-use type Facebook\ShipIt\Config\FBShipItConfigRegistry;
+use type Facebook\ShipIt\Config\FBShipItConfigClasses;
 
 final class FBDumpShipItMetadata {
 
-  const type ShipItMetadata = shape(
+  const type TShipItMetadata = shape(
     'destination' => shape(
       'branch' => string,
       'owner' => string,
@@ -26,13 +31,15 @@ final class FBDumpShipItMetadata {
     'arcanist_project' => ?string,
   );
 
-  private static function encodeOutput(vec<self::ShipItMetadata> $out): string {
+  private static function encodeOutput(
+    vec<self::TShipItMetadata> $out,
+  ): string {
     return \json_encode($out);
   }
 
   final public static function dumpMetadata(): void {
     $metadatas = vec[];
-    $config_classes = FBShipItConfigRegistry::getShipItConfigClasses();
+    $config_classes = FBShipItConfigClasses::getClasses();
     foreach ($config_classes as $config_class) {
       $branch_resolver = new FBShipItBranchResolutionPhase($config_class);
       $repo_metadata = $branch_resolver->getRepoMetadata();
@@ -46,8 +53,7 @@ final class FBDumpShipItMetadata {
         );
         $branch_metadata = $save_config_phase->renderConfig($base_config);
         $is_land_branch = (
-          $repo_metadata['land_branch'] ===
-          $branch_metadata['source']['branch']
+          $repo_metadata['land_branch'] === $branch_metadata['source']['branch']
         );
         $metadatas[] = shape(
           'destination' => $branch_metadata['destination'],

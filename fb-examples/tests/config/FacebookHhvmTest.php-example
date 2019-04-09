@@ -5,18 +5,25 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/nxm4gj97
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+
+use type Facebook\ShipIt\{
   FBCommonFilters,
   ShipItChangeset,
   ShipItMessageSections,
 };
 
+<<\Oncalls('open_source')>>
 final class FacebookHhvmTest extends FBConfigBaseTest {
   public function examplesForFilteredSections(
-  ): array<(ImmMap<string, string>,ImmMap<string, string>)> {
-    return [
+  ): vec<(ImmMap<string, string>, ImmMap<string, string>)> {
+    return vec[
       tuple(
         ImmMap {
           'summary' => 'foo',
@@ -32,9 +39,7 @@ final class FacebookHhvmTest extends FBConfigBaseTest {
     ];
   }
 
-  /**
-   * @dataProvider examplesForFilteredSections
-   */
+  <<\DataProvider('examplesForFilteredSections')>>
   public function testFilteredSections(
     ImmMap<string, string> $in,
     ImmMap<string, string> $expected,
@@ -46,7 +51,7 @@ final class FacebookHhvmTest extends FBConfigBaseTest {
       $changeset,
       FBCommonFilters::getSupportedMessageSectionNames(),
     );
-    $this->assertEquals($expected, $out->toImmMap());
+    \expect($out->toImmMap())->toBePHPEqual($expected);
   }
 
   <<__Override>>

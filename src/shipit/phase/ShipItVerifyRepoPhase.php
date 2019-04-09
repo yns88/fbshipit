@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/j3hwi4do
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 final class ShipItVerifyRepoPhase extends ShipItPhase {
   private bool $createPatch = false;
@@ -13,7 +20,7 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
   private ?string $verifySourceCommit = null;
 
   public function __construct(
-    private (function(ShipItChangeset):ShipItChangeset) $filter,
+    private (function(ShipItChangeset): ShipItChangeset) $filter,
   ) {
     $this->skip();
   }
@@ -41,7 +48,11 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
         'long_name' => 'create-fixup-patch',
         'description' =>
           'Create a patch to get the destination repository in sync, then exit',
-        'write' => $_ ==> { $this->unskip(); $this->createPatch = true; }
+        'write' => $_ ==> {
+          $this->unskip();
+          $this->createPatch = true;
+          return true;
+        },
       ),
       shape(
         'long_name' => 'verify-source-commit::',
@@ -58,9 +69,7 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
   }
 
   <<__Override>>
-  public function runImpl(
-    ShipItBaseConfig $config,
-  ): void {
+  public function runImpl(ShipItBaseConfig $config): void {
     if ($this->useLatestSourceCommit) {
       if ($this->verifySourceCommit !== null) {
         throw new ShipItException(
@@ -89,7 +98,7 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
     $dirty_remote = 'shipit_dest';
     $dirty_ref = $dirty_remote.'/'.$config->getDestinationBranch();
 
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $clean_path,
       /* stdin = */ null,
@@ -100,7 +109,7 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
       $dirty_remote,
       $config->getDestinationPath(),
     );
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $clean_path,
       null,
@@ -110,8 +119,8 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
       $dirty_remote,
     );
 
-/* HH_FIXME[4128] Use ShipItShellCommand */
-    $diffstat = \rtrim(ShipItUtil::shellExec(
+    /* HH_FIXME[4128] Use ShipItShellCommand */
+    $diffstat = Str\trim_right(ShipItUtil::shellExec(
       $clean_path,
       null,
       ShipItUtil::DONT_VERBOSE,
@@ -124,32 +133,34 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
 
     if ($diffstat === '') {
       if ($this->createPatch) {
-        \fwrite(
-          \STDERR,
+        ShipItLogger::err(
           "  CREATE PATCH FAILED: destination is already in sync.\n",
         );
         exit(1);
       }
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \printf("  Verification OK: destination is in sync.\n");
       exit(0);
     }
 
     if (!$this->createPatch) {
-      \fprintf(
-        \STDERR,
+      ShipItLogger::err(
         "  VERIFICATION FAILED: destination repo does not match:\n\n%s\n",
         $diffstat,
       );
       exit(1);
     }
 
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     $diff = ShipItUtil::shellExec(
       $clean_path,
       /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE,
       'git',
       'diff',
+      '--full-index',
+      '--binary',
       '--no-color',
       $dirty_ref,
       'HEAD',
@@ -170,9 +181,15 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
       $source_sync_id = $changeset->getID();
     }
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $patch_file = \tempnam(\sys_get_temp_dir(), 'shipit-resync-patch-');
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \file_put_contents($patch_file, $diff);
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf(
       "  Created patch file: %s\n\n".
       "%s\n\n".

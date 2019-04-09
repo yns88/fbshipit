@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/owgtuj5r
+ */
 namespace Facebook\ShipIt;
 
+use namespace HH\Lib\Str;
 use type Facebook\ShipIt\Config\FBShipItConfigRegistry;
 
 final class ShipItGenerateConfigStubsPhase extends ShipItPhase {
@@ -26,7 +32,7 @@ final class ShipItGenerateConfigStubsPhase extends ShipItPhase {
 
   <<__Override>>
   final public function getCLIArguments(): ImmVector<ShipItCLIArgument> {
-    $truthy_values = ImmSet { 'true', 't', '1', 'yes', 'y' };
+    $truthy_values = ImmSet {'true', 't', '1', 'yes', 'y'};
     return ImmVector {
       shape(
         'long_name' => 'github-org:',
@@ -42,7 +48,7 @@ final class ShipItGenerateConfigStubsPhase extends ShipItPhase {
         'long_name' => 'public:',
         'description' => 'Whether the GitHub repo is public',
         'write' => $v ==>
-          $this->isPublic = $truthy_values->contains(\strtolower($v)),
+          $this->isPublic = $truthy_values->contains(Str\lowercase($v)),
       ),
     };
   }
@@ -60,6 +66,8 @@ final class ShipItGenerateConfigStubsPhase extends ShipItPhase {
       $github_project,
     );
     $test_class_name = $project_class_name.'Test';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $user = \getenv('USER');
 
     // Create ShipIt files (exectuable and test).
@@ -73,10 +81,7 @@ final class ShipItGenerateConfigStubsPhase extends ShipItPhase {
  */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
-};
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class $project_class_name extends FBShipItConfig {
   // TODO($user): Define the root path for your project.
@@ -109,19 +114,37 @@ EOF;
       $subpath = 'fb-private';
     }
     $config_path = $config->getBaseDirectory().
-      '/config/'.$subpath.'/'.$github_org.'/'.$github_project.'.php';
+      '/config/'.
+      $subpath.
+      '/'.
+      $github_org.
+      '/'.
+      $github_project.
+      '.php';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf("  Generating %s\n", $config_path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $config_dir = \dirname($config_path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists($config_dir)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \mkdir($config_dir, /* mode */ 0777, /* recursive */ true);
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \file_put_contents($config_path, $bin_contents);
-    (new ShipItShellCommand(
-      $config->getBaseDirectory(),
-      'hg',
-      'add',
-      $config_path,
-    ))
+    (
+      new ShipItShellCommand(
+        $config->getBaseDirectory(),
+        'hg',
+        'add',
+        $config_path,
+      )
+    )
       ->runSynchronously();
 
     $test_contents = <<<EOF
@@ -134,6 +157,7 @@ EOF;
  */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class $test_class_name extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -147,28 +171,45 @@ final class $test_class_name extends FBConfigBaseTest {
 
 EOF;
     $test_path = $config->getBaseDirectory().
-      '/tests/config/'.$subpath.'/'.$test_class_name.'.php';
+      '/tests/'. // @oss-enable
+      // @oss-disable: '/__tests__/'.
+      'config/'.
+      $subpath.
+      '/'.
+      $test_class_name.
+      '.php';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf("  Generating %s\n", $test_path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $test_dir = \dirname($test_path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists($test_dir)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \mkdir($test_dir, /* mode */ 0777, /* recursive */ true);
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \file_put_contents($test_path, $test_contents);
-    (new ShipItShellCommand(
-      $config->getBaseDirectory(),
-      'hg',
-      'add',
-      $test_path,
-    ))
+    (
+      new ShipItShellCommand(
+        $config->getBaseDirectory(),
+        'hg',
+        'add',
+        $test_path,
+      )
+    )
       ->runSynchronously();
 
-    // Finally, update the autoload maps.
-    \printf("  Updating autoload.php\n");
-    (new ShipItShellCommand(
-      $config->getBaseDirectory().'/../',
-      './shipit/hhvm_wrapper',
-      'vendor/hhvm/hhvm-autoload/bin/hh-autoload',
-    ))
-      ->runSynchronously();
+    // Finally, update the class maps.
+    $this->updateClassMap();
+  }
+
+  private function updateClassMap(): void {
+    print("  Updating FBShipItConfigClasses.php\n");
+    (new ShipItShellCommand(\php_root(), 'meerkat'))->runSynchronously();
   }
 }

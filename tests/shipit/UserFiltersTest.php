@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/b8165lq5
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 final class UserInfoTestImplementation extends ShipItUserInfo {
   <<__Override>>
@@ -24,46 +31,29 @@ final class UserInfoTestImplementation extends ShipItUserInfo {
   }
 }
 
+<<\Oncalls('open_source')>>
 final class UserFiltersTest extends BaseTest {
-  public function examplesForGetMentions(
-  ): array<(string, ImmSet<string>)> {
-    return [
-      tuple(
-        '@foo',
-        ImmSet { '@foo' },
-      ),
-      tuple(
-        '@foo @bar',
-        ImmSet { '@foo', '@bar' },
-      ),
-      tuple(
-        '@foo foo@example.com',
-        ImmSet { '@foo' },
-      ),
-      tuple(
-        "\n@foo\n",
-        ImmSet { '@foo' },
-      ),
+  public function examplesForGetMentions(): vec<(string, ImmSet<string>)> {
+    return vec[
+      tuple('@foo', ImmSet {'@foo'}),
+      tuple('@foo @bar', ImmSet {'@foo', '@bar'}),
+      tuple('@foo foo@example.com', ImmSet {'@foo'}),
+      tuple("\n@foo\n", ImmSet {'@foo'}),
     ];
   }
 
-  /**
-   * @dataProvider examplesForGetMentions
-   */
+  <<\DataProvider('examplesForGetMentions')>>
   public function testGetMentions(
     string $message,
     ImmSet<string> $expected,
   ): void {
     $changeset = (new ShipItChangeset())->withMessage($message);
-    $this->assertEquals(
-      $expected,
-      ShipItMentions::getMentions($changeset),
-    );
+    \expect(ShipItMentions::getMentions($changeset))->toBePHPEqual($expected);
   }
 
   public function rewriteMentionsExamples(
-  ): array<(string, (function(string):string), string)> {
-    return [
+  ): vec<(string, (function(string): string), string)> {
+    return vec[
       tuple(
         '@foo @bar @baz',
         $mention ==> $mention === '@foo' ? '@herp' : $mention,
@@ -81,64 +71,46 @@ final class UserFiltersTest extends BaseTest {
       ),
       tuple(
         '@foo @bar @baz',
-        $mention ==> \substr($mention, 1),
+        $mention ==> Str\slice($mention, 1),
         'foo bar baz',
       ),
     ];
   }
 
-  /**
-   * @dataProvider rewriteMentionsExamples
-   */
+  <<\DataProvider('rewriteMentionsExamples')>>
   public function testRewriteMentions(
     string $message,
     (function(string): string) $callback,
     string $expected_message,
   ): void {
     $changeset = (new ShipItChangeset())->withMessage($message);
-    $this->assertSame(
-      $expected_message,
+    \expect(
       ShipItMentions::rewriteMentions($changeset, $callback)->getMessage(),
-    );
+    )->toBeSame($expected_message);
   }
 
   public function testContainsMention(): void {
     $changeset = (new ShipItChangeset())->withMessage('@foo @bar');
-    $this->assertTrue(
-      ShipItMentions::containsMention($changeset, '@foo')
-    );
-    $this->assertTrue(
-      ShipItMentions::containsMention($changeset, '@bar')
-    );
-    $this->assertFalse(
-      ShipItMentions::containsMention($changeset, '@baz')
-    );
+    \expect(ShipItMentions::containsMention($changeset, '@foo'))->toBeTrue();
+    \expect(ShipItMentions::containsMention($changeset, '@bar'))->toBeTrue();
+    \expect(ShipItMentions::containsMention($changeset, '@baz'))->toBeFalse();
   }
 
-  public function examplesForSVNUserMapping(
-  ): array<(string, string)> {
-    $fake_uuid = \str_repeat('a', 36);
-    return [
+  public function examplesForSVNUserMapping(): vec<(string, string)> {
+    $fake_uuid = Str\repeat('a', 36);
+    return vec[
       tuple('Foo <foo@example.com>', 'Foo <foo@example.com>'),
       tuple('foo@'.$fake_uuid, 'Example User <foo-public@example.com>'),
     ];
   }
 
-  /**
-   * @dataProvider examplesForSVNUserMapping
-   */
-  public function testSVNUserMapping(
-    string $in,
-    string $expected,
-  ): void {
+  <<\DataProvider('examplesForSVNUserMapping')>>
+  public function testSVNUserMapping(string $in, string $expected): void {
     $changeset = (new ShipItChangeset())->withAuthor($in)
       |> ShipItUserFilters::rewriteSVNAuthor(
-          $$,
-          UserInfoTestImplementation::class,
-        );
-    $this->assertSame(
-      $expected,
-      $changeset->getAuthor(),
-    );
+        $$,
+        UserInfoTestImplementation::class,
+      );
+    \expect($changeset->getAuthor())->toBeSame($expected);
   }
 }

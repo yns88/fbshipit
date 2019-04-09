@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/nki2m07u
+ */
 namespace Facebook\ShipIt\Config;
 
 
+<<\Oncalls('open_source')>>
 final class HhvmHacktestTest extends FBWWWConfigBaseTest {
   const string ROOT = HhvmHacktest::ROOT;
 
@@ -27,13 +33,16 @@ final class HhvmHacktestTest extends FBWWWConfigBaseTest {
       self::ROOT.'__github__/dot_travis.sh' => '.travis.sh',
       self::ROOT.'__github__/dot_gitattributes' => '.gitattributes',
       self::ROOT.'__github__/src/HackTestCLI_dot_php' => 'src/HackTestCLI.php',
-      self::ROOT.'__github__/src/Retriever/foo_dot_php' => 'src/Retriever/foo.php',
+      self::ROOT.'__github__/src/Retriever/foo_dot_php' =>
+        'src/Retriever/foo.php',
       self::ROOT.'__github__/src/Runner/foo_dot_php' => 'src/Runner/foo.php',
       // general test
       self::ROOT.'__github__/tests/foo_dot_php' => 'tests/foo.php',
       // not usable at FB
-      self::ROOT.'__github__/tests/clean/exit/foo_dot_php' => 'tests/clean/exit/foo.php',
-      self::ROOT.'__github__/tests/clean/retriever/foo_dot_php' => 'tests/clean/retriever/foo.php',
+      self::ROOT.'__github__/tests/clean/exit/foo_dot_php' =>
+        'tests/clean/exit/foo.php',
+      self::ROOT.'__github__/tests/clean/retriever/foo_dot_php' =>
+        'tests/clean/retriever/foo.php',
     };
   }
 }

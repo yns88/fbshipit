@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/4ph757v9
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookScreenshotTestsForAndroidTest extends FBConfigBaseTest {
   const string ROOT = 'fbandroid/libraries/screenshot-tests-for-android';
 

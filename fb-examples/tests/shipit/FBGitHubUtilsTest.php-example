@@ -5,38 +5,46 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/upeiyyo1
+ */
 namespace Facebook\ShipIt;
 
+use namespace HH\Lib\Str;
+
+<<\Oncalls('open_source')>>
 final class FBGitHubUtilsTest extends BaseTest {
   public function exampleProjectCredentials(
-  ): array<(FBGitHubUtils::TAllCredentials, string, string, string, string)> {
-    return [
+  ): vec<(FBGitHubUtils::TAllCredentials, string, string, string, string)> {
+    return vec[
       tuple(
-        array(
-          'FACEBOOK_HHVM' => array(
+        dict[
+          'FACEBOOK_HHVM' => dict[
             'hhvm-bot' => shape(
               'access_token' => 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
             ),
-          ),
-          'FACEBOOK_DEFAULT' => array(
+          ],
+          'FACEBOOK_DEFAULT' => dict[
             'facebook-github-bot' => shape(
               'access_token' => 'beefdeadbeefdeadbeefdeadbeefdeadbeefdead',
             ),
-          ),
-        ),
+          ],
+        ],
         'facebook',
         'hhvm',
         'hhvm-bot',
         'hhvm-bot@users.noreply.github.com',
       ),
       tuple(
-        array(
-          'FACEBOOK_DEFAULT' => array(
+        dict[
+          'FACEBOOK_DEFAULT' => dict[
             'facebook-github-bot' => shape(
               'access_token' => 'beefdeadbeefdeadbeefdeadbeefdeadbeefdead',
             ),
-          ),
-        ),
+          ],
+        ],
         'facebook',
         'not-a-real-project',
         'facebook-github-bot',
@@ -60,9 +68,7 @@ final class FBGitHubUtilsTest extends BaseTest {
     );
   }
 
-  /**
-   * @dataProvider exampleProjectCredentials
-   */
+  <<\DataProvider('exampleProjectCredentials')>>
   public function testPerProjectCredentials(
     FBGitHubUtils::TAllCredentials $credentials,
     string $organization,
@@ -76,34 +82,29 @@ final class FBGitHubUtilsTest extends BaseTest {
       $project,
     );
 
-    $this->assertSame(
-      $email,
-      $credentials['email'],
-    );
+    \expect($credentials['email'])->toBeSame($email);
 
     // We're using tokens exclusively.
-    $this->assertNull($credentials['user']);
-    $this->assertNull($credentials['password']);
+    \expect($credentials['user'])->toBeNull();
+    \expect($credentials['password'])->toBeNull();
 
     $this->assertLooksLikeAPIToken($credentials['access_token']);
 
     // nameof('facebook-github-bot-1') === 'Facebook Github Bot 1'
-    $this->assertSame(
-      \ucwords(\strtr($user, '-', ' ')),
-      $credentials['name'],
-    );
+    \expect($credentials['name'])
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      ->toBeSame(Str\capitalize_words(\strtr($user, '-', ' ')));
   }
 
-  private function assertLooksLikeAPIToken(
-    ?string $token,
-  ): void {
-    $this->assertNotNull($token, 'Token should not be null');
-    $this->assertTrue(
-      \strlen($token) === 40,
-      'Password field has unexpected length: '.\strlen($token),
+  private function assertLooksLikeAPIToken(?string $token): void {
+    $token = \expect($token)->toNotBeNull('Token should not be null');
+    \expect(Str\length($token) === 40)->toBeTrue(
+      'Password field has unexpected length: '.Str\length($token),
     );
-    $this->assertTrue(
-      \ctype_xdigit($token),
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    \expect(\ctype_xdigit($token))->toBeTrue(
       'Password field is not hex-like',
     );
   }

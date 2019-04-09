@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/m70b6o6o
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
   FBSourceBranchConfig,
@@ -34,10 +40,10 @@ final class FacebookDuckling extends FBShipItConfig {
     return $changeset
       |> \Facebook\ShipIt\ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \str_replace(
+        $path ==> Str\replace(
+          $path,
           'Duckling/Engine/Regex.hs',
           'github/Duckling/Engine/Regex.hs',
-          $path,
         ),
       )
       |> parent::projectImportChangeset($$, $branch_config);

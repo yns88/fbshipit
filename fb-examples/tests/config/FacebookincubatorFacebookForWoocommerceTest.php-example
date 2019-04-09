@@ -5,14 +5,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/0ed3xl7p
+ */
 namespace Facebook\ShipIt\Config;
 
-final class FacebookincubatorFacebookForWoocommerceTest extends FBConfigBaseTest
-{
+<<\Oncalls('open_source')>>
+final class FacebookincubatorFacebookForWoocommerceTest
+  extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
-      'woocommerce/facebook-for-woocommerce/README.md' => 'README.md'
+      'woocommerce/facebook-for-woocommerce/README.md' => 'README.md',
     };
   }
 }

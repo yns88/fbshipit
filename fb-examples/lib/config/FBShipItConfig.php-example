@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/2w7l7q2r
+ */
 namespace Facebook\ShipIt;
 
+use namespace HH\Lib\{Str, C, Vec};
 use type Facebook\ImportIt\{
   ImportItPathFilters,
   ImportItSubmoduleFilter,
@@ -18,8 +24,10 @@ type GetPathMappingsFn = (function(): ImmMap<string, string>);
 type FBSourceBranchConfig = shape(
   'internal' => string,
   'external' => string,
-  ?'projectFilterChangeset' =>
-    (function(ShipItChangeset, GetPathMappingsFn): ShipItChangeset),
+  ?'projectFilterChangeset' => (function(
+    ShipItChangeset,
+    GetPathMappingsFn,
+  ): ShipItChangeset),
   ?'getPathMappings' => GetPathMappingsFn,
 );
 
@@ -115,6 +123,8 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     $paths = (self::getPathMappingsFn($branch_config))()
       ->keys()
       ->toSet();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $interfaces = new Set(\class_implements(static::class));
     if (
       !$interfaces->contains(ISupportsFBCodeBuilder::class) &&
@@ -130,16 +140,17 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       // All paths are included.
       return ImmSet {};
     }
-    $paths = $paths->toArray();
     // Sort least specific to most specific.
-    \sort(&$paths);
+    $paths = Vec\sort($paths);
     $roots = Set {};
     foreach ($paths as $path) {
       // If this path starts with any elements in the set of roots we have
       // already computed, we do not need to add this as it would be redundant.
       $root_match = false;
       foreach ($roots as $root) {
-        $root_match = $root_match || \strncmp($path, $root, \strlen($root)) === 0;
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+        $root_match = $root_match || \strncmp($path, $root, Str\length($root)) === 0;
       }
       if ($root_match) {
         continue;
@@ -175,7 +186,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   ): ShipItChangeset {
     $roots = static::getBaseConfig($branch_config)->getSourceRoots()
       ->filter($root ==> $root !== '');
-    if (\count($roots) === 0) {
+    if (C\is_empty($roots)) {
       return $changeset;
     }
 
@@ -195,6 +206,8 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
         $dest,
       );
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $interfaces = new Set(\class_implements(static::class));
     if ($interfaces->contains(ISupportsFBCodeBuilder::class)) {
       // FBCodeBuilder needs these hashes, but doesn't use them as submodules.
@@ -216,7 +229,6 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     FBSourceBranchConfig $branch_config,
   ): ImmVector<ShipItPhase> {
     $static_config = static::getStaticConfig();
-    $config = static::getBaseConfig($branch_config);
     return ImmVector {
       new ShipItFilterSanityCheckPhase(
         $changeset ==> self::filterChangeset($changeset, $branch_config),
@@ -254,10 +266,11 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       new ShipItCleanPhase(ShipItRepoSide::DESTINATION),
       new ShipItPullPhase(ShipItRepoSide::DESTINATION),
       new ShipItSyncPhase(
-        ($config, $changeset) ==>
+        ($_config, $changeset) ==>
           self::filterChangeset($changeset, $branch_config),
         ImmSet {},
         ($changesets, $dest) ==> self::postFilterChangesets($changesets, $dest),
+        Shapes::idx($static_config, 'allow-empty-commit', false),
       ),
       new ShipItVerifyRepoPhase(
         $changeset ==> self::filterChangeset(
@@ -271,6 +284,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
         $static_config['githubOrg'],
         $static_config['githubProject'],
         Shapes::idx($static_config, 'gitLfs', false),
+        FBGitHubUtils::class,
       ),
       new ShipItPushPhase(),
     };
@@ -349,8 +363,6 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     FBSourceBranchConfig $branch_config,
   ): ImmVector<\Facebook\ShipIt\ShipItPhase> {
     $static_config = static::getStaticConfig();
-    $config = static::getImportBaseConfig($branch_config);
-
     return ImmVector {
       new ShipItDeleteCorruptedRepoPhase(ShipItRepoSide::SOURCE),
       new ShipItDeleteCorruptedRepoPhase(ShipItRepoSide::DESTINATION),
@@ -461,7 +473,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   final public static function mergeSubmoduleChangesets(
     ImmVector<ShipItChangeset> $changesets,
   ): ImmVector<ShipItChangeset> {
-    $new_changesets = Vector{};
+    $new_changesets = Vector {};
     $submodules_changeset = null;
     foreach ($changesets as $changeset) {
       if (self::isUpdatingSubmodules($changeset)) {
@@ -472,7 +484,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
             $submodules_changeset = $submodules_changeset
               ->withID($changeset->getID())
               ->withDiffs(
-                self::mergeSubmoduleDiffs($submodules_changeset, $changeset)
+                self::mergeSubmoduleDiffs($submodules_changeset, $changeset),
               )
               ->withTimestamp($changeset->getTimestamp())
               ->withAuthor($changeset->getAuthor())
@@ -483,9 +495,10 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
                 $submodules_changeset->getShortID(),
                 $submodules_changeset->getSubject(),
               );
-            foreach($changeset->getDebugMessages() as $debug_message) {
+            foreach ($changeset->getDebugMessages() as $debug_message) {
               $submodules_changeset = $submodules_changeset->withDebugMessage(
-                '%s', $debug_message,
+                '%s',
+                $debug_message,
               );
             }
           } else {
@@ -505,7 +518,6 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     }
     if ($submodules_changeset !== null) {
       $new_changesets[] = $submodules_changeset;
-      $submodules_changeset = null;
     }
     return $new_changesets->toImmVector();
   }
@@ -516,15 +528,18 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   ): bool {
     $changesets = $changesets->filter($changeset ==> $changeset->isValid());
     if (
-      $changesets->count() === 1 &&
-      self::isUpdatingSubmodules($changesets[0])
+      $changesets->count() === 1 && self::isUpdatingSubmodules($changesets[0])
     ) {
       // If that's all there is, skip the whole operation unless enough
       // time has passed or a non-submodule commit has been made.
       $dest_head = $dest->getHeadChangeset();
       if ($dest_head !== null && self::isUpdatingSubmodules($dest_head)) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $time_elapsed = \time() - $dest_head->getTimestamp();
         if ($time_elapsed < self::UPDATE_SUBMODULE_FREQUENCY) {
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \printf(
             "  SKIP Not updating submodules for another %d seconds\n",
             self::UPDATE_SUBMODULE_FREQUENCY - $time_elapsed,
@@ -554,7 +569,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     ShipItChangeset $old_changeset,
     ShipItChangeset $new_changeset,
   ): ImmVector<ShipItDiff> {
-    $diffs_map = Map{};
+    $diffs_map = Map {};
     foreach ($old_changeset->getDiffs() as $diff) {
       $diffs_map[$diff['path']] = $diff;
     }
@@ -563,7 +578,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       // file body, or just add the new changeset's file if it does not exist
       // in the old changeset.
       if ($diffs_map->contains($diff['path'])) {
-        $new_body = $diffs_map[$diff['path']]['body'] . $diff['body'];
+        $new_body = $diffs_map[$diff['path']]['body'].$diff['body'];
       } else {
         $new_body = $diff['body'];
       }

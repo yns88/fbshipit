@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/ca9xtki9
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ FBShipItCLIStaticConfig;
+use type Facebook\ShipIt\FBShipItCLIStaticConfig;
 
 final class HhvmHsl extends HhvmHslBase {
   const string ROOT = 'flib/core/hack/lib/';

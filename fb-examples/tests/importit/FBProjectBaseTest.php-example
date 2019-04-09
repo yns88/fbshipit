@@ -5,11 +5,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/ws7v1qac
+ */
 namespace Facebook\ImportIt;
 
-use type Facebook\ShipIt\ {
-  ShipItChangeset
-};
+use namespace HH\Lib\Str;
+
+
+use type Facebook\ShipIt\{ShipItChangeset};
 
 // TODO(T22473111) delete this class after Buck is migrated
 abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
@@ -26,8 +32,7 @@ abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
    *   changes to the specified internal path should be removed from the
    *   destination repository.
    */
-  protected static function getExamplePathMappings(
-  ): ImmMap<string, string> {
+  protected static function getExamplePathMappings(): ImmMap<string, string> {
     $shipit_test_class = static::getShipItTestClass();
     $shipit_examples = $shipit_test_class::getExamplePathMappings();
     $mapping = Map {};
@@ -47,33 +52,18 @@ abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
     return $importit_class::filterChangeset($changeset);
   }
 
-  public function testFileNameMatchesRepo(): void {
-    $importit_class = self::getImportItClass();
-    $config = $importit_class::getStaticConfig();
-    $reflector = new \ReflectionClass($importit_class);
-
-    $this->assertEquals(
-      'importit_'.$config['githubProject'].'.php',
-      \basename($reflector->getFileName()),
-      'ImportIt executable must match GitHub Repo: '.$importit_class,
-    );
-  }
-
-  final public function examplePathMappings(
-  ): array<string, (string, ?string)> {
+  final public function examplePathMappings(): dict<string, (string, ?string)> {
     return static::getExamplePathMappings()
       ->mapWithKey(($k, $v) ==> tuple($k, $v))
-      ->toArray();
+      |> dict($$);
   }
 
-  /**
-   * @dataProvider examplePathMappings
-   */
-  final public function testPathMapping(
+  <<\DataProvider('examplePathMappings')>>
+  public function testPathMapping(
     string $path_in,
     ?string $path_expected,
   ): void {
-    $diffs = ImmVector { shape('path' => $path_in, 'body' => 'junk') };
+    $diffs = ImmVector {shape('path' => $path_in, 'body' => 'junk')};
     $changeset = (new ShipItChangeset())->withDiffs($diffs);
     $this->pathMappingCheck($changeset, $path_in, $path_expected);
   }
@@ -86,25 +76,25 @@ abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
     $changeset = static::map($changeset);
 
     if ($path_expected === null) {
-      $expected_paths = [];
-      $message = \sprintf('Expected `%s` to be stripped', $path_in);
+      $expected_paths = vec[];
+      $message = Str\format('Expected `%s` to be stripped', $path_in);
     } else {
-      $expected_paths = [$path_expected];
-      $message = \sprintf(
+      $expected_paths = vec[$path_expected];
+      $message = Str\format(
         'Expected `%s` to map to `%s`',
         $path_in,
         $path_expected,
       );
     }
-    $this->assertEquals(
-      $expected_paths,
-      $changeset->getDiffs()->map($diff ==> $diff['path'])->toArray(),
-      \sprintf(
-        "%s.  Debug messages follow:\n%s",
-        $message,
-        \implode("\n", $changeset->getDebugMessages()),
-      ),
-    );
+    \expect(vec($changeset->getDiffs()->map($diff ==> $diff['path'])))
+      ->toBePHPEqual(
+        $expected_paths,
+        Str\format(
+          "%s.  Debug messages follow:\n%s",
+          $message,
+          Str\join($changeset->getDebugMessages(), "\n"),
+        ),
+      );
   }
 
   final public function testBranches(): void {
@@ -112,14 +102,12 @@ abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
     $shipit_class = static::getShipItClass();
     $importit_base_config = $importit_class::getBaseConfig();
     $shipit_base_config = $shipit_class::getBaseConfig();
-    $this->assertEquals(
+    \expect($importit_base_config->getDestinationBranch())->toBePHPEqual(
       $shipit_base_config->getSourceBranch(),
-      $importit_base_config->getDestinationBranch(),
       'Destination branch should be the inverse of the source branch.',
     );
-    $this->assertEquals(
+    \expect($importit_base_config->getSourceBranch())->toBePHPEqual(
       $shipit_base_config->getDestinationBranch(),
-      $importit_base_config->getSourceBranch(),
       'Source branch should be the inverse of the destination branch.',
     );
   }
@@ -127,16 +115,14 @@ abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
   final public function testRepositoryNameCollision(): void {
     $importit_class = self::getImportItClass();
     $config = $importit_class::getBaseConfig();
-    $this->assertNotEquals(
+    \expect($config->getDestinationPath())->toNotBePHPEqual(
       $config->getSourcePath(),
-      $config->getDestinationPath(),
       'ShipIt repo names match and `getStaticConfig` has not set '.
-        '`destDirName` to something unique for the destination repository!',
+      '`destDirName` to something unique for the destination repository!',
     );
   }
 
-  final protected static function getImportItClass(
-  ): classname<FBImportItCLI> {
+  final protected static function getImportItClass(): classname<FBImportItCLI> {
     $ts = type_structure(static::class, 'TImportIt');
     invariant($ts['kind'] === TypeStructureKind::OF_CLASS, 'unexpected type');
     return $ts['classname'];

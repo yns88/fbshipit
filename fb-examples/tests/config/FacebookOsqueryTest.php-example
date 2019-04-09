@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/yire4g5g
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookOsqueryTest extends FBConfigBaseTest {
   const string ROOT = 'xplat/osquery/oss/';
 
@@ -15,7 +21,8 @@ final class FacebookOsqueryTest extends FBConfigBaseTest {
     return ImmMap {
       self::ROOT.'README.md' => 'README.md',
       self::ROOT.'osquery/BUCK' => 'osquery/BUCK',
-      self::ROOT.'tools/build_defs/oss/osquery/defaults.bzl' => 'tools/build_defs/oss/osquery/defaults.bzl',
+      self::ROOT.'tools/build_defs/oss/osquery/defaults.bzl' =>
+        'tools/build_defs/oss/osquery/defaults.bzl',
       self::ROOT.'.buckversion' => null,
     };
   }

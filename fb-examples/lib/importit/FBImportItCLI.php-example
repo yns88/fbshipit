@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/caaich6c
+ */
 namespace Facebook\ImportIt;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBGitHubUtils,
   IHasFBShipItCLIStaticConfig,
   ShipItBaseConfig,
@@ -16,7 +21,7 @@ use type Facebook\ShipIt\ {
   ShipItDeleteCorruptedRepoPhase,
   ShipItPullPhase,
   ShipItRepoSide,
-  ShipItTransport
+  ShipItTransport,
 };
 
 /**
@@ -27,7 +32,7 @@ use type Facebook\ShipIt\ {
  * If you need more flexibility than this provides, use the classes
  * directly (eg tagit_buck.php)
  */
-<<Deprecated>>
+<<__Deprecated>>
 abstract class FBImportItCLI
   implements
     IHasFBShipItCLIStaticConfig,
@@ -49,7 +54,7 @@ abstract class FBImportItCLI
    * something more complicated, they can override this method.
    */
   protected static function projectFilterChangeset(
-    ShipItChangeset $changeset
+    ShipItChangeset $changeset,
   ): ShipItChangeset {
     $shipit_class = static::getShipItClass();
     return $changeset
@@ -59,7 +64,7 @@ abstract class FBImportItCLI
         $shipit_class::getPathMappings(),
         $shipit_class::getSubmoduleMappings()
           ->keys()
-          ->map($path ==> '@^'.$path.'$@')
+          ->map($path ==> '@^'.$path.'$@'),
       );
   }
 
@@ -73,21 +78,20 @@ abstract class FBImportItCLI
 
 
   <<__Override>>
-  final public static function getBaseConfig(
-  ): ShipItBaseConfig {
+  final public static function getBaseConfig(): ShipItBaseConfig {
     $static_config = static::getStaticConfig();
     $shipit_class = static::getShipItClass();
     $shipit_base_config = $shipit_class::getBaseConfig();
-    return (new ShipItBaseConfig(
-      /* base_dir = */ '/var/tmp/fbimportit',
-      /* source_dir */ Shapes::idx(
-        $static_config,
-        'destDirName'
-      ) ?? $static_config['githubProject'],
-      /* dest_dir = */ $static_config['internalRepo'],
-      // We assume the entire GitHub repository is being imported.
-      /* source_roots = */ ImmSet {},
-    ))
+    return (
+      new ShipItBaseConfig(
+        /* base_dir = */ '/var/tmp/fbimportit',
+        /* source_dir */ Shapes::idx($static_config, 'destDirName') ??
+          $static_config['githubProject'],
+        /* dest_dir = */ $static_config['internalRepo'],
+        // We assume the entire GitHub repository is being imported.
+        /* source_roots = */ ImmSet {},
+      )
+    )
       ->withSourceBranch($shipit_base_config->getDestinationBranch())
       ->withDestinationBranch($shipit_base_config->getSourceBranch());
   }
@@ -98,20 +102,17 @@ abstract class FBImportItCLI
     $shipit_class = static::getShipItClass();
     foreach ($shipit_class::getSubmoduleMappings() as $dest => $source) {
       $changeset = ImportItSubmoduleFilter::moveSubmoduleCommitToTextFile(
-          $changeset,
-          $source,
-          $dest,
-        );
+        $changeset,
+        $source,
+        $dest,
+      );
     }
     return $changeset;
   }
 
   <<__Override>>
-  public static function getPhases(
-  ): ImmVector<\Facebook\ShipIt\ShipItPhase> {
+  public static function getPhases(): ImmVector<\Facebook\ShipIt\ShipItPhase> {
     $static_config = static::getStaticConfig();
-    $config = static::getBaseConfig();
-
     return ImmVector {
       new ShipItDeleteCorruptedRepoPhase(ShipItRepoSide::SOURCE),
       new ShipItDeleteCorruptedRepoPhase(ShipItRepoSide::DESTINATION),
@@ -134,13 +135,11 @@ abstract class FBImportItCLI
       // revision that may conflict with updates.
       new ShipItCleanPhase(ShipItRepoSide::DESTINATION),
       new ShipItPullPhase(ShipItRepoSide::DESTINATION),
-      new ImportItSyncPhase(
-        $changeset ==> self::filterChangeset($changeset),
-      ),
+      new ImportItSyncPhase($changeset ==> self::filterChangeset($changeset)),
     };
   }
 
-  <<TestsBypassVisibility>>
+  <<\TestsBypassVisibility>>
   final protected static function getShipItClass(
   ): classname<ISupportsFBImportIt> {
     $ts = type_structure(static::class, 'TShipIt');

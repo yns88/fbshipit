@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/l38w0ens
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 type ShipItAffectedFile = string;
 type ShipItDiffAsString = string;
@@ -27,16 +34,22 @@ abstract class ShipItUtil {
    */
   public static function parsePatch(string $patch): Iterator<string> {
     $contents = '';
-    $matches = [];
+    $matches = darray[];
 
     $minus_lines = 0;
     $plus_lines = 0;
     $seen_range_header = false;
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     foreach (\explode("\n", $patch) as $line) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $line = \preg_replace('/(\r\n|\n)/', "\n", $line);
 
-      if (\preg_match('@^diff --git [ab]/(.*?) [ab]/(.*?)$@', \rtrim($line))) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      if (\preg_match('@^diff --git [ab]/(.*?) [ab]/(.*?)$@', Str\trim_right($line))) {
         if ($contents !== '') {
           yield $contents;
         }
@@ -45,6 +58,8 @@ abstract class ShipItUtil {
         continue;
       }
       if (
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \preg_match(
           '/^@@ -\d+(,(?<minus_lines>\d+))? \+\d+(,(?<plus_lines>\d+))? @@/',
           $line,
@@ -66,7 +81,7 @@ abstract class ShipItUtil {
         continue;
       }
 
-      $leftmost = \substr($line, 0, 1);
+      $leftmost = Str\slice($line, 0, 1);
       if ($leftmost === "\\") {
         $contents .= $line."\n";
         // Doesn't count as a + or - line whatever happens; if NL at EOF
@@ -78,7 +93,7 @@ abstract class ShipItUtil {
         continue;
       }
 
-      $leftmost = \substr($line, 0, 1);
+      $leftmost = Str\slice($line, 0, 1);
       if ($leftmost === '+') {
         --$plus_lines;
       } else if ($leftmost === '-') {
@@ -104,10 +119,14 @@ abstract class ShipItUtil {
   }
 
   public static function isNewFile(string $body): bool {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     return (bool) \preg_match('@^new file@m', $body);
   }
 
   public static function isFileRemoval(string $body): bool {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     return (bool) \preg_match('@^deleted file@m', $body);
   }
 
@@ -122,14 +141,14 @@ abstract class ShipItUtil {
     $command = new ShipItShellCommand($path, ...$args);
 
     if ($flags & self::VERBOSE_SHELL) {
-      $cmd = \implode(' ', $args);
-      \fwrite(\STDERR, "\$ $cmd\n");
+      $cmd = Str\join($args, ' ');
+      ShipItLogger::err("\$ %s\n", $cmd);
     }
 
 
     if ($stdin !== null) {
       if ($flags & self::VERBOSE_SHELL_INPUT) {
-        \fwrite(\STDERR, "--STDIN--\n$stdin\n");
+        ShipItLogger::err("--STDIN--\n%s\n", $stdin);
       }
       $command->setStdIn($stdin);
     }
@@ -156,6 +175,8 @@ abstract class ShipItUtil {
     ImmVector<string> $patterns,
   ): ?string {
     foreach ($patterns as $pattern) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       if (\preg_match($pattern, $path)) {
         return $pattern;
       }

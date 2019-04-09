@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/u9rx1a2h
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\{Str, C, Vec};
 
 final class FBCommonFilters {
 
@@ -19,6 +26,7 @@ final class FBCommonFilters {
     ) $config = shape(),
   ): ShipItChangeset {
     return $changeset
+      |> self::allowEmptyCommit($$)
       |> self::skipIfAlreadyOnGitHub($$)
       |> self::stripCommonFiles(
         $$,
@@ -101,6 +109,20 @@ final class FBCommonFilters {
     return $changeset;
   }
 
+  public static function allowEmptyCommit(
+    ShipItChangeset $changeset,
+  ): ShipItChangeset {
+    if (ShipItMentions::containsMention($changeset, '@allow-empty-commit')) {
+      invariant(
+        $changeset->isEmptyChange(),
+        '@allow-empty-commit only apply to empty commit',
+      );
+      $changeset = $changeset->withIsTaggedEmptyCommit(true)
+        ->withDebugMessage('ALLOW EMPTY COMMIT: @allow-empty-commit');
+    }
+    return $changeset;
+  }
+
   public static function stripCommonFiles(
     ShipItChangeset $changeset,
     ImmVector<string> $exception_patterns = ImmVector {},
@@ -123,6 +145,7 @@ final class FBCommonFilters {
         '@\.bzl$@i',
         '@\.mk$@',
         '@pull_request_metadata_DO_NOT_COMMIT_THIS_FILE_OR_YOU_WILL_BE_FIRED\.json@',
+        '@/\.pyre_configuration\.local$@',
       },
       $exception_patterns->concat(ImmVector {
         // Various Facebook projects depend on this project hashes to update
@@ -137,8 +160,10 @@ final class FBCommonFilters {
   public static function referencePullRequestNumber(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    $matches = array();
+    $matches = varray[];
     if (
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_match(
         self::CLOSES_PR_REGEX,
         $changeset->getMessage(),
@@ -149,7 +174,7 @@ final class FBCommonFilters {
       return $changeset;
     }
     return $changeset->withSubject(
-      $changeset->getSubject().\sprintf(' (#%d)', $matches[1]),
+      $changeset->getSubject().Str\format(' (#%d)', $matches[1]),
     );
   }
 
@@ -157,6 +182,8 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_replace(
         '@https?://phabricator\.[^/]+/@i',
         '',
@@ -195,6 +222,8 @@ final class FBCommonFilters {
     //   unixname merging SHA1 | unixname | ...
     //
     return $changeset->withSubject(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_replace(
         '/^\w+ merging \w+ \| \w+ \| /',
         '',
@@ -211,6 +240,8 @@ final class FBCommonFilters {
     // `-b`, so this is just maintaining that behavior since they sometimes
     // contain codenames.
     return $changeset->withSubject(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_replace('/^(?:\[[^\]]+\]\s*)+/', '', $changeset->getSubject()),
     );
   }
@@ -219,6 +250,8 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_replace(
         '/(@override-unit-failures)|(@build\[.*\])/',
         '',
@@ -231,6 +264,8 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_replace("/#accept2ship\n?/", '', $changeset->getMessage()),
     );
   }
@@ -239,7 +274,11 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     if (
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       !\preg_match('/This reverts commit/', $changeset->getMessage()) ||
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       !\preg_match('/cause_a_sev_many_files/', $changeset->getMessage())
     ) {
       return $changeset;
@@ -272,7 +311,6 @@ final class FBCommonFilters {
       'test plan',
       'reviewers',
       'reviewed by',
-      'cc',
       'differential revision',
       'blame revision',
       'tags',
@@ -302,8 +340,10 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     $changeset = self::rewriteFBMentions($changeset);
-    $changeset =
-      ShipItUserFilters::rewriteMentions($changeset, FBToGitHubUserInfo::class);
+    $changeset = ShipItUserFilters::rewriteMentions(
+      $changeset,
+      FBToGitHubUserInfo::class,
+    );
     $changeset = ShipItMentions::rewriteMentionsWithoutAt(
       $changeset,
       /* exceptions = */ ImmSet {
@@ -318,6 +358,8 @@ final class FBCommonFilters {
   public static function rewriteFBMentions(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $message = \preg_replace_callback(
       // @[123:Name]
       '/@\[(\d+):([^\]]+)\]/',
@@ -339,13 +381,17 @@ final class FBCommonFilters {
   public static function restoreGitHubAuthor(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\preg_match('/^Github author:/mi', $changeset->getMessage())) {
       return $changeset;
     }
 
     $pulled_by_unixname = null;
-    $matches = [];
+    $matches = darray[];
     if (
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_match(
         '/<(?<author>[^@]*)@fb\.com>/',
         $changeset->getAuthor(),
@@ -360,15 +406,18 @@ final class FBCommonFilters {
         self::getSupportedMessageSectionNames(),
       );
       if ($sections->containsKey('reviewed by')) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $names = (new Vector(\explode(', ', $sections['reviewed by'])));
-        if (\count($names) === 1) {
+        if (C\count($names) === 1) {
           $pulled_by_unixname = $names[0];
         }
       }
     }
 
     if ($pulled_by_unixname !== null) {
-      $pulled_by = \HH\Asio\join(
+      // @oss-disable: $pulled_by = \Asio::awaitSynchronously(
+        $pulled_by = \HH\Asio\join( // @oss-enable
         FBToGitHubUserInfo::getDestinationUserFromLocalUser(
           $pulled_by_unixname,
         ),
@@ -392,15 +441,20 @@ final class FBCommonFilters {
     if (!$sections->containsKey('reviewed by')) {
       return $changeset;
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $names = (new Vector(\explode(', ', $sections['reviewed by'])))
       // No project reviewers e.g., #WDT in D2407623
-      ->filter($name ==> \substr(\trim($name), 0, 1) !== '#')
+      ->filter($name ==> Str\slice(Str\trim($name), 0, 1) !== '#')
       ->map(
         async $name ==>
           await FBToGitHubUserInfo::getDestinationUserFromLocalUser($name),
       );
-    $names = \HH\Asio\join(\HH\Asio\v($names))->filter($x ==> \strlen($x) > 0);
-    $sections['reviewed by'] = \implode(', ', $names);
+    // @oss-disable: $names = \Asio::awaitSynchronously(\vAsync($names))
+      $names = \HH\Asio\join(\HH\Asio\v($names)) // @oss-enable
+      ->filter($x ==> Str\length($x ?? '') > 0);
+    $names = Vec\filter_nulls($names);
+    $sections['reviewed by'] = Str\join($names, ', ');
     return $changeset->withMessage(
       ShipItMessageSections::buildMessage($sections->toImmMap()),
     );

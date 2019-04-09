@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/3nf4u7pl
+ */
 namespace Facebook\ShipIt;
 
 /**
@@ -41,10 +46,9 @@ final class BuckPushDocsPhase extends ShipItPhase {
   final protected function runImpl(ShipItBaseConfig $config): void {
     $docsPath = $config->getDestinationPath();
     $branch = $config->getDestinationBranch();
-    $verbose =
-      $config->isVerboseEnabled()
-        ? ShipItUtil::VERBOSE_SHELL_OUTPUT
-        : ShipItUtil::DONT_VERBOSE;
+    $verbose = $config->isVerboseEnabled()
+      ? ShipItUtil::VERBOSE_SHELL_OUTPUT
+      : ShipItUtil::DONT_VERBOSE;
 
     invariant(
       $branch === self::EXPECTED_BUCK_DOCS_BRANCH,
@@ -53,7 +57,7 @@ final class BuckPushDocsPhase extends ShipItPhase {
       self::EXPECTED_BUCK_DOCS_BRANCH,
     );
 
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,

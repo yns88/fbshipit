@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/3far4w87
+ */
 namespace Facebook\ImportIt;
 
 use type Facebook\ShipIt\{
@@ -14,7 +19,8 @@ use type Facebook\ShipIt\{
   FBSourceBranchConfig,
 };
 
-class FBImportItBranchResolutionPhase extends FBShipItBranchResolutionPhase {
+final class FBImportItBranchResolutionPhase
+  extends FBShipItBranchResolutionPhase {
 
   <<__Override>>
   public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {

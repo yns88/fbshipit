@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/el6u7wp5
+ */
 namespace Facebook\ShipIt;
 
 final class ShipItSaveConfigPhase extends ShipItPhase {
@@ -22,10 +27,7 @@ final class ShipItSaveConfigPhase extends ShipItPhase {
 
   private ?string $outputFile;
 
-  public function __construct(
-    private string $owner,
-    private string $project,
-  ) {
+  public function __construct(private string $owner, private string $project) {
     $this->skip();
   }
 
@@ -49,14 +51,13 @@ final class ShipItSaveConfigPhase extends ShipItPhase {
         'write' => $x ==> {
           $this->unskip();
           $this->outputFile = $x;
+          return true;
         },
       ),
     };
   }
 
-  public function renderConfig(
-    ShipItBaseConfig $config,
-  ): self::TSavedConfig {
+  public function renderConfig(ShipItBaseConfig $config): self::TSavedConfig {
     return shape(
       'destination' => shape(
         'branch' => $config->getDestinationBranch(),
@@ -73,10 +74,14 @@ final class ShipItSaveConfigPhase extends ShipItPhase {
   <<__Override>>
   protected function runImpl(ShipItBaseConfig $config): void {
     invariant($this->outputFile !== null, 'impossible');
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \file_put_contents(
       $this->outputFile,
       \json_encode($this->renderConfig($config), \JSON_PRETTY_PRINT),
     );
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf("Finished phase: %s\n", $this->getReadableName());
     exit(0);
   }

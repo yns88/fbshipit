@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/h7qboesh
+ */
 namespace Facebook\ShipIt;
 
 interface ShipItDestinationRepo {
@@ -15,9 +20,7 @@ interface ShipItDestinationRepo {
    *
    * @param $roots list of paths that contain synced commits.
    */
-  public function findLastSourceCommit(
-    ImmSet<string> $roots,
-  ): ?string;
+  public function findLastSourceCommit(ImmSet<string> $roots): ?string;
 
   /**
    * Generate a text patch ready for committing

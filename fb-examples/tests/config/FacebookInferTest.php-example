@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/yrxsho4i
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookInferTest extends FBConfigBaseTest {
   <<__Override>>
   protected function removesSummariesByDefault(): bool {
@@ -14,9 +20,8 @@ final class FacebookInferTest extends FBConfigBaseTest {
   }
 
   <<__Override>>
-  public function examplesForStripSubjectTags(
-  ): array<(string, string)> {
-    return [
+  public function examplesForStripSubjectTags(): vec<(string, string)> {
+    return vec[
       tuple('foo bar', 'foo bar'),
       tuple('[secret] foo', '[secret] foo'),
       tuple('[secret][super secret] foo bar', '[secret][super secret] foo bar'),

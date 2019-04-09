@@ -5,9 +5,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/lhuph3i3
+ */
 namespace Facebook\ShipIt;
 
-class ShipItShellCommand {
+use namespace HH\Lib\Str;
+
+final class ShipItShellCommand {
   const type TFailureHandler = (function(ShipItShellCommandResult): void);
   private ImmVector<string> $command;
 
@@ -35,9 +42,7 @@ class ShipItShellCommand {
     return $this;
   }
 
-  public function setEnvironmentVariables(
-    ImmMap<string, string> $vars,
-  ): this {
+  public function setEnvironmentVariables(ImmMap<string, string> $vars): this {
     $this->environmentVariables->setAll($vars);
     return $this;
   }
@@ -48,19 +53,20 @@ class ShipItShellCommand {
   }
 
   public function setRetries(int $retries): this {
-    invariant(
-      $retries >= 0,
-      "Can't have a negative number of retries"
-    );
+    invariant($retries >= 0, "Can't have a negative number of retries");
     $this->retries = $retries;
     return $this;
   }
 
   public function setFailureHandler<TIgnored>(
-    (function(ShipItShellCommandResult):TIgnored) $handler,
+    (function(ShipItShellCommandResult): TIgnored) $handler,
   ): this {
     // Wrap so that the function returns void instead of TIgnored
-    $this->failureHandler = ($result ==> { $handler($result); });
+    $this->failureHandler = (
+      (ShipItShellCommandResult $result) ==> {
+        $handler($result);
+      }
+    );
     return $this;
   }
 
@@ -84,7 +90,7 @@ class ShipItShellCommand {
           );
         }
         return $result;
-      } catch (ShipItShellCommandException $ex) {
+      } catch (ShipItShellCommandException $_ex) {
         --$tries_remaining;
         continue;
       }
@@ -94,15 +100,17 @@ class ShipItShellCommand {
   }
 
   private function getCommandAsString(): string {
-    return \implode(' ', $this->command->map($str ==> \escapeshellarg($str)));
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    return Str\join($this->command->map($str ==> \escapeshellarg($str)), ' ');
   }
 
   private function runOnceSynchronously(): ShipItShellCommandResult {
-    $fds = array(
-      0 => array('pipe', 'r'),
-      1 => array('pipe', 'w'),
-      2 => array('pipe', 'w'),
-    );
+    $fds = darray[
+      0 => varray['pipe', 'r'],
+      1 => varray['pipe', 'w'],
+      2 => varray['pipe', 'w'],
+    ];
     $stdin = $this->stdin;
     if ($stdin === null) {
       unset($fds[0]);
@@ -111,21 +119,27 @@ class ShipItShellCommand {
     $env_vars = (new Map($_ENV))->setAll($this->environmentVariables);
 
     $command = $this->getCommandAsString();
-    $pipes = null;
+    $pipes = varray[];
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fp = \proc_open(
       $command,
       $fds,
       &$pipes,
       $this->path,
-      $env_vars->toArray(),
+      dict($env_vars),
     );
     if (!$fp || !\is_array($pipes)) {
       throw new \Exception("Failed executing $command");
     }
     if ($stdin !== null) {
-      while (\strlen($stdin)) {
+      while (Str\length($stdin)) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $written = \fwrite($pipes[0], $stdin);
         if ($written === 0) {
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $status = \proc_get_status($fp);
           if ($status['running']) {
             continue;
@@ -138,20 +152,28 @@ class ShipItShellCommand {
           );
           break;
         }
-        $stdin = \substr($stdin, $written);
+        $stdin = Str\slice($stdin, $written);
       }
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \fclose($pipes[0]);
     }
 
     $stdout_stream = $pipes[1];
     $stderr_stream = $pipes[2];
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \stream_set_blocking($stdout_stream, false);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \stream_set_blocking($stderr_stream, false);
     $stdout = '';
     $stderr = '';
     while (true) {
-      $ready_streams = [$stdout_stream, $stderr_stream];
+      $ready_streams = vec[$stdout_stream, $stderr_stream];
       $null_byref = null;
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $result = \stream_select(
         &$ready_streams,
         /* write streams = */ &$null_byref,
@@ -163,20 +185,22 @@ class ShipItShellCommand {
       }
       $all_empty = true;
       foreach ($ready_streams as $stream) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $out = \fread($stream, 1024);
-        if (\strlen($out) === 0) {
+        if (Str\length($out) === 0) {
           continue;
         }
         $all_empty = false;
 
         if ($stream === $stdout_stream) {
           $stdout .= $out;
-          $this->maybeFwrite(\STDOUT, $out);
+          $this->maybeOut($out);
           continue;
         }
         if ($stream === $stderr_stream) {
           $stderr .= $out;
-          $this->maybeFwrite(\STDERR, $out);
+          $this->maybeErr($out);
           continue;
         }
 
@@ -187,13 +211,11 @@ class ShipItShellCommand {
         break;
       }
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $exitcode = \proc_close($fp);
 
-    $result = new ShipItShellCommandResult(
-      $exitcode,
-      $stdout,
-      $stderr,
-    );
+    $result = new ShipItShellCommandResult($exitcode, $stdout, $stderr);
 
     if ($exitcode !== 0) {
       $handler = $this->failureHandler;
@@ -208,10 +230,17 @@ class ShipItShellCommand {
     return $result;
   }
 
-  private function maybeFwrite(resource $stream, string $out): void {
+  private function maybeOut(string $out): void {
     if (!$this->outputToScreen) {
       return;
     }
-    \fwrite($stream, $out);
+    ShipItLogger::out('%s', $out);
+  }
+
+  private function maybeErr(string $out): void {
+    if (!$this->outputToScreen) {
+      return;
+    }
+    ShipItLogger::err('%s', $out);
   }
 }

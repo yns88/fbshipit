@@ -5,24 +5,28 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/yz6eqiy0
+ */
 namespace Facebook\ImportIt;
 
-use type Facebook\ShipIt\ {
-  ShipItChangeset
-};
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{ShipItChangeset};
 
 final class ImportItSubmoduleFilter {
-  <<TestsBypassVisibility>>
+  <<\TestsBypassVisibility>>
   private static function makeSubmoduleDiff(
     string $path,
     string $old_rev,
     string $new_rev,
   ): string {
     return "--- a/{$path}\n".
-           "+++ b/{$path}\n".
-           "@@ -1 +1 @@\n".
-           "-Subproject commit {$old_rev}\n".
-           "+Subproject commit {$new_rev}\n";
+      "+++ b/{$path}\n".
+      "@@ -1 +1 @@\n".
+      "-Subproject commit {$old_rev}\n".
+      "+Subproject commit {$new_rev}\n";
   }
 
   /**
@@ -37,7 +41,7 @@ final class ImportItSubmoduleFilter {
     string $submodule_path,
     string $text_file_with_rev,
   ): ShipItChangeset {
-    $diffs = Vector { };
+    $diffs = Vector {};
     foreach ($changeset->getDiffs() as $diff) {
       $path = $diff['path'];
       $body = $diff['body'];
@@ -48,17 +52,25 @@ final class ImportItSubmoduleFilter {
       }
 
       $old_rev = $new_rev = null;
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       foreach(\explode("\n", $body) as $line) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         if (!\strncmp('-Subproject commit ', $line, 19)) {
-          $old_rev = \trim(\substr($line, 19));
+          $old_rev = Str\trim(Str\slice($line, 19));
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         } else if (!\strncmp('+Subproject commit ', $line, 19)) {
-          $new_rev = \trim(\substr($line, 19));
+          $new_rev = Str\trim(Str\slice($line, 19));
         }
       }
 
       if ($old_rev === null || $new_rev === null) {
         // Do nothing - this will lead to a 'patch does not apply' error for
         // human debugging, which seems like a reasonable error to give :)
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \printf(
           "  Skipping change to '%s' (-> %s); this will certainly fail.\n",
           $submodule_path,
@@ -79,11 +91,8 @@ final class ImportItSubmoduleFilter {
 
       $diffs[] = shape(
         'path' => $text_file_with_rev,
-        'body' => self::makeSubmoduleDiff(
-          $text_file_with_rev,
-          $old_rev,
-          $new_rev,
-        ),
+        'body' =>
+          self::makeSubmoduleDiff($text_file_with_rev, $old_rev, $new_rev),
       );
     }
 

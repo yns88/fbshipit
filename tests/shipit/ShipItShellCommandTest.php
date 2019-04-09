@@ -5,20 +5,28 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/bd6ijkr5
+ */
 namespace Facebook\ShipIt;
 
+use namespace HH\Lib\Str;
+
+<<\Oncalls('open_source')>>
 final class ShipItShellCommandTest extends BaseTest {
   public function testExitCodeZero(): void {
     $result = (new ShipItShellCommand('/', 'true'))->runSynchronously();
-    $this->assertSame(0, $result->getExitCode());
+    \expect($result->getExitCode())->toBeSame(0);
   }
 
   public function testExitOneException(): void {
     try {
       (new ShipItShellCommand('/', 'false'))->runSynchronously();
-      $this->fail('Expected exception');
+      self::fail('Expected exception');
     } catch (ShipItShellCommandException $e) {
-      $this->assertSame(1, $e->getExitCode());
+      \expect($e->getExitCode())->toBeSame(1);
     }
   }
 
@@ -26,26 +34,25 @@ final class ShipItShellCommandTest extends BaseTest {
     $result = (new ShipItShellCommand('/', 'false'))
       ->setNoExceptions()
       ->runSynchronously();
-    $this->assertSame(1, $result->getExitCode());
+    \expect($result->getExitCode())->toBeSame(1);
   }
 
   public function testStdIn(): void {
     $result = (new ShipItShellCommand('/', 'cat'))
       ->setStdIn('Hello, world.')
       ->runSynchronously();
-    $this->assertSame('Hello, world.', $result->getStdOut());
-    $this->assertSame('', $result->getStdErr());
+    \expect($result->getStdOut())->toBeSame('Hello, world.');
+    \expect($result->getStdErr())->toBeSame('');
   }
 
   public function testSettingEnvironmentVariable(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $herp = \bin2hex(\random_bytes(16));
     $result = (new ShipItShellCommand('/', 'env'))
-      ->setEnvironmentVariables(ImmMap { 'HERP' => $herp })
+      ->setEnvironmentVariables(ImmMap {'HERP' => $herp})
       ->runSynchronously();
-    $this->assertContains(
-      'HERP='.$herp,
-      $result->getStdOut(),
-    );
+    \expect($result->getStdOut())->toContainSubstring('HERP='.$herp);
   }
 
   public function testInheritingEnvironmentVariable(): void {
@@ -63,110 +70,143 @@ final class ShipItShellCommandTest extends BaseTest {
     };
 
     $output = (new ShipItShellCommand('/', 'env'))
-      ->setEnvironmentVariables(ImmMap { })
+      ->setEnvironmentVariables(ImmMap {})
       ->runSynchronously()
       ->getStdOut();
 
     $matched_any = false;
     foreach ($to_try as $var) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $value = \getenv($var);
       if ($value !== false) {
-        $this->assertContains($var.'='.$value."\n", $output);
+        \expect($output)->toContainSubstring($var.'='.$value."\n");
         $matched_any = true;
       }
     }
-    $this->assertTrue(
-      $matched_any,
-      'No acceptable variables found',
-    );
+    \expect($matched_any)->toBeTrue('No acceptable variables found');
   }
 
   public function testWorkingDirectory(): void {
-    $this->assertSame(
-      '/',
+    \expect(
       (new ShipItShellCommand('/', 'pwd'))
         ->runSynchronously()
         ->getStdOut()
-        |> \trim($$),
-    );
+        |> Str\trim($$),
+    )->toBeSame('/');
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $tmp = \sys_get_temp_dir();
-    $this->assertSame(
-      $tmp,
+    \expect(
       (new ShipItShellCommand($tmp, 'pwd'))
         ->runSynchronously()
         ->getStdOut()
-        |> \trim($$),
-    );
+        |> Str\trim($$),
+    )->toContainSubstring(Str\trim($tmp, '/'));
   }
 
   public function testMultipleArguments(): void {
-    $output = (new ShipItShellCommand('/', 'echo', '-n', 'foo', 'bar'))
+    $output = (new ShipItShellCommand('/', 'echo', 'foo', 'bar'))
       ->runSynchronously()
       ->getStdOut();
-    $this->assertSame('foo bar', $output);
+    \expect($output)->toBeSame("foo bar\n");
   }
 
   public function testEscaping(): void {
     $output = (new ShipItShellCommand('/', 'echo', 'foo', '$FOO'))
-      ->setEnvironmentVariables(ImmMap { 'FOO' => 'variable value' })
+      ->setEnvironmentVariables(ImmMap {'FOO' => 'variable value'})
       ->runSynchronously()
       ->getStdOut();
-    $this->assertSame("foo \$FOO\n", $output);
+    \expect($output)->toBeSame("foo \$FOO\n");
   }
 
   public function testFailureHandlerNotCalledWhenNoFailure(): void {
     (new ShipItShellCommand('/', 'true'))
-      ->setFailureHandler($_ ==> {throw new \Exception("handler called");})
+      ->setFailureHandler($_ ==> {
+        throw new \Exception("handler called");
+      })
       ->runSynchronously();
     // no exception
   }
 
-  /**
-   * @expectedException \Exception
-   * @expectedExceptionMessage handler called
-   */
   public function testFailureHandlerCalledOnFailure(): void {
-    // Using exceptions because locals are passed to lambdas byval
-    (new ShipItShellCommand('/', 'false'))
-      ->setFailureHandler($_ ==> {throw new \Exception("handler called");})
-      ->runSynchronously();
+    \expect(() ==> {
+      (new ShipItShellCommand('/', 'false'))
+        ->setFailureHandler($_ ==> {
+          throw new \Exception("handler called");
+        })
+        ->runSynchronously();
+    })->toThrow(\Exception::class);
   }
 
   public function testNoRetriesByDefault(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $file = \tempnam(\sys_get_temp_dir(), __CLASS__);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \unlink($file);
     $result = (new ShipItShellCommand('/', 'test', '-e', $file))
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       ->setFailureHandler($_ ==> \touch($file))
       ->setNoExceptions()
       ->runSynchronously();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \unlink($file);
-    $this->assertSame(1, $result->getExitCode());
+    \expect($result->getExitCode())->toBeSame(1);
   }
 
   public function testRetries(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $file = \tempnam(\sys_get_temp_dir(), __CLASS__);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \unlink($file);
     $result = (new ShipItShellCommand('/', 'test', '-e', $file))
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       ->setFailureHandler($_ ==> \touch($file))
       ->setNoExceptions()
       ->setRetries(1)
       ->runSynchronously();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\file_exists($file)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \unlink($file);
     }
-    $this->assertSame(0, $result->getExitCode());
+    \expect($result->getExitCode())->toBeSame(0);
   }
 
   public function testRetriesNotUsedOnSuccess(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $file = \tempnam(\sys_get_temp_dir(), __CLASS__);
     // rm will fail if ran twice with same arg
-    $result = (new ShipItShellCommand('/', 'rm', '--preserve-root', $file))
-      ->setRetries(1)
-      ->runSynchronously();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    if (Str\contains(\php_uname('s'), 'Darwin')) {
+      // MacOS doesn't have GNU rm
+      $result = (new ShipItShellCommand('/', 'rm', $file))
+        ->setRetries(1)
+        ->runSynchronously();
+    } else {
+      $result = (new ShipItShellCommand('/', 'rm', '--preserve-root', $file))
+        ->setRetries(1)
+        ->runSynchronously();
+    }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\file_exists($file)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \unlink($file);
     }
-    $this->assertSame(0, $result->getExitCode());
+    \expect($result->getExitCode())->toBeSame(0);
   }
 }

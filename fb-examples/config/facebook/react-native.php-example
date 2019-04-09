@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/gvcpz1nl
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
   FBSourceBranchConfig,
@@ -26,15 +31,19 @@ final class FacebookReactNative extends FBShipItConfig {
   ): ShipItChangeset {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
-          $$,
+        $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace('@/\.github\.flowconfig$@',
             '/.flowconfig', $path),
-          )
+      )
       |> ShipItPathFilters::rewritePaths(
-          $$,
+        $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace('@/\.github\.flowconfig.android$@',
             '/.flowconfig.android', $path),
-          )
+      )
       |> parent::defaultProjectFilterChangeset($$, $get_path_mappings);
   }
 
@@ -84,21 +93,25 @@ final class FacebookReactNative extends FBShipItConfig {
   ): ShipItChangeset {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
-          $$,
+        $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace(
             '@(^|/)\.flowconfig$@',
             '\1.github.flowconfig',
             $path,
           ),
-        )
+      )
       |> ShipItPathFilters::rewritePaths(
-          $$,
+        $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace(
             '@(^|/)\.flowconfig.android$@',
             '\1.github.flowconfig.android',
             $path,
           ),
-        )
+      )
       |> parent::projectImportChangeset($$, $branch_config);
   }
 }

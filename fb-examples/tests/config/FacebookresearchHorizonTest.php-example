@@ -5,41 +5,47 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/m6rlyyvr
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookresearchHorizonTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       "fbcode/ml/rl/" => 'ml/rl/',
 
-        'fbcode/ml/rl/test/gym/open_ai_gym_environment.py' =>
+      'fbcode/ml/rl/test/gym/open_ai_gym_environment.py' =>
         'ml/rl/test/gym/open_ai_gym_environment.py',
-        'fbcode/ml/rl/training/discrete_action_predictor.py' =>
+      'fbcode/ml/rl/training/discrete_action_predictor.py' =>
         'ml/rl/training/discrete_action_predictor.py',
 
-        'fbcode/ml/rl/TARGETS' => null,
-        'fbcode/ml/rl/fb/some_internal_file' => null,
+      'fbcode/ml/rl/TARGETS' => null,
+      'fbcode/ml/rl/fb/some_internal_file' => null,
 
-        'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/test' =>
+      'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/test' =>
         'preprocessing/test',
 
-        'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/src/main/scala/com/facebook/spark/rl/fb/some_internal_file' =>
+      'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/src/main/scala/com/facebook/spark/rl/fb/some_internal_file' =>
         null,
 
-        'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/sandcastle.ini' =>
+      'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/sandcastle.ini' =>
         null,
 
-        'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/pom.xml' =>
+      'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/pom.xml' =>
         null,
 
-        'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/oss-pom.xml' =>
+      'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/oss-pom.xml' =>
         'preprocessing/pom.xml',
 
-        'fbcode/ml/rl/oss/README.md' => 'README.md',
+      'fbcode/ml/rl/oss/README.md' => 'README.md',
 
-        'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/src/main/scala/com/facebook/spark/rl/run.scala' =>
+      'fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/src/main/scala/com/facebook/spark/rl/run.scala' =>
         'preprocessing/src/main/scala/com/facebook/spark/rl/run.scala',
-        };
+    };
   }
 }

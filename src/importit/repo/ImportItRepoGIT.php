@@ -5,16 +5,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/ihs48fay
+ */
 namespace Facebook\ImportIt;
 
-use type Facebook\ShipIt\ {
-  ShipItChangeset
-};
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{ShipItChangeset};
 
 /**
  * Specialization of ShipItRepoGIT
  */
-class ImportItRepoGIT extends \Facebook\ShipIt\ShipItRepoGIT {
+final class ImportItRepoGIT extends \Facebook\ShipIt\ShipItRepoGIT {
 
   /**
    * Obtain a changeset from the GitHub repository for the Pull Request and
@@ -27,11 +31,28 @@ class ImportItRepoGIT extends \Facebook\ShipIt\ShipItRepoGIT {
     string $source_default_branch,
     bool $use_latest_base_revision,
   ): (ShipItChangeset, ?string) {
-    $_lock = $this->getSharedLock()->getExclusive();
+    $lock = $this->getSharedLock()->getExclusive();
+    try {
+      return $this->getChangesetAndBaseRevisionForPullRequestLocked(
+        $pr_number,
+        $expected_head_rev,
+        $source_default_branch,
+        $use_latest_base_revision,
+      );
+    } finally {
+      $lock->release();
+    }
+  }
 
+  private function getChangesetAndBaseRevisionForPullRequestLocked(
+    ?string $pr_number,
+    string $expected_head_rev,
+    string $source_default_branch,
+    bool $use_latest_base_revision,
+  ): (ShipItChangeset, ?string) {
     if ($pr_number === null) {
-      $actual_head_rev = \trim(
-        $this->gitCommand('rev-parse', $expected_head_rev)
+      $actual_head_rev = Str\trim(
+        $this->gitCommand('rev-parse', $expected_head_rev),
       );
       invariant(
         $expected_head_rev === $actual_head_rev,
@@ -44,7 +65,7 @@ class ImportItRepoGIT extends \Facebook\ShipIt\ShipItRepoGIT {
     } else {
       // First, fetch the special head ref that GitHub creates for the PR.
       $this->gitCommand('fetch', 'origin', 'refs/pull/'.$pr_number.'/head');
-      $actual_head_rev = \trim($this->gitCommand('rev-parse', 'FETCH_HEAD'));
+      $actual_head_rev = Str\trim($this->gitCommand('rev-parse', 'FETCH_HEAD'));
       invariant(
         $expected_head_rev === $actual_head_rev,
         'Expected %s to be the HEAD of the pull request, but got %s',
@@ -56,11 +77,9 @@ class ImportItRepoGIT extends \Facebook\ShipIt\ShipItRepoGIT {
     }
     // Now compute the merge base with the default branch (that we would land
     // the pull request to).
-    $merge_base = \trim($this->gitCommand(
-      'merge-base',
-      $actual_head_rev,
-      $source_default_branch,
-    ));
+    $merge_base = Str\trim(
+      $this->gitCommand('merge-base', $actual_head_rev, $source_default_branch),
+    );
     // We now have enough information to generate a binary diff and commit it.
     $diff = $this->gitCommand(
       'diff',
@@ -80,7 +99,7 @@ class ImportItRepoGIT extends \Facebook\ShipIt\ShipItRepoGIT {
       '-',
     );
     $this->gitCommand('add', '--all');
-    $status = \trim($this->gitCommand('status'));
+    $status = Str\trim($this->gitCommand('status'));
     $this->gitCommand(
       'commit',
       '--allow-empty',
@@ -88,17 +107,13 @@ class ImportItRepoGIT extends \Facebook\ShipIt\ShipItRepoGIT {
       $commit_title."\n\n".$status,
     );
 
-    $rev = \trim($this->gitCommand('rev-parse', 'HEAD'));
+    $rev = Str\trim($this->gitCommand('rev-parse', 'HEAD'));
     $changeset = $this->getChangesetFromID($rev);
-    invariant($changeset !== null, 'Impossible');
     if ($use_latest_base_revision) {
       $base_revision = null;
     } else {
       $base_revision = $this->findLastSourceCommit(ImmSet {});
     }
-    return tuple(
-      $changeset,
-      $base_revision,
-    );
+    return tuple($changeset, $base_revision);
   }
 }

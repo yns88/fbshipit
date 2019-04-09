@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/ll9b6ejp
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 /**
  * Shim for all existing cases where people run ShipIt with the 'php' wrapper.
@@ -17,7 +24,7 @@ abstract final class FBShimPHP7 {
   const string HHVM_WRAPPER_ABSOLUTE = __DIR__.'/../../../'.self::HHVM_WRAPPER;
 
   public static function run(
-    array<string> $argv,
+    varray<string> $argv,
     KeyedContainer<string, string> $env,
   ): void {
     $wrapper = idx($env, 'SHIPIT_HHVM_WRAPPER');
@@ -27,18 +34,23 @@ abstract final class FBShimPHP7 {
     }
     if ($wrapper !== '1') {
       $message = "Forking to ShipIt HHVM configuration.";
-      \fprintf(\STDERR, "\033[33m%s\033[0m\n", $message);
-      $arg_string = \implode(' ', $argv);
-      $command = \sprintf("%s %s", self::HHVM_WRAPPER_ABSOLUTE, $arg_string);
-      $return = 0;
-      $descriptorspec = array(
-        0 => array("pipe", "r"),
+      ShipItLogger::err("\033[33m%s\033[0m\n", $message);
+      $arg_string = Str\join($argv, ' ');
+      $command = Str\format("%s %s", self::HHVM_WRAPPER_ABSOLUTE, $arg_string);
+      $descriptorspec = darray[
+        0 => varray["pipe", "r"],
         1 => \STDOUT,
         2 => \STDERR,
-      );
-      $pipes = [];
+      ];
+      $pipes = varray[];
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $process = \proc_open($command, $descriptorspec, &$pipes);
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \fclose($pipes[0]);
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       exit(\proc_close($process));
     }
   }

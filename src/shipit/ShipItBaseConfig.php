@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/kxx0wgbs
+ */
 namespace Facebook\ShipIt;
 
 final class ShipItBaseConfig {
@@ -13,7 +18,7 @@ final class ShipItBaseConfig {
     private string $defaultSourceDirectoryName,
     private string $defaultDestinationDirectoryName,
     private ImmSet<string> $sourceRoots,
-  ) { }
+  ) {}
 
   public function getBaseDirectory(): string {
     return $this->baseDirectoryPath;
@@ -26,8 +31,8 @@ final class ShipItBaseConfig {
   private ?string $sourcePath;
 
   public function getSourcePath(): string {
-    return $this->sourcePath
-      ?? $this->baseDirectoryPath.'/'.$this->defaultSourceDirectoryName;
+    return $this->sourcePath ??
+      $this->baseDirectoryPath.'/'.$this->defaultSourceDirectoryName;
   }
 
   public function withSourcePath(string $v): this {
@@ -36,8 +41,8 @@ final class ShipItBaseConfig {
 
   private ?string $destinationPath;
   public function getDestinationPath(): string {
-    return $this->destinationPath
-      ?? $this->baseDirectoryPath.'/'.$this->defaultDestinationDirectoryName;
+    return $this->destinationPath ??
+      $this->baseDirectoryPath.'/'.$this->defaultDestinationDirectoryName;
   }
 
   public function withDestinationPath(string $v): this {
@@ -89,7 +94,7 @@ final class ShipItBaseConfig {
   }
 
   private function modified<Tignored>(
-    (function(ShipItBaseConfig):Tignored) $mutator,
+    (function(ShipItBaseConfig): Tignored) $mutator,
   ): ShipItBaseConfig {
     $ret = clone $this;
     $mutator($ret);

@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/9tl0ovsi
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCodeBuilderTrait,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -27,7 +32,7 @@ final class FacebookFbthrift extends FBShipItConfig {
   <<__Override>>
   protected static function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
-      '@^fbcode/thrift/thrift-config\\.h$@',  // Made by autoconf.
+      '@^fbcode/thrift/thrift-config\\.h$@', // Made by autoconf.
       // These 2 aren't usable in OSS at present. Future: release these?
       '@^fbcode/thrift/perf/canary.py$@',
       '@^fbcode/thrift/perf/loadtest.py$@',

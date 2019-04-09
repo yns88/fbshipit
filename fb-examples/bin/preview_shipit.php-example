@@ -1,15 +1,25 @@
-<?hh
+<?hh // partial
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/xofz6u1i
+ */
 namespace Facebook\ShipIt;
 
-require_once(__DIR__.'/../autoload.php');
+require_once(__DIR__.'/../autoload.php'); // @oss-enable
+// @oss-disable: $_SERVER['PHP_ROOT'] = PHP\realpath(__DIR__.'/../../../');
+// @oss-disable: require_once $_SERVER['PHP_ROOT'].'/flib/init/script.php';
+/* @lint-ignore NO_FLIB_INIT_SCRIPT */
+// @oss-disable: \flib_init_script();
+// @oss-disable: PHP\ini_set('memory_limit', -1);
 
-if (isset($argv) && realpath($argv[0]) === realpath(__FILE__)) {
-  FBShimPHP7::run($argv, $_ENV);
+if (isset($argv) && \realpath($argv[0]) === \realpath(__FILE__)) {
+  FBShimPHP7::run($argv, $_ENV); // @oss-enable
   FBShipItPreview::cliMain();
 }

@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/0cima0gj
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
   FBSourceBranchConfig,
@@ -22,7 +27,7 @@ final class FacebookChefCookbooks extends FBShipItConfig {
 
   # Add new open-source cookbooks here. Be sure to get sign-off
   # from the OpenSource team.
-  static ImmSet<string> $cookbooks = ImmSet{
+  static ImmSet<string> $cookbooks = ImmSet {
     'fb_apcupsd',
     'fb_apache',
     'fb_apt',
@@ -69,17 +74,17 @@ final class FacebookChefCookbooks extends FBShipItConfig {
   };
 
   public static function getDirs(): ImmSet<string> {
-    return self::$cookbooks->map(
-        $cookbook ==> self::BASE_DIR.$cookbook.'/',
-      )
-        ->concat(['chef/github/'])
-        ->toImmSet();
+    return self::$cookbooks->map($cookbook ==> self::BASE_DIR.$cookbook.'/')
+      ->concat(vec['chef/github/'])
+      ->toImmSet();
   }
 
   public static function stripChefTestHostsHeader(
-    ShipItChangeset $changeset
+    ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_replace(
         '/\s*chef_test_hosts:.*/',
         '',

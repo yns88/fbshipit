@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/g65qsd2v
+ */
 namespace Facebook\ShipIt;
 
 final class FBRepoInitPhase extends ShipItPhase {
@@ -52,28 +57,28 @@ final class FBRepoInitPhase extends ShipItPhase {
   }
 
   <<__Override>>
-  public function runImpl(
-    ShipItBaseConfig $config,
-  ): void {
-    $local_path =
-      $this->side === ShipItRepoSide::SOURCE
+  public function runImpl(ShipItBaseConfig $config): void {
+    $local_path = $this->side === ShipItRepoSide::SOURCE
       ? $config->getSourcePath()
       : $config->getDestinationPath();
 
     $sh_lock = ShipItRepo::createSharedLockForPath($local_path);
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\is_dir($local_path)) {
       return;
     }
 
-    $ex_lock = $sh_lock->getExclusive();
-
     // In case the src repo dir was specified by hand
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\basename($local_path) !== $this->name) {
-      \fprintf(
-        \STDERR,
+      ShipItLogger::err(
         'Facebook clone scripts require directory names to match repo names: '.
         "got '%s', expected '%s'\n",
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \basename($local_path),
         $this->name,
       );
@@ -81,30 +86,38 @@ final class FBRepoInitPhase extends ShipItPhase {
     }
 
     $command = self::getCloneCommand($this->name);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $local_parent_path = \dirname($local_path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\is_dir($local_parent_path)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \mkdir($local_parent_path, 0755, /* recursive = */ true);
     }
     // Make sure that "remove stale temp file" jobs don't clean this up
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \touch($local_parent_path);
 
     (new ShipItShellCommand($local_parent_path, ...$command))
       ->setRetries(2)
       ->setFailureHandler(
-        $_ ==> (new ShipItShellCommand(
-          $local_parent_path,
-          'rm',
-          '-rf',
-          '--preserve-root',
-          $local_path,
-        ))->runSynchronously()
+        $_ ==> (
+          new ShipItShellCommand(
+            $local_parent_path,
+            'rm',
+            '-rf',
+            '--preserve-root',
+            $local_path,
+          )
+        )->runSynchronously(),
       )
       ->runSynchronously();
   }
 
-  public static function getCloneCommand(
-    string $name,
-  ): ImmVector<string> {
+  public static function getCloneCommand(string $name): ImmVector<string> {
     switch ($name) {
       case 'fbsource':
         return ImmVector {
@@ -231,6 +244,13 @@ final class FBRepoInitPhase extends ShipItPhase {
           'clone',
           'ssh://git.vip.facebook.com/data/gitrepos/fbwin-gameroom.git',
           'fbwin-gameroom',
+        };
+      case 'fb-vscode':
+        return ImmVector {
+          '/usr/bin/git',
+          'clone',
+          'ssh://git-ro.vip.facebook.com/data/gitrepos/fb-vscode.git',
+          'fb-vscode',
         };
       case 'WABIZ':
         return ImmVector {

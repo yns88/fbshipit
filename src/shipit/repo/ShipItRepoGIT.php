@@ -5,9 +5,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/0rx59too
+ */
 namespace Facebook\ShipIt;
 
-class ShipItRepoGITException extends ShipItRepoException {}
+use namespace HH\Lib\{Str, C, Dict};
+
+final class ShipItRepoGITException extends ShipItRepoException {}
 
 /**
  * GIT specialization of ShipItRepo
@@ -60,8 +67,8 @@ class ShipItRepoGIT
       $this->branch,
     );
 
-    $rev = \trim($rev);
-    if (\trim($rev) === '') {
+    $rev = Str\trim($rev);
+    if (Str\trim($rev) === '') {
       return null;
     }
     return $this->getChangesetFromID($rev);
@@ -75,9 +82,11 @@ class ShipItRepoGIT
       '^\\(fb\\)\\?shipit-source-id: [a-z0-9]\\+$',
       ...$roots,
     );
-    $log = \trim($log);
+    $log = Str\trim($log);
     $matches = null;
     if (
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       !\preg_match(
         '/^ *(fb)?shipit-source-id: (?<commit>[a-z0-9]+)$/m',
         $log,
@@ -89,6 +98,8 @@ class ShipItRepoGIT
     if (!\is_array($matches)) {
       return null;
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\array_key_exists('commit', $matches)) {
       return null;
     }
@@ -108,48 +119,62 @@ class ShipItRepoGIT
       ...$roots,
     );
 
-    $log = \trim($log);
-    if (\trim($log) === '') {
+    $log = Str\trim($log);
+    if (Str\trim($log) === '') {
       return null;
     }
-    $revs = \explode("\n", \trim($log));
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $revs = \explode("\n", Str\trim($log));
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     list($rev) = \explode(' ', \array_pop(&$revs), 2);
     return $rev;
   }
 
   private static function parseHeader(string $header): ShipItChangeset {
-    $parts = \explode("\n\n", \trim($header), 2);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $parts = \explode("\n\n", Str\trim($header), 2);
     $envelope = $parts[0];
-    $message = \count($parts) === 2 ? \trim($parts[1]) : '';
+    $message = C\count($parts) === 2 ? Str\trim($parts[1]) : '';
 
-    $start_of_filelist = \strrpos($message, "\n---\n ");
-    if ($start_of_filelist !== false) {
+    $start_of_filelist = Str\search_last($message, "\n---\n ");
+    if ($start_of_filelist !== null) {
       // Get rid of the file list when a summary is
       // included in the commit message
-      $message = \trim(\substr($message, 0, $start_of_filelist));
+      $message = Str\trim(Str\slice($message, 0, $start_of_filelist));
     }
 
     $changeset = (new ShipItChangeset())->withMessage($message);
 
-    $envelope = \str_replace(["\n\t","\n "], ' ', $envelope);
+    $envelope = Str\replace_every($envelope, dict["\n\t" => ' ',"\n " => ' ']);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     foreach(\explode("\n", $envelope) as $line) {
-      $colon = \strpos($line, ':');
-      if ($colon === false) {
+      $colon = Str\search($line, ':');
+      if ($colon === null) {
         continue;
       }
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       list($key, $value) = \explode(':', $line, 2);
-      $value = \trim($value);
-      switch(\strtolower(\trim($key))) {
+      $value = Str\trim($value);
+      switch(Str\lowercase(Str\trim($key))) {
         case 'from':
           $changeset = $changeset->withAuthor($value);
           break;
         case 'subject':
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           if (!\strncasecmp($value, '[PATCH] ', 8)) {
-            $value = \trim(\substr($value, 8));
+            $value = Str\trim(Str\slice($value, 8));
           }
           $changeset = $changeset->withSubject($value);
           break;
         case 'date':
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $changeset = $changeset->withTimestamp(\strtotime($value));
           break;
       }
@@ -193,13 +218,13 @@ class ShipItRepoGIT
       '-1',
       $revision,
     );
-    if (\strlen($patch) === 0) {
+    if (Str\length($patch) === 0) {
       // This is an empty commit, so everything is the header.
       return $full_patch;
     }
-    $index = \strpos($full_patch, $patch);
-    if ($index !== false) {
-      return \substr($full_patch, 0, $index);
+    $index = Str\search($full_patch, $patch);
+    if ($index !== null) {
+      return Str\slice($full_patch, 0, $index);
     }
     throw new ShipItRepoGITException(
       $this,
@@ -207,13 +232,11 @@ class ShipItRepoGIT
     );
   }
 
-  public function getChangesetFromID(string $revision): ?ShipItChangeset {
+  public function getChangesetFromID(string $revision): ShipItChangeset {
     $patch = $this->getNativePatchFromID($revision);
     $header =  $this->getNativeHeaderFromIDWithPatch($revision, $patch);
     $changeset = self::getChangesetFromExportedPatch($header, $patch);
-    if ($changeset !== null) {
-      $changeset = $changeset->withID($revision);
-    }
+    $changeset = $changeset->withID($revision);
     return $changeset;
   }
 
@@ -234,11 +257,8 @@ class ShipItRepoGIT
   public static function getChangesetFromExportedPatch(
     string $header,
     string $patch,
-  ): ?ShipItChangeset {
+  ): ShipItChangeset {
     $ret = self::parseHeader($header);
-    if ($ret === null) {
-      return $ret;
-    }
     return $ret->withDiffs(self::getDiffsFromPatch($patch));
   }
 
@@ -255,6 +275,8 @@ class ShipItRepoGIT
      *
      * https://github.com/git/git/blob/77bd3ea9f54f1584147b594abc04c26ca516d987/builtin/mailinfo.c#L701
      */
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $message = \preg_replace(
       '/^(diff -|Index: |---(?:\s\S|\s*$))/m',
       ' $1',
@@ -265,6 +287,8 @@ class ShipItRepoGIT
     // mailboxes. cf. https://git-scm.com/docs/git-format-patch
     $ret = "From {$patch->getID()} Mon Sep 17 00:00:00 2001\n".
             "From: {$patch->getAuthor()}\n".
+            /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+            /* HH_IGNORE_ERROR[4107] __PHPStdLib */
             "Date: " . \date('r', $patch->getTimestamp()) . "\n".
             "Subject: [PATCH] {$patch->getSubject()}\n\n".
             "{$message}\n---\n\n";
@@ -316,7 +340,7 @@ class ShipItRepoGIT
       // sure there is no leading whitespace that comes back when we get the
       // status since the first character will tell us whether submodule
       // changed.
-      $sm_status = \ltrim($this->gitCommand(
+      $sm_status = Str\trim_left($this->gitCommand(
         'submodule',
         'status',
         $submodule['path'],
@@ -324,9 +348,9 @@ class ShipItRepoGIT
       if ($sm_status === '') {
         // If the path exists, we know we are adding a submodule.
         $full_path = $this->getPath().'/'.$submodule['path'];
-        $sha = \trim(\substr(
+        $sha = Str\trim(Str\slice(
           \file_get_contents($full_path),
-          \strlen('Subproject commit '),
+          Str\length('Subproject commit '),
         ));
         $this->gitCommand('rm', $submodule['path']);
         $this->gitCommand(
@@ -364,6 +388,8 @@ class ShipItRepoGIT
   }
 
   protected function gitPipeCommand(?string $stdin, string ...$args): string {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists("{$this->path}/.git")) {
       throw new ShipItRepoGITException(
         $this,
@@ -394,18 +420,26 @@ class ShipItRepoGIT
     string $path,
   ): void {
     invariant(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       !\file_exists($path),
       '%s already exists, cowardly refusing to overwrite',
       $path,
     );
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $parent_path = \dirname($path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists($parent_path)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \mkdir($parent_path, 0755, /* recursive = */ true);
     }
 
-    if (ShipItRepo::$VERBOSE & ShipItRepo::VERBOSE_FETCH) {
-      \fwrite(\STDERR, "** Cloning $origin to $path\n");
+    if (ShipItRepo::$verbose & ShipItRepo::VERBOSE_FETCH) {
+      ShipItLogger::err("** Cloning %s to %s\n", $origin, $path);
     }
 
     (new ShipItShellCommand(
@@ -420,34 +454,38 @@ class ShipItRepoGIT
   }
 
   <<__Override>>
-  public function pushLfs(string $pullEndpoint, string $pushEndpoint): void {
+  public function pushLfs(string $pull_endpoint, string $push_endpoint): void {
     invariant(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \file_exists($this->getPath().'/.gitattributes'),
       '.gitattributes not exists, cowardly refusing to pull lfs',
     );
     // ignore .lfsconfig. otherwise this would interfere
     // with the downstream consumer.
     invariant(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       !\file_exists($this->getPath().'/.lfsconfig'),
       '.lfsconfig exists, needs to strip it in your config',
     );
     $this->gitCommand('lfs', 'install', '--local');
-    $this->gitCommand('config', '--local', 'lfs.url', $pullEndpoint);
+    $this->gitCommand('config', '--local', 'lfs.url', $pull_endpoint);
     $this->gitCommand('config', '--local', 'lfs.fetchrecentcommitsdays', '7');
     $this->gitCommand('lfs', 'fetch', '--recent');
-    $this->gitCommand('config', '--local', 'lfs.pushurl', $pushEndpoint);
+    $this->gitCommand('config', '--local', 'lfs.pushurl', $push_endpoint);
     $this->gitCommand('lfs', 'push', 'origin', $this->branch);
   }
 
   <<__Override>>
   public function pull(): void {
-    if (ShipItRepo::$VERBOSE & ShipItRepo::VERBOSE_FETCH) {
-      \fwrite(\STDERR, "** Updating checkout in {$this->path}\n");
+    if (ShipItRepo::$verbose & ShipItRepo::VERBOSE_FETCH) {
+      ShipItLogger::err("** Updating checkout in %s\n", $this->path);
     }
 
     try {
       $this->gitCommand('am', '--abort');
-    } catch (ShipItShellCommandException $e) {
+    } catch (ShipItShellCommandException $_e) {
       // ignore
     }
 
@@ -457,7 +495,7 @@ class ShipItRepoGIT
 
   <<__Override>>
   public function getOrigin(): string {
-    return \trim($this->gitCommand('remote', 'get-url', 'origin'));
+    return Str\trim($this->gitCommand('remote', 'get-url', 'origin'));
   }
 
   public function push(): void {
@@ -469,7 +507,7 @@ class ShipItRepoGIT
     ?string $rev = null,
   ): shape('tempDir' => ShipItTempDir, 'revision' => string) {
     if ($rev === null) {
-      $rev = \trim($this->gitCommand('rev-parse', 'HEAD'));
+      $rev = Str\trim($this->gitCommand('rev-parse', 'HEAD'));
     }
 
     $command = Vector {
@@ -493,13 +531,21 @@ class ShipItRepoGIT
       $sha = $status
         // Strip any -, +, or U at the start of the status (see the man page for
         // git-submodule).
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         |> \preg_replace('@^[\-\+U]@', '', $$)
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         |> \explode(' ', $$)[0];
       $dest_submodule_path = $dest->getPath().'/'.$submodule['path'];
       // This removes the empty directory for the submodule that gets created
       // by the git-archive command.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \rmdir($dest_submodule_path);
       // This will setup a file that looks just like how git stores submodules.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \file_put_contents($dest_submodule_path, 'Subproject commit '.$sha);
     }
 
@@ -507,7 +553,7 @@ class ShipItRepoGIT
   }
 
   protected function getHEADSha(): string {
-    return \trim($this->gitCommand('log', '-1', "--pretty=format:%H"));
+    return Str\trim($this->gitCommand('log', '-1', "--pretty=format:%H"));
   }
 
   private function getSubmodules(
@@ -519,18 +565,22 @@ class ShipItRepoGIT
     if ($roots !== null && $roots->count() > 0 && !$roots->contains('')) {
       return ImmVector {};
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists($this->getPath().'/.gitmodules')) {
       return ImmVector {};
     }
     $configs = $this->gitCommand('config', '-f', '.gitmodules', '--list');
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $configs = (new Map(\parse_ini_string($configs)))
       ->filterWithKey(($key, $_) ==> {
-        return \substr($key, 0, 10) === 'submodule.' &&
-          (\substr($key, -5) === '.path' || \substr($key, -4) === '.url');
+        return Str\slice($key, 0, 10) === 'submodule.' &&
+          (Str\slice($key, -5) === '.path' || Str\slice($key, -4) === '.url');
       });
     $names = $configs->keys()
-      ->filter($key ==> \substr($key, -4) === '.url')
-      ->map($key ==> \substr($key, 10, \strlen($key) - 10 - 4))
+      ->filter($key ==> Str\slice($key, -4) === '.url')
+      ->map($key ==> Str\slice($key, 10, Str\length($key) - 10 - 4))
       ->toImmSet();
     return $names->values()
       ->map($name ==> shape(
@@ -538,6 +588,8 @@ class ShipItRepoGIT
           'path' => $configs['submodule.'.$name.'.path'],
           'url' => $configs['submodule.'.$name.'.url'],
       ))
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       ->filter($config ==> \file_exists($this->getPath().'/'.$config['path']))
       ->toImmVector();
   }

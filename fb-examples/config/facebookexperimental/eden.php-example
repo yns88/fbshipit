@@ -5,12 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/5q1wcwi3
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
-};
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookexperimentalEden extends FBShipItConfig {
   <<__Override>>
@@ -34,8 +36,8 @@ final class FacebookexperimentalEden extends FBShipItConfig {
   <<__Override>>
   protected static function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
+      '@(^|/)README\\.facebook$@',
       '@^fbcode/eden/fs/eden-config\\.h$@',
-      '@^fbcode/eden/oss/README\\.facebook$@',
       '@^fbcode/eden/hg/.*$@',
     };
   }

@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/twtjzkj4
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookRedexTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -19,7 +25,8 @@ final class FacebookRedexTest extends FBConfigBaseTest {
       'fbandroid/native/liblocator/README' => 'liblocator/README',
       'fbandroid/native/redex/foo' => 'foo',
       'xplat/sparta/foo' => 'sparta/foo',
-      'xplat/sparta/include/AbstractDomain.h' => 'sparta/include/AbstractDomain.h',
+      'xplat/sparta/include/AbstractDomain.h' =>
+        'sparta/include/AbstractDomain.h',
       'fbandroid/not_redex/foo' => null,
       'fbandroid/native/redex-stable/foo' => null,
       'fbandroid/native/redex/REDEX_DEFS' => null,
@@ -37,7 +44,8 @@ final class FacebookRedexTest extends FBConfigBaseTest {
       'fbandroid/not_redex/foo' => null,
       'fbandroid/native/redex-stable/foo' => 'foo',
       'xplat/sparta/foo' => 'sparta/foo',
-      'xplat/sparta/include/AbstractDomain.h' => 'sparta/include/AbstractDomain.h',
+      'xplat/sparta/include/AbstractDomain.h' =>
+        'sparta/include/AbstractDomain.h',
       'fbandroid/native/redex-stable/REDEX_DEFS' => null,
       'fbandroid/native/redex-stable/REDEX_TEST_DEFS' => null,
       'fbandroid/native/redex-stable/redex_defs.bzl' => null,

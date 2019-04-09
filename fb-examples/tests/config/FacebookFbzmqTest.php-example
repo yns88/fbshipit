@@ -5,17 +5,23 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/757eyrle
+ */
 namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\FBCodeBuilder;
 
+<<\Oncalls('open_source')>>
 final class FacebookFbzmqTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       'fbcode/fbzmq/async/TARGETS' => null,
       'fbcode/fbzmq/async/tests/ZmqEventLoopTest.cpp' =>
-          'fbzmq/async/tests/ZmqEventLoopTest.cpp',
+        'fbzmq/async/tests/ZmqEventLoopTest.cpp',
       'fbcode/fbzmq/zmq/ZmqSocket.h' => 'fbzmq/zmq/ZmqSocket.h',
       'fbcode/fbzmq/public_tld/PATENTS' => 'PATENTS',
       FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',

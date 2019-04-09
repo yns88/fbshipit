@@ -5,9 +5,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/cgcrhd9r
+ */
 namespace Facebook\ShipIt;
 
-class ShipItUserFilters {
+use namespace HH\Lib\Str;
+
+final class ShipItUserFilters {
   /** Rewrite authors that match a certain pattern.
    *
    * @param $pattern a regular expression defining a 'user' named capture
@@ -17,19 +24,22 @@ class ShipItUserFilters {
     classname<ShipItUserInfo> $user_info,
     string $pattern,
   ): ShipItChangeset {
-    $matches = [];
+    $matches = darray[];
     if (
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_match(
         $pattern,
         $changeset->getAuthor(),
         &$matches,
       )
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       && \array_key_exists('user', $matches)
     ) {
-      $author = \HH\Asio\join(
-        $user_info::getDestinationAuthorFromLocalUser(
-          $matches['user']
-        )
+      // @oss-disable: $author = \Asio::awaitSynchronously(
+        $author = \HH\Asio\join( // @oss-enable
+        $user_info::getDestinationAuthorFromLocalUser($matches['user']),
       );
       if ($author !== null) {
         return $changeset->withAuthor($author);
@@ -61,9 +71,10 @@ class ShipItUserFilters {
     return ShipItMentions::rewriteMentions(
       $changeset,
       function(string $mention): string use ($user_info) {
-        $mention = \substr($mention, 1); // chop off leading @
-        $new = \HH\Asio\join(
-          $user_info::getDestinationUserFromLocalUser($mention)
+        $mention = Str\slice($mention, 1); // chop off leading @
+        // @oss-disable: $new = \Asio::awaitSynchronously(
+          $new = \HH\Asio\join( // @oss-enable
+          $user_info::getDestinationUserFromLocalUser($mention),
         );
         return '@'.($new ?? $mention);
       },
@@ -82,7 +93,9 @@ class ShipItUserFilters {
     ShipItChangeset $changeset,
     string $pattern,
   ): ShipItChangeset {
-    $matches = [];
+    $matches = darray[];
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\preg_match($pattern, $changeset->getMessage(), &$matches)) {
       return $changeset->withAuthor($matches['author']);
     }

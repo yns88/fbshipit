@@ -1,0 +1,29 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+<<\Oncalls('open_source')>>
+final class FacebookresearchPoincareEmbeddingsTest extends FBConfigBaseTest {
+  <<__Override>>
+  public static function getExamplePathMappings(): ImmMap<string, ?string> {
+    return ImmMap {
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/README.org' =>
+        'README.org',
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/exporter.py' => null,
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/exporter-cli.py' =>
+        null,
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/tests/' => null,
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/TARGETS' => null,
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/fb_embed.py/' => null,
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/hype/arsgd.py' =>
+        null,
+      'fbcode/deeplearning/projects/hyperbolic-embeddings/hype/transe.py' =>
+        null,
+    };
+  }
+}

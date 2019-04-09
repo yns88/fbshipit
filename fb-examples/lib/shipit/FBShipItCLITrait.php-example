@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/qbcfel6m
+ */
 namespace Facebook\ShipIt;
 
-use type Facebook\ShipIt\Config\ IShipItConfig;
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\Config\IShipItConfig;
 
 
 trait FBShipItCLITrait {
@@ -17,15 +23,14 @@ trait FBShipItCLITrait {
    * Some of our scheduling tools report the last line of STDERR; with the
    * default handler, this is something fairly meaningless like '#8 {main}'
    */
-  final private static function abortWithException(
-    \Throwable $ex,
-  ): noreturn {
-    $first_line = \sprintf(
+  final private static function abortWithException(\Throwable $ex): noreturn {
+    $first_line = Str\format(
       "Fatal error: Uncaught exception '%s' with message '%s'",
       \get_class($ex),
       $ex->getMessage(),
     );
-    \fprintf(\STDERR, "%s\nStack trace:\n%s\n%s\n",
+    ShipItLogger::err(
+      "%s\nStack trace:\n%s\n%s\n",
       $first_line,
       $ex->getTraceAsString(),
       $first_line,
@@ -73,22 +78,26 @@ trait FBShipItCLITrait {
   }
 
   private static function initForCli(): void {
-    \set_exception_handler($ex ==> self::abortWithException($ex));
-    \set_error_handler(
-      function($severity, $message, $file, $line) {
-        throw new \ErrorException($message, 0, $severity, $file, $line);
-      }
-    );
-
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\get_current_user() === 'svcscm') {
       throw new \Exception(
+        "\n=================================================================\n".
         'This executable must be ran as an individual user, or via a hipster '.
-        "account. If you are seeing this from Chronos:\n".
-        "1. disable this job permanently\n".
-        "2. find your repository on /intern/opensource/github/repo\n".
-        "3. open workflow settings - click 'get permission now' if needed\n".
-        "4. tick the 'ShipIt Chronos Job' box\n".
-        "5. A secure Chronos job will be created for you within 24 hours."
+        "account.\n".
+        "\n".
+        "If you are seeing this in an On Demand instance:\n".
+        "  Unfortunately, ShipIt does not work in On Demand, because it\n".
+        "  depends on access to your personal .gitconfig and SSH keys for\n".
+        "  authentication. Until On Demand supports user certs, you'll need\n".
+        "  to use a devserver.\n".
+        "\n".
+        "If you are seeing this from Chronos:\n".
+        "  1. disable this job permanently\n".
+        "  2. find your repository on bunnylol `oss reponame`\n".
+        "  3. open workflow settings\n".
+        "  4. tick the 'ShipIt Chronos Job' box.\n".
+        "=================================================================\n",
       );
     }
   }
@@ -102,12 +111,12 @@ trait FBShipItCLITrait {
         'abort: abandoned transaction found!',
       };
       foreach ($retry_causes as $cause) {
-        if (\strpos($e->getError(), $cause) !== false) {
+        if (Str\search($e->getError(), $cause) !== null) {
           // Recover by restarting; the init phase will detect the bad state
           // fix it by deleting and re-cloning the repo.
-          \fwrite(\STDERR, "**** HG: TRANSACTION ABORT (t12066068) ****\n");
-          \fwrite(\STDERR, $e->getError()."\n");
-          \fwrite(\STDERR, "**** RESTARTING ****\n");
+          ShipItLogger::err("**** HG: TRANSACTION ABORT (t12066068) ****\n");
+          ShipItLogger::err("%s\n", $e->getError());
+          ShipItLogger::err("**** RESTARTING ****\n");
           $runner->run();
           return;
         }

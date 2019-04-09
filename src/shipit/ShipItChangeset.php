@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/vgcuzvux
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 type ShipItDiff = shape(
   'path' => string,
@@ -30,11 +37,15 @@ final class ShipItChangeset {
   private string $author = "";
   private string $subject = "";
   private string $message = "";
-  private ImmVector<ShipItDiff> $diffs = ImmVector { };
-  private ImmVector<string> $debugMessages = ImmVector { };
+  private ImmVector<ShipItDiff> $diffs = ImmVector {};
+  private ImmVector<string> $debugMessages = ImmVector {};
+  private bool $isTaggedEmptyCommit = false;
 
   public function isValid(): bool {
-    return $this->diffs->count() > 0;
+    return !$this->isEmptyChange();
+  }
+  public function isEmptyChange(): bool {
+    return $this->diffs->count() === 0;
   }
 
   public function getID(): string {
@@ -45,10 +56,12 @@ final class ShipItChangeset {
     if ($this->getID() === '') {
       return '';
     }
-    $short_id = \substr($this->getID(), 0, ShipItUtil::SHORT_REV_LENGTH);
+    $short_id = Str\slice($this->getID(), 0, ShipItUtil::SHORT_REV_LENGTH);
     invariant(
       $short_id is string,
       'got %s, expected string',
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \gettype($short_id),
     );
     return $short_id;
@@ -115,19 +128,33 @@ final class ShipItChangeset {
   }
 
   public function withDebugMessage(
-    \HH\FormatString<\PlainSprintf> $format_string,
+    Str\SprintfFormatString $format_string,
     mixed ...$args
   ): ShipItChangeset {
     $messages = $this->getDebugMessages()->toVector();
     /* HH_FIXME[4027]: cannot be a literal string */
-    $messages[] = \sprintf($format_string, ...$args);
+    $messages[] = Str\format($format_string, ...$args);
 
     $out = clone $this;
     $out->debugMessages = $messages->toImmVector();
     return $out;
   }
 
+  public function getIsTaggedEmptyCommit(): bool {
+    return $this->isTaggedEmptyCommit;
+  }
+
+  public function withIsTaggedEmptyCommit(
+    bool $is_tagged_empty_commit,
+  ): ShipItChangeset {
+    $out = clone $this;
+    $out->isTaggedEmptyCommit = $is_tagged_empty_commit;
+    return $out;
+  }
+
   public function dumpDebugMessages(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf(
       "  DEBUG %s %s\n    Full ID: %s\n",
       $this->getShortID(),
@@ -135,6 +162,8 @@ final class ShipItChangeset {
       $this->getID(),
     );
     foreach ($this->getDebugMessages() as $message) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \printf("    %s\n", $message);
     }
   }
@@ -150,9 +179,7 @@ final class ShipItChangeset {
     );
   }
 
-  public static function fromData(
-    ShipItChangesetData $shape,
-  ): ShipItChangeset {
+  public static function fromData(ShipItChangesetData $shape): ShipItChangeset {
     return (new ShipItChangeset())
       ->withID($shape['id'])
       ->withTimestamp($shape['timestamp'])

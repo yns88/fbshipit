@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/3alg22ve
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
   FBSourceBranchConfig,
@@ -40,8 +45,6 @@ final class PytorchPytorch extends FBShipItConfig {
   public static function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT.'submodules/benchmark-rev.txt' => 'third_party/benchmark',
-      self::ROOT.'submodules/ComputeLibrary-rev.txt' =>
-        'third_party/ComputeLibrary',
       self::ROOT.'submodules/cpuinfo-rev.txt' => 'third_party/cpuinfo',
       self::ROOT.'submodules/cub-rev.txt' => 'third_party/cub',
       self::ROOT.'submodules/eigen-rev.txt' => 'third_party/eigen',
@@ -54,6 +57,7 @@ final class PytorchPytorch extends FBShipItConfig {
       self::ROOT.'submodules/nccl-rev.txt' => 'third_party/nccl',
       self::ROOT.'submodules/NNPACK-rev.txt' => 'third_party/NNPACK',
       self::ROOT.'submodules/onnx-rev.txt' => 'third_party/onnx',
+      self::ROOT.'submodules/foxi-rev.txt' => 'third_party/foxi',
       self::ROOT.'submodules/onnx-tensorrt-rev.txt' =>
         'third_party/onnx-tensorrt',
       self::ROOT.'submodules/protobuf-rev.txt' => 'third_party/protobuf',

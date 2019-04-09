@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/ippot1ds
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 
 abstract class FBProjectBaseTest extends BaseTest {
@@ -32,40 +39,32 @@ abstract class FBProjectBaseTest extends BaseTest {
     ShipItChangeset $changeset,
   ): ShipItChangeset;
 
-  public function exampleMessagesWithDifferentialURLs(
-  ): array<(string, string)> {
-    return [
+  public function exampleMessagesWithDifferentialURLs(): vec<(string, string)> {
+    return vec[
       tuple('foo', 'foo'),
       tuple('https://phabricator.fb.com/D12345', 'D12345'),
       tuple('Foo https://phabricator.fb.com/D12345 bar', 'Foo D12345 bar'),
       tuple(
         'foo '.
-          'https://phabricator.fb.com/D12345 bar '.
-          'https://phabricator.fb.com/D6789 baz',
+        'https://phabricator.fb.com/D12345 bar '.
+        'https://phabricator.fb.com/D6789 baz',
         'foo D12345 bar D6789 baz',
       ),
-      tuple(
-        'https://phabricator.cstools.facebook.com/D12345',
-        'D12345'
-      ),
+      tuple('https://phabricator.cstools.facebook.com/D12345', 'D12345'),
       tuple(
         'Foo https://phabricator.cstools.facebook.com/D12345 bar',
-        'Foo D12345 bar'
+        'Foo D12345 bar',
       ),
-      tuple(
-        'https://phabricator.asuarez.sb.facebook.com/D12345',
-        'D12345'
-      ),
+      tuple('https://phabricator.asuarez.sb.facebook.com/D12345', 'D12345'),
       tuple(
         'Foo https://phabricator.asuarez.sb.facebook.com/D12345 bar',
-        'Foo D12345 bar'
+        'Foo D12345 bar',
       ),
     ];
   }
 
-  public function examplesForStripSubjectTags(
-  ): array<(string, string)> {
-    return [
+  public function examplesForStripSubjectTags(): vec<(string, string)> {
+    return vec[
       tuple('foo bar', 'foo bar'),
       tuple('[secret] foo', 'foo'),
       tuple('[secret][super secret] foo bar', 'foo bar'),
@@ -74,34 +73,28 @@ abstract class FBProjectBaseTest extends BaseTest {
     ];
   }
 
-  /**
-   * @dataProvider examplesForStripSubjectTags
-   */
-  public function testStripSubjectTags(
-    string $in,
-    string $expected,
-  ): void {
+  <<\DataProvider('examplesForStripSubjectTags')>>
+  public function testStripSubjectTags(string $in, string $expected): void {
     $changeset = (new ShipItChangeset())->withSubject($in);
     $changeset = static::map($changeset);
     $out = $changeset->getSubject();
-    $this->assertSame($expected, $out);
+    \expect($out)->toBeSame($expected);
   }
 
   public function testGitHubAuthor(): void {
     $in = (new ShipItChangeset())
       ->withMessage("GitHub Author: Foo Bar <foobar@example.com>");
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
   }
 
   public function testGitHubAuthorWithSupportedFieldAfter(): void {
     $in = (new ShipItChangeset())
       ->withMessage(
-        "GitHub Author: Foo Bar <foobar@example.com>\n".
-        "Github PR Sync: foo",
+        "GitHub Author: Foo Bar <foobar@example.com>\n"."Github PR Sync: foo",
       );
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
   }
 
   public function testPulledBy(): void {
@@ -109,11 +102,8 @@ abstract class FBProjectBaseTest extends BaseTest {
       ->withMessage("GitHub Author: Foo Bar <foobar@example.com>")
       ->withAuthor('Fred Emmott <fredemmott@fb.com>');
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertContains(
-      'Pulled By: fredemmott',
-      $out->getMessage(),
-    );
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Pulled By: fredemmott');
   }
 
   public function testPulledByWithUnixnameDifferentToGithub(): void {
@@ -121,63 +111,49 @@ abstract class FBProjectBaseTest extends BaseTest {
       ->withMessage("GitHub Author: Foo Bar <foobar@example.com>")
       ->withAuthor('Joel Marcey <joelm@fb.com>');
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertContains(
-      'Pulled By: JoelMarcey',
-      $out->getMessage(),
-    );
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Pulled By: JoelMarcey');
   }
 
   public function testPulledByWithBotAuthor(): void {
     $in = (new ShipItChangeset())
       ->withMessage(
-        "GitHub Author: Foo Bar <foobar@example.com>\n\n".
-        "Reviewed By: joelm"
+        "GitHub Author: Foo Bar <foobar@example.com>\n\n"."Reviewed By: joelm",
       )
       ->withAuthor('svcscm <svcscm@fb.com>');
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertContains(
-      'Pulled By: JoelMarcey',
-      $out->getMessage(),
-    );
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toContainSubstring('Pulled By: JoelMarcey');
   }
 
   public function testPulledByWithBotAuthorAndMultipleReviewers(): void {
     $in = (new ShipItChangeset())
       ->withMessage(
         "GitHub Author: Foo Bar <foobar@example.com>\n\n".
-        "Reviewed By: joelm, fredemmott"
+        "Reviewed By: joelm, fredemmott",
       )
       ->withAuthor('svcscm <svcscm@fb.com>');
     $out = static::map($in);
-    $this->assertEquals('Foo Bar <foobar@example.com>', $out->getAuthor());
-    $this->assertNotContains(
-      'Pulled By: ',
-      $out->getMessage(),
-    );
-    $this->assertContains(
-      'Reviewed By: JoelMarcey, fredemmott',
-      $out->getMessage(),
-    );
+    \expect($out->getAuthor())->toBePHPEqual('Foo Bar <foobar@example.com>');
+    \expect($out->getMessage())->toNotContainSubstring('Pulled By: ');
+    \expect($out->getMessage())
+      ->toContainSubstring('Reviewed By: JoelMarcey, fredemmott');
   }
 
   public function testNoPulledByIfNoGitHubAuthor(): void {
     $in = (new ShipItChangeset())
       ->withAuthor('Fred Emmott <fe@fb.com>');
     $out = static::map($in);
-    $this->assertSame('Fred Emmott <fe@fb.com>', $out->getAuthor());
-    $this->assertSame('', $out->getMessage());
+    \expect($out->getAuthor())->toBeSame('Fred Emmott <fe@fb.com>');
+    \expect($out->getMessage())->toBeSame('');
   }
 
   public function testReviewerMapping(): void {
     $in = (new ShipItChangeset())
       ->withMessage("Reviewed By: fredemmott, joelm");
     $out = static::map($in);
-    $this->assertContains(
-      'Reviewed By: fredemmott, JoelMarcey',
-      $out->getMessage(),
-    );
+    \expect($out->getMessage())
+      ->toContainSubstring('Reviewed By: fredemmott, JoelMarcey');
   }
 
   public function testMentionMapping(): void {
@@ -189,14 +165,14 @@ abstract class FBProjectBaseTest extends BaseTest {
 
     $in = (new ShipItChangeset())->withMessage($in);
     $out = static::map($in);
-    $this->assertContains($expected, $out->getMessage());
+    \expect($out->getMessage())->toContainSubstring($expected);
   }
 
   public function testGitSVNAuthor(): void {
     $in = (new ShipItChangeset())
       ->withAuthor("joelm@d8a4e40d-db80-4680-aacd-cdc45a86d7e7");
     $out = static::map($in);
-    $this->assertEquals("Joel Marcey <joelm@fb.com>", $out->getAuthor());
+    \expect($out->getAuthor())->toBePHPEqual("Joel Marcey <joelm@fb.com>");
   }
 
   public function testPullRequestSummariesArePublic(): void {
@@ -204,44 +180,47 @@ abstract class FBProjectBaseTest extends BaseTest {
       \file_get_contents(__DIR__.'/../hg-diffs/github-pull-request.header'),
       \file_get_contents(__DIR__.'/../hg-diffs/github-pull-request.patch'),
     );
-    $this->assertNotNull($in);
-    assert($in !== null); // for typechecker
+    $in = \expect($in)->toNotBeNull();
     $out = static::map($in);
-    $this->assertContains('Before we would', $out->getMessage());
+    \expect($out->getMessage())->toContainSubstring('Before we would');
   }
 
   public function testWithoutAlreadyOnGitHub(): void {
     $in = (new ShipItChangeset())
       ->withMessage('herp derp')
-      ->withDiffs( ImmVector {
-        shape('path' => $this->getExamplePublicPath(), 'body' => 'herp')
-      });
+      ->withDiffs(
+        ImmVector {
+          shape('path' => $this->getExamplePublicPath(), 'body' => 'herp'),
+        },
+      );
     $out = static::map($in);
-    $this->assertTrue($out->isValid(), 'Diff was preserved');
+    \expect($out->isValid())->toBeTrue('Diff was preserved');
   }
 
   public function testWithAlreadyOnGitHub(): void {
     $in = (new ShipItChangeset())
       ->withMessage('herp derp @already-on-github')
-      ->withDiffs( ImmVector {
-        shape('path' => $this->getExamplePublicPath(), 'body' => 'herp')
-      });
+      ->withDiffs(
+        ImmVector {
+          shape('path' => $this->getExamplePublicPath(), 'body' => 'herp'),
+        },
+      );
     $out = static::map($in);
 
-    $this->assertFalse($out->isValid());
+    \expect($out->isValid())->toBeFalse();
   }
 
   public function exampleBadwordChangesets(
-  ): array<string, array<ShipItChangeset>> {
+  ): dict<string, vec<ShipItChangeset>> {
     $bw = FBConfidentialFilter::EXAMPLE_BAD_WORD;
     $out = Map {
       'subject' => (new ShipItChangeset())->withSubject($bw),
       'subject lowercase' => (new ShipItChangeset())
-        ->withSubject(\strtolower($bw)),
+        ->withSubject(Str\lowercase($bw)),
       'subject uppercase' => (new ShipItChangeset())
-        ->withSubject(\strtoupper($bw)),
+        ->withSubject(Str\uppercase($bw)),
       'subject substr' => (new ShipItChangeset())
-        ->withSubject('foo '.$bw. ' bar'),
+        ->withSubject('foo '.$bw.' bar'),
       'message' => (new ShipItChangeset())
         ->withMessage('Summary: @public '.$bw),
       'message line' => (new ShipItChangeset())
@@ -264,29 +243,32 @@ abstract class FBProjectBaseTest extends BaseTest {
         ->withDiffs(ImmVector {
           shape(
             'path' => $this->getExamplePublicPath().
-            '/FBConfiden'.'tialFilter.php', // split to avoid triggering filter
+              '/FBConfiden'.
+              'tialFilter.php', // split to avoid triggering filter
             'body' => 'junk',
           ),
         }),
     };
     foreach ($out as $k => $v) {
       if (!$v->isValid()) {
-        $out[$k] = $v->withDiffs(ImmVector { shape(
-          'path' => $this->getExamplePublicPath(),
-          'body' => 'junk',
-        )});
+        $out[$k] = $v->withDiffs(ImmVector {
+          shape(
+            'path' => $this->getExamplePublicPath(),
+            'body' => 'junk',
+          ),
+        });
       }
     }
-    return $out->mapWithKey(($k, $v) ==> [$v->withID($k)])->toArray();
+    return $out->mapWithKey(($k, $v) ==> vec[$v->withID($k)]) |> dict($$);
   }
 
-  /**
-   * @dataProvider exampleBadwordChangesets
-   * @expectedException \HH\InvariantException
-   */
+  <<\DataProvider('exampleBadwordChangesets')>>
   public function testBadwords(ShipItChangeset $changeset): void {
-    static::map($changeset);
-    // assertion is the @expectedException
+    \expect(() ==> {
+      static::map($changeset);
+    })
+      // @oss-disable: ->toThrow(\InvariantViolationException::class);
+    ->toThrow(\HH\InvariantException::class); // @oss-enable
   }
 
   public function testBadwordsBinaryFile(): void {
@@ -299,40 +281,25 @@ abstract class FBProjectBaseTest extends BaseTest {
         shape(
           'path' => $changeset->getDiffs()[0]['path'],
           'body' => $binary_file_body,
-        )
-      }
+        ),
+      },
     );
     static::map($changeset);
     // no expected exception
   }
 
-  // TODO(T22473111) remove after Buck is migrated
-  public function testFileNameMatchesRepo(): void {
-    $shipit_class = static::getShipItClass();
-    $config = $shipit_class::getStaticConfig();
-    $reflector = new \ReflectionClass($shipit_class);
-    $this->assertEquals(
-      'shipit_'.$config['githubProject'].'.php',
-      \basename($reflector->getFileName()),
-      'ShipIt executable must match GitHub Repo: '.$shipit_class
-    );
-  }
-
-  final public function examplePathMappings(
-  ): array<string, (string, ?string)> {
+  final public function examplePathMappings(): dict<string, (string, ?string)> {
     return static::getExamplePathMappings()
       ->mapWithKey(($k, $v) ==> tuple($k, $v))
-      ->toArray();
+      |> dict($$);
   }
 
-  /**
-   * @dataProvider examplePathMappings
-   */
-  final public function testPathMapping(
+  <<\DataProvider('examplePathMappings')>>
+  public function testPathMapping(
     string $path_in,
     ?string $path_expected,
   ): void {
-    $diffs = ImmVector { shape('path' => $path_in, 'body' => 'junk') };
+    $diffs = ImmVector {shape('path' => $path_in, 'body' => 'junk')};
     $changeset = (new ShipItChangeset())->withDiffs($diffs);
     $this->pathMappingCheck($changeset, $path_in, $path_expected);
   }
@@ -348,25 +315,25 @@ abstract class FBProjectBaseTest extends BaseTest {
     }
 
     if ($path_expected === null) {
-      $expected_paths = [];
-      $message = \sprintf('Expected `%s` to be stripped', $path_in);
+      $expected_paths = vec[];
+      $message = Str\format('Expected `%s` to be stripped', $path_in);
     } else {
-      $expected_paths = [$path_expected];
-      $message = \sprintf(
+      $expected_paths = vec[$path_expected];
+      $message = Str\format(
         'Expected `%s` to map to `%s`',
         $path_in,
         $path_expected,
       );
     }
-    $this->assertEquals(
-      $expected_paths,
-      $changeset->getDiffs()->map($diff ==> $diff['path'])->toArray(),
-      \sprintf(
-        "%s.  Debug messages follow:\n%s",
-        $message,
-        \implode("\n", $changeset->getDebugMessages()),
-      ),
-    );
+    \expect(vec($changeset->getDiffs()->map($diff ==> $diff['path'])))
+      ->toBePHPEqual(
+        $expected_paths,
+        Str\format(
+          "%s.  Debug messages follow:\n%s",
+          $message,
+          Str\join($changeset->getDebugMessages(), "\n"),
+        ),
+      );
   }
 
   // TODO(T22473111) remove after Buck is migrated
@@ -376,17 +343,19 @@ abstract class FBProjectBaseTest extends BaseTest {
     foreach ($shipit_class::getPathMappings()->keys() as $source_path) {
       $found = false;
       foreach ($examples as $example) {
-        if (\strncmp($example, $source_path, \strlen($source_path)) === 0) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+        if (\strncmp($example, $source_path, Str\length($source_path)) === 0) {
           $found = true;
           break;
         }
       }
       if (!$found) {
-        $this->fail(
+        self::fail(
           'Source path "'.$source_path.'" has no examples defined in tests.',
         );
       }
-    };
+    }
   }
 
   final protected function getExamplePublicPath(): string {
@@ -395,7 +364,7 @@ abstract class FBProjectBaseTest extends BaseTest {
         return $source;
       }
     }
-    $this->fail("No example public paths provided");
+    self::fail("No example public paths provided");
     invariant_violation('test fails should throw');
   }
 
@@ -403,11 +372,10 @@ abstract class FBProjectBaseTest extends BaseTest {
   public function testRepositoryNameCollision(): void {
     $shipit_class = static::getShipItClass();
     $config = $shipit_class::getBaseConfig();
-    $this->assertNotEquals(
+    \expect($config->getDestinationPath())->toNotBePHPEqual(
       $config->getSourcePath(),
-      $config->getDestinationPath(),
       'Repo names match and `getStaticConfig` has not set `destDirName` to '.
-        'something unique for the destination repository!',
+      'something unique for the destination repository!',
     );
   }
 
@@ -417,9 +385,8 @@ abstract class FBProjectBaseTest extends BaseTest {
     $config = $shipit_class::getBaseConfig();
     $roots = $config->getSourceRoots();
     foreach ($roots as $root) {
-      $this->assertTrue(
-        \substr($root, -1) === '/',
-        \sprintf(
+      \expect(Str\slice($root, -1) === '/')->toBeTrue(
+        Str\format(
           'Expected `%s` to end in `/` (source roots must be a folder).',
           $root,
         ),
@@ -430,12 +397,16 @@ abstract class FBProjectBaseTest extends BaseTest {
   // TODO(T22473111) remove after Buck is migrated
   protected static function getShipItClass(
   ): classname<\Facebook\ImportIt\ISupportsFBImportIt> {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $shipit_class = \preg_replace(
       '/([a-zA-Z0-9_]+)Test$/',
       'ShipIt\1',
       static::class,
     );
     invariant(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \class_exists($shipit_class, false),
       '%s does not exist.  Test and ShipIt class are not named consistently.',
       $shipit_class,
@@ -448,9 +419,8 @@ abstract class FBProjectBaseTest extends BaseTest {
    */
   public function testEmptyImportTestPlan(): void {
     $in = (new ShipItChangeset())
-      ->withMessage('Test Plan:'.
-      FBCommonFilters::NOT_A_TEST_PLAN);
+      ->withMessage('Test Plan:'.FBCommonFilters::NOT_A_TEST_PLAN);
     $out = static::map($in);
-    $this->assertNotContains('Test Plan:', $out->getMessage());
+    \expect($out->getMessage())->toNotContainSubstring('Test Plan:');
   }
 }

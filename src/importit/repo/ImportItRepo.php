@@ -5,12 +5,17 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/3vzsnpy8
+ */
 namespace Facebook\ImportIt;
 
-class ImportItRepoException extends \Exception {
+final class ImportItRepoException extends \Exception {
   public function __construct(?ImportItRepo $repo, string $message) {
     if ($repo !== null) {
-      $message = \get_class($repo) . ": " . $message;
+      $message = \get_class($repo).": ".$message;
     }
     parent::__construct($message);
   }
@@ -27,10 +32,14 @@ abstract class ImportItRepo {
   public static function open(
     string $path,
     string $branch,
-  ):  \Facebook\ShipIt\ShipItRepo {
+  ): \Facebook\ShipIt\ShipItRepo {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\file_exists($path.'/.git')) {
       return new ImportItRepoGIT($path, $branch);
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\file_exists($path.'/.hg')) {
       return new ImportItRepoHG($path, $branch);
     }

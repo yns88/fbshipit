@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/p29s1kug
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{
   FBSourceBranchConfig,
   FBShipItConfig,
   GetPathMappingsFn,
@@ -23,18 +29,12 @@ abstract class FBWWWBase extends FBShipItConfig {
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
     return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
-      |> ShipItConditionalLinesFilter::commentLines(
-        $$,
-        '@oss-disable',
-        '//',
-      )
-      |> ShipItConditionalLinesFilter::uncommentLines(
-        $$,
-        '@oss-enable',
-        '//',
-      )
+      |> ShipItConditionalLinesFilter::commentLines($$, '@oss-disable', '//')
+      |> ShipItConditionalLinesFilter::uncommentLines($$, '@oss-enable', '//')
       |> ShipItPathFilters::rewritePaths(
         $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $path ==> \preg_replace(
           '@^src/(.+/)?__tests__/@',
           'tests/\1',
@@ -56,33 +56,41 @@ abstract class FBWWWBase extends FBShipItConfig {
         if ($name === 'testGen') {
           return 'testFromAsync';
         }
-        if (\strpos($name, 'gen_') === 0) {
-          // function
-          return \substr($name, 4).'_async';
+        if (Str\search($name, 'generate') === 0) {
+          // edge case -- don't output "erate{...}Async"
+          return $name;
         }
-        if (\strpos($name, 'gen') === 0) {
+        if (Str\search($name, 'gen_') === 0) {
+          // function
+          return Str\slice($name, 4).'_async';
+        }
+        if (Str\search($name, 'gen') === 0) {
           // method
-          $name = \substr($name, 3);
-          $name[0] = \strtolower($name[0]);
+          $name = Str\slice($name, 3);
+          $name[0] = Str\lowercase($name[0]);
           return $name.'Async';
         }
-        if (\strpos($name, 'testGen') === 0) {
-          return 'test'.\substr($name, 7).'Async';
+        if (Str\search($name, 'testGen') === 0) {
+          return 'test'.Str\slice($name, 7).'Async';
         }
         return $name;
-      }
+      },
     );
   }
 
   final private static function renameFunctions(
     ShipItChangeset $changeset,
-    (function(string):string) $renamer,
+    (function(string): string) $renamer,
   ): ShipItChangeset {
     $diffs = Vector {};
     foreach ($changeset->getDiffs() as $diff) {
       $diff['body'] = $diff['body']
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         |> \explode("\n", $$)
         |> (new ImmVector($$))->map(
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $line ==> \preg_replace_callback(
             // Comma and dot for doc comments
             '/(function |\\\\|\\|>| |->|::)([a-zA-Z0-9_]+)(\\(|<|,|\\.)/',
@@ -90,7 +98,7 @@ abstract class FBWWWBase extends FBShipItConfig {
             $line,
           ),
         )
-        |> \implode("\n", $$);
+        |> Str\join($$, "\n");
       $diffs[] = $diff;
     }
     return $changeset->withDiffs($diffs->immutable());
@@ -102,7 +110,7 @@ abstract class FBWWWBase extends FBShipItConfig {
     return self::renameFunctions(
       $changeset,
       $name ==> {
-        if (\substr($name, 0, 2) === '__') {
+        if (Str\slice($name, 0, 2) === '__') {
           return $name;
         }
         if ($name === 'from_async') {
@@ -111,23 +119,23 @@ abstract class FBWWWBase extends FBShipItConfig {
         if ($name === 'testFromAsync') {
           return 'testGen';
         }
-        if (\substr($name, -6) === '_async') {
-          return 'gen_'.\substr($name, 0, -6);
+        if (Str\length($name) > 6 && Str\slice($name, -6) === '_async') {
+          return 'gen_'.Str\slice($name, 0, Str\length($name) - 6);
         }
-        if (\substr($name, 0, 4) === 'test' && \substr($name, -5) === 'Async') {
-          return 'testGen'.\substr(
-            $name,
-            4,
-            \strlen($name) - 9,
-          );
+        if (
+          Str\length($name) > 5 &&
+          Str\slice($name, 0, 4) === 'test' &&
+          Str\slice($name, -5) === 'Async'
+        ) {
+          return 'testGen'.Str\slice($name, 4, Str\length($name) - 9);
         }
-        if (\substr($name, -5) === 'Async') {
-          $name = \substr($name, 0, -5);
-          $name[0] = \strtoupper($name[0]);
+        if (Str\length($name) > 5 && Str\slice($name, -5) === 'Async') {
+          $name = Str\slice($name, 0, Str\length($name) - 5);
+          $name[0] = Str\uppercase($name[0]);
           return 'gen'.$name;
         }
         return $name;
-      }
+      },
     );
   }
 
@@ -139,12 +147,16 @@ abstract class FBWWWBase extends FBShipItConfig {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $path ==> \preg_replace(
           '@^tests/(.+/)?@',
           'src/\1__tests__/',
           $path,
         ),
       )
+      |> ShipItConditionalLinesFilter::uncommentLines($$, '@oss-disable', '//')
+      |> ShipItConditionalLinesFilter::commentLines($$, '@oss-enable', '//')
       |> self::renameAsyncToGen($$)
       |> parent::projectImportChangeset($$, $branch_config);
   }

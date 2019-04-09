@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/4zrm06z0
+ */
 namespace Facebook\ShipIt;
 
 final class ShipItCreateNewRepoPhase extends ShipItPhase {
@@ -12,7 +17,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
   private ?string $outputPath = null;
 
   public function __construct(
-    private (function(ShipItChangeset):ShipItChangeset) $filter,
+    private (function(ShipItChangeset): ShipItChangeset) $filter,
     private shape('name' => string, 'email' => string) $committer,
   ) {
     $this->skip();
@@ -42,8 +47,9 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
         'description' =>
           'Like --create-new-repo, but at a specified source commit',
         'write' => $rev ==> {
-            $this->sourceCommit = $rev;
-            $this->unskip();
+          $this->sourceCommit = $rev;
+          $this->unskip();
+          return true;
         },
       ),
       shape(
@@ -61,9 +67,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
   }
 
   <<__Override>>
-  public function runImpl(
-    ShipItBaseConfig $config,
-  ): void {
+  public function runImpl(ShipItBaseConfig $config): void {
     $output = $this->outputPath;
     try {
       if ($output === null) {
@@ -86,7 +90,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
         );
       }
     } catch (\Exception $e) {
-      \fwrite(\STDERR, '  Error: '.$e->getMessage()."\n");
+      ShipItLogger::err("  Error: %s\n", $e->getMessage());
       exit(1);
     }
 
@@ -101,22 +105,26 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
     self::execSteps(
       $path,
       ImmVector {
-        ImmVector { 'git', 'init' },
-        ImmVector { 'git', 'config', 'user.name', $committer['name'] },
-        ImmVector { 'git', 'config', 'user.email', $committer['email'] },
+        ImmVector {'git', 'init'},
+        ImmVector {'git', 'config', 'user.name', $committer['name']},
+        ImmVector {'git', 'config', 'user.email', $committer['email']},
       },
     );
   }
 
   public static function createNewGitRepo(
     ShipItBaseConfig $config,
-    (function(ShipItChangeset):ShipItChangeset) $filter,
+    (function(ShipItChangeset): ShipItChangeset) $filter,
     shape('name' => string, 'email' => string) $committer,
     ?string $revision = null,
   ): ShipItTempDir {
     $temp_dir = new ShipItTempDir('git-with-initial-commit');
     self::createNewGitRepoImpl(
-      $temp_dir->getPath(), $config, $filter, $committer, $revision
+      $temp_dir->getPath(),
+      $config,
+      $filter,
+      $committer,
+      $revision,
     );
     return $temp_dir;
   }
@@ -124,18 +132,26 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
   public static function createNewGitRepoAt(
     ShipItBaseConfig $config,
     string $output_dir,
-    (function(ShipItChangeset):ShipItChangeset) $filter,
+    (function(ShipItChangeset): ShipItChangeset) $filter,
     shape('name' => string, 'email' => string) $committer,
     ?string $revision = null,
   ): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\file_exists($output_dir)) {
       throw new ShipItException("path '$output_dir' already exists");
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \mkdir($output_dir, 0755, /* recursive = */ true);
 
     try {
       self::createNewGitRepoImpl(
-        $output_dir, $config, $filter, $committer, $revision
+        $output_dir,
+        $config,
+        $filter,
+        $committer,
+        $revision,
       );
     } catch (\Exception $e) {
       (
@@ -148,7 +164,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
   private static function createNewGitRepoImpl(
     string $output_dir,
     ShipItBaseConfig $config,
-    (function(ShipItChangeset):ShipItChangeset) $filter,
+    (function(ShipItChangeset): ShipItChangeset) $filter,
     shape('name' => string, 'email' => string) $committer,
     ?string $revision = null,
   ): void {
@@ -169,7 +185,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
     self::execSteps(
       $export_dir->getPath(),
       ImmVector {
-        ImmVector { 'git', 'add', '.' , '-f'},
+        ImmVector {'git', 'add', '.', '-f'},
         ImmVector {
           'git',
           'commit',
@@ -208,9 +224,13 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
     print("  Cleaning up...\n");
     // As we're done with these and nothing else has the random paths, the lock
     // files aren't needed
-    foreach ([$export_dir->getPath(), $output_dir] as $repo) {
+    foreach (vec[$export_dir->getPath(), $output_dir] as $repo) {
       $lock_file = ShipItRepo::getLockFilePathForRepoPath($repo);
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       if (\file_exists($lock_file)) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \unlink($lock_file);
       }
     }
@@ -221,7 +241,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
     ImmVector<ImmVector<string>> $steps,
   ): void {
     foreach ($steps as $step) {
-/* HH_FIXME[4128] Use ShipItShellCommand */
+      /* HH_FIXME[4128] Use ShipItShellCommand */
       ShipItUtil::shellExec(
         $path,
         /* stdin = */ null,

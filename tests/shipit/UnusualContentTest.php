@@ -5,12 +5,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/7xivqq4l
+ */
 namespace Facebook\ShipIt;
 
+use namespace HH\Lib\{Str, C};
+
+<<\Oncalls('open_source')>>
 final class UnusualContentTest extends BaseTest {
   public function examplesForRemovingFile(
-  ): array<(string, string, string, string, string)> {
-    return [
+  ): vec<(string, string, string, string, string)> {
+    return vec[
       tuple(
         __DIR__.'/git-diffs/remove-file-with-hyphen-line.header',
         __DIR__.'/git-diffs/remove-file-with-hyphen-line.patch',
@@ -33,8 +41,8 @@ final class UnusualContentTest extends BaseTest {
    * interpreted as) a section separator instead of content, forming
    * an invalid patch.
    *
-   * @dataProvider examplesForRemovingFile
    */
+  <<\DataProvider('examplesForRemovingFile')>>
   public function testRemovingFile(
     string $header_file,
     string $patch_file,
@@ -44,64 +52,36 @@ final class UnusualContentTest extends BaseTest {
   ): void {
     $header = \file_get_contents($header_file);
     $patch = \file_get_contents($patch_file);
-    $lines = \explode("\n", \trim($patch));
-    $git_version = \trim($lines[\count($lines) - 1]);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $lines = \explode("\n", Str\trim($patch));
+    $git_version = Str\trim($lines[C\count($lines) - 1]);
 
-    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch(
-      $header,
-      $patch,
-    );
-    assert($changeset !== null);
-    $this->assertSame(
-      1,
-      $changeset->getDiffs()->count(),
-    );
+    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
+    $changeset = \expect($changeset)->toNotBeNull();
+    \expect($changeset->getDiffs()->count())->toBeSame(1);
     $hunk = $changeset->getDiffs()->at(0)['body'];
-    $this->assertContains(
-      $pre,
-      $hunk,
-    );
-    $this->assertContains(
-      $special,
-      $hunk,
-    );
-    $this->assertContains(
-      $post,
-      $hunk,
-    );
-    $this->assertNotContains(
-      $git_version,
-      $hunk,
-    );
+    \expect($hunk)->toContainSubstring($pre);
+    \expect($hunk)->toContainSubstring($special);
+    \expect($hunk)->toContainSubstring($post);
+    \expect($hunk)->toNotContainSubstring($git_version);
   }
 
   public function testNoNewlineAtEOF(): void {
-    $header = \file_get_contents(
-      __DIR__.'/git-diffs/no-newline-at-eof.header',
-    );
+    $header = \file_get_contents(__DIR__.'/git-diffs/no-newline-at-eof.header');
     $patch = \file_get_contents(__DIR__.'/git-diffs/no-newline-at-eof.patch');
-    $lines = \explode("\n", \trim($patch));
-    $git_version = \trim($lines[\count($lines) - 1]);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $lines = \explode("\n", Str\trim($patch));
+    $git_version = Str\trim($lines[C\count($lines) - 1]);
 
-    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch(
-      $header,
-      $patch,
-    );
-    assert($changeset !== null);
+    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
+    $changeset = \expect($changeset)->toNotBeNull();
 
     $hunk = $changeset->getDiffs()->at(0)['body'];
-    $this->assertContains(
-      'foo',
-      $hunk,
-    );
-    $this->assertContains(
-      "\n\\ No newline at",
-      $hunk,
-    );
-    $this->assertNotContains(
-      $git_version,
-      $hunk,
-    );
+    \expect($hunk)->toContainSubstring('foo');
+    \expect($hunk)->toContainSubstring("\n\\ No newline at");
+    \expect($hunk)->toNotContainSubstring($git_version);
   }
 
   public function testAddingNewlineAtEOF(): void {
@@ -109,17 +89,14 @@ final class UnusualContentTest extends BaseTest {
       __DIR__.'/git-diffs/add-newline-at-eof.header',
     );
     $patch = \file_get_contents(__DIR__.'/git-diffs/add-newline-at-eof.patch');
-    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch(
-      $header,
-      $patch,
-    );
-    assert($changeset !== null);
+    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
+    $changeset = \expect($changeset)->toNotBeNull();
 
     $hunk = $changeset->getDiffs()->at(0)['body'];
-    $this->assertContains(' foo', $hunk);
-    $this->assertContains('-bar', $hunk);
-    $this->assertContains('+bar', $hunk);
-    $this->assertContains('\ No newline at end of file', $hunk);
+    \expect($hunk)->toContainSubstring(' foo');
+    \expect($hunk)->toContainSubstring('-bar');
+    \expect($hunk)->toContainSubstring('+bar');
+    \expect($hunk)->toContainSubstring('\ No newline at end of file');
   }
 
   public function testStripFileListFromShortCommit(): void {
@@ -129,14 +106,11 @@ final class UnusualContentTest extends BaseTest {
     $patch = \file_get_contents(
       __DIR__.'/git-diffs/no-summary-in-message.patch',
     );
-    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch(
-      $header,
-      $patch,
-    );
-    assert($changeset !== null);
+    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
+    $changeset = \expect($changeset)->toNotBeNull();
 
     $message = $changeset->getMessage();
-    $this->assertEquals("", $message);
+    \expect($message)->toBePHPEqual("");
   }
 
   public function testStripFileListFromLongCommit(): void {
@@ -146,23 +120,18 @@ final class UnusualContentTest extends BaseTest {
     $patch = \file_get_contents(
       __DIR__.'/git-diffs/has-summary-in-message.patch',
     );
-    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch(
-      $header,
-      $patch,
-    );
-    assert($changeset !== null);
+    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
+    $changeset = \expect($changeset)->toNotBeNull();
 
     $message = $changeset->getMessage();
-    $this->assertContains(
+    \expect($changeset->getSubject())->toContainSubstring(
       'This is a long commit message.',
-      $changeset->getSubject(),
     );
-    $this->assertEquals(
+    \expect($message)->toBePHPEqual(
       "This is a really long commit message.\n\n".
       "And it also has a \"---\" block in it.\n\n".
       "---\n\n".
       "More stuff!!",
-      $message
     );
   }
 
@@ -170,26 +139,11 @@ final class UnusualContentTest extends BaseTest {
     $header = \file_get_contents(
       __DIR__.'/hg-diffs/has-diff-in-message.header',
     );
-    $patch = \file_get_contents(
-      __DIR__.'/hg-diffs/has-diff-in-message.patch',
-    );
-    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch(
-      $header,
-      $patch,
-    );
-    assert($changeset !== null);
-
-    $this->assertContains(
-      'diff --git a/',
-      $changeset->getMessage(),
-    );
-    $this->assertContains(
-      '--- a/',
-      $changeset->getMessage(),
-    );
-    $this->assertContains(
-      '+++ b/',
-      $changeset->getMessage(),
-    );
+    $patch = \file_get_contents(__DIR__.'/hg-diffs/has-diff-in-message.patch');
+    $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
+    $changeset = \expect($changeset)->toNotBeNull();
+    \expect($changeset->getMessage())->toContainSubstring('diff --git a/');
+    \expect($changeset->getMessage())->toContainSubstring('--- a/');
+    \expect($changeset->getMessage())->toContainSubstring('+++ b/');
   }
 }

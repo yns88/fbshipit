@@ -5,18 +5,21 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/1op3xd93
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookexperimentalBuckitTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
-      'fbcode/experimental/pjameson/buckit/buckit/LICENSE' =>
-        'LICENSE',
-      'fbcode/experimental/pjameson/buckit/buckit/PATENTS' =>
-        'PATENTS',
-      'fbcode/experimental/pjameson/buckit/buckit/README' =>
-        'README',
+      'fbcode/experimental/pjameson/buckit/buckit/LICENSE' => 'LICENSE',
+      'fbcode/experimental/pjameson/buckit/buckit/PATENTS' => 'PATENTS',
+      'fbcode/experimental/pjameson/buckit/buckit/README' => 'README',
       'fbcode/fs_image/chickens.py' => 'fs_image/chickens.py',
       'fbcode/fs_image/TARGETS' => 'fs_image/BUCK',
       'fbcode/fs_image/facebook/dog' => null,
@@ -31,8 +34,7 @@ final class FacebookexperimentalBuckitTest extends FBConfigBaseTest {
         'infra_macros/.buckconfig',
       'fbcode/tools/build/buck/infra_macros/package.json.oss' =>
         'infra_macros/package.json',
-      'fbcode/tools/build/buck/infra_macros/TARGETS' =>
-        'infra_macros/BUCK',
+      'fbcode/tools/build/buck/infra_macros/TARGETS' => 'infra_macros/BUCK',
       'fbcode/tools/build/buck/infra_macros/fbcode_macros/TARGETS' =>
         'infra_macros/fbcode_macros/TARGETS',
       'fbcode/tools/build/buck/infra_macros/fbcode_macros/BUCK' =>
@@ -43,8 +45,7 @@ final class FacebookexperimentalBuckitTest extends FBConfigBaseTest {
         null,
       'fbcode/tools/build/buck/infra_macros/macro_lib/convert/java_plugins.py' =>
         null,
-      'fbcode/tools/build/buck/infra_macros/macro_lib/convert/java.py' =>
-        null,
+      'fbcode/tools/build/buck/infra_macros/macro_lib/convert/java.py' => null,
       'fbcode/tools/build/buck/infra_macros/fbcode_macros/build_defs/platform_utils.bzl' =>
         'infra_macros/fbcode_macros/build_defs/platform_utils.bzl',
       'fbcode/tools/build/buck/infra_macros/fbcode_macros/build_defs/java_binary.bzl' =>
@@ -103,8 +104,7 @@ final class FacebookexperimentalBuckitTest extends FBConfigBaseTest {
         null,
       'fbcode/tools/build/buck/infra_macros/fbcode_macros/build_defs/allocator_targets.bzl' =>
         null,
-      'fbcode/tools/build/buck/infra_macros/fbcode_macros/.buckconfig' =>
-        null,
+      'fbcode/tools/build/buck/infra_macros/fbcode_macros/.buckconfig' => null,
       'fbcode/tools/build/buck/infra_macros/fbcode_macros/build_defs/build_mode_overrides.bzl.oss' =>
         'infra_macros/fbcode_macros/build_defs/build_mode_overrides.bzl',
       'fbcode/tools/build/buck/infra_macros/fbcode_macros/build_defs/dewey_artifact.bzl.oss' =>

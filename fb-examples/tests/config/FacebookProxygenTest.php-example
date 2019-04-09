@@ -5,10 +5,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/4yjxhjxs
+ */
 namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\FBCodeBuilder;
 
+<<\Oncalls('open_source')>>
 final class FacebookProxygenTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -16,8 +22,8 @@ final class FacebookProxygenTest extends FBConfigBaseTest {
       'fbcode/proxygen/lib' => 'proxygen/lib',
       'fbcode/proxygen/public_tld/LICENSE' => 'LICENSE',
       'fbcode/not_proxygen/lib' => null,
-      'fbcode/proxygen/lib/http/codec/HTTPCodec.h'
-        => 'proxygen/lib/http/codec/HTTPCodec.h',
+      'fbcode/proxygen/lib/http/codec/HTTPCodec.h' =>
+        'proxygen/lib/http/codec/HTTPCodec.h',
       // Don't bother Github users with code only relevant internally.
       'build/facebook_cheesecake.py' => null,
       // fbcode_builder is shared between several projects, but it's easiest

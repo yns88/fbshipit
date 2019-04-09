@@ -6,7 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/5oj8j0ki
+ */
+
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 /**
  * Comments or uncomments specially marked lines.
@@ -14,14 +21,14 @@ namespace Facebook\ShipIt;
  * Eg if:
  *  - comment start is '//'
  *  - comment end is null
- *  - marker is '@oss-disable'
+ *  - marker is '@x-oss-disable'
  *
  * commentLines():
- *  - foo() // @oss-disable
- *  + // @oss-disable: foo()
+ *  - foo() // @x-oss-disable
+ *  + // @x-oss-disable: foo()
  * uncommentLines():
- *  - // @oss-disable: foo()
- *  + foo() // @oss-disable
+ *  - // @x-oss-disable: foo()
+ *  + foo() // @x-oss-disable
  */
 final class ShipItConditionalLinesFilter {
   public static function commentLines(
@@ -31,11 +38,16 @@ final class ShipItConditionalLinesFilter {
     ?string $comment_end = null,
     bool $remove_content = false,
   ): ShipItChangeset {
-    $pattern =
-      '/^([-+ ]\s*)(\S.*) '.
+    $pattern = '/^([-+ ]\s*)(\S.*) '.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_quote($comment_start, '/').
       ' '.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_quote($marker, '/').
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       ($comment_end === null ? '' : (' '.\preg_quote($comment_end, '/'))).
       '$/';
 
@@ -56,12 +68,17 @@ final class ShipItConditionalLinesFilter {
     string $comment_start,
     ?string $comment_end = null,
   ): ShipItChangeset {
-    $pattern =
-      '/^([-+ ]\s*)'.
+    $pattern = '/^([-+ ]\s*)'.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_quote($comment_start, '/').
       ' '.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \preg_quote($marker, '/').
       ': (.+)'.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       ($comment_end === null ? '' : (' '.\preg_quote($comment_end, '/'))).
       '$/';
     $replacement = '\\1\\2 '.$comment_start.' '.$marker;
@@ -79,11 +96,15 @@ final class ShipItConditionalLinesFilter {
   ): ShipItChangeset {
     $diffs = Vector {};
     foreach ($changeset->getDiffs() as $diff) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $diff['body'] = (new ImmVector(\explode("\n", $diff['body'])))
         ->map(
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $line ==> \preg_replace($pattern, $replacement, $line, /* limit */ 1),
         )
-        |> \implode("\n", $$);
+        |> Str\join($$, "\n");
       $diffs[] = $diff;
     }
     return $changeset->withDiffs($diffs->toImmVector());

@@ -6,25 +6,40 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/90cr93g9
+ */
+
 namespace Facebook\ShipIt;
 
-enum ShipItScopedFlockOperation: int {
+enum ShipItScopedFlockOperation: int as int {
   MAKE_EXCLUSIVE = \LOCK_EX;
   MAKE_SHARED = \LOCK_SH;
   RELEASE = \LOCK_UN;
 }
 
-class ShipItScopedFlock {
-  private bool $debug;
+final class ShipItScopedFlock {
+  const int DEBUG_EXCLUSIVE = 1;
+  const int DEBUG_SHARED = 2;
+  const int DEBUG_RELEASE = 4;
+  const int DEBUG_ALL = 7;
   private bool $released = false;
+  public static int $verbose = 0;
 
-  public static function createShared(
-    string $path,
-  ): ShipItScopedFlock {
+  public static function createShared(string $path): ShipItScopedFlock {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $dir = \dirname($path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists($dir)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \mkdir($dir, /* mode = */ 0755, /* recursive = */ true);
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fp = \fopen($path, 'w+');
     if (!$fp) {
       throw new \Exception('Failed to fopen: '.$path);
@@ -59,65 +74,50 @@ class ShipItScopedFlock {
     private ShipItScopedFlockOperation $constructBehavior,
     private ShipItScopedFlockOperation $destructBehavior,
   ) {
-    $this->debug = \getenv('FBSHIPIT_DEBUG_FLOCK');
 
     switch ($constructBehavior) {
       case ShipItScopedFlockOperation::MAKE_EXCLUSIVE:
-        $this->debugWrite('Acquiring exclusive lock...');
+        $this->debugWrite('Acquiring exclusive lock...', self::DEBUG_EXCLUSIVE);
         break;
       case ShipItScopedFlockOperation::MAKE_SHARED:
-        $this->debugWrite('Acquiring shared lock...');
+        $this->debugWrite('Acquiring shared lock...', self::DEBUG_SHARED);
         break;
       default:
         throw new \Exception('Invalid lock operation');
     }
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\flock($fp, $constructBehavior)) {
       throw new \Exception('Failed to acquire lock');
     }
-
-    $this->debugWrite('...lock acquired.');
   }
 
   public function release(): void {
-    invariant(
-      $this->released === false,
-      "Tried to release lock twice",
-    );
+    invariant($this->released === false, "Tried to release lock twice");
 
     switch ($this->destructBehavior) {
       case ShipItScopedFlockOperation::MAKE_SHARED:
-        $this->debugWrite('Downgrading to shared lock...');
-        $after = "...lock downgraded.";
+        $this->debugWrite('Downgrading to shared lock...', self::DEBUG_RELEASE);
         break;
       case ShipItScopedFlockOperation::RELEASE:
-        $this->debugWrite('Releasing lock...');
-        $after = '...lock released.';
+        $this->debugWrite('Releasing lock...', self::DEBUG_RELEASE);
         break;
       default:
         throw new \Exception('Invalid release operation');
     }
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\flock($this->fp, $this->destructBehavior)) {
       throw new \Exception('Failed to weaken lock');
     }
-    $this->debugWrite($after);
     $this->released = true;
   }
 
-  private function debugWrite(string $message): void {
-    if (!$this->debug) {
-      return;
+  private function debugWrite(string $message, int $level): void {
+    if (self::$verbose & $level) {
+      ShipItLogger::err("  [flock] %s: %s\n", $message, $this->path);
     }
-    \fprintf(\STDERR, "  [flock] %s\n    %s\n", $message, $this->path);
-  }
-
-  <<__OptionalDestruct>>
-  public function __destruct() {
-    if ($this->released) {
-      return;
-    }
-
-    $this->release();
   }
 }

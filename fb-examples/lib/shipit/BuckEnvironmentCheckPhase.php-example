@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/7ebfn23j
+ */
 namespace Facebook\ShipIt;
 // Not strict because variadics aren't currently supported by strict
 
@@ -13,7 +18,7 @@ final class BuckEnvironmentCheckPhase extends EnvironmentCheckPhase {
     int $extra_flags,
     string ...$command
   ): string {
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     return ShipItUtil::shellExec(
       /* path = */ '.',
       /* stdin = */ null,
@@ -26,39 +31,45 @@ final class BuckEnvironmentCheckPhase extends EnvironmentCheckPhase {
   public function runImpl(ShipItBaseConfig $_config): void {
     $ant_v = self::runCommand(
       /* flags = */ 0,
-      'ant', '-version',
+      'ant',
+      '-version',
     );
-    $match = array();
+    $match = varray[];
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\preg_match('@version ([0-9\.]+)@', $ant_v, &$match)) {
-      \fprintf(\STDERR, "Couldn't identify ant version: %s\n", $ant_v);
+      ShipItLogger::err( "Couldn't identify ant version: %s\n", $ant_v);
       exit(1);
     }
     if ($match[1] < '1.9') {
-      \fprintf(\STDERR, "Needed ant 1.9, got %s\n", $match[1]);
+      ShipItLogger::err( "Needed ant 1.9, got %s\n", $match[1]);
       exit(1);
     }
 
-    $java_v = self::runCommand(
-      ShipItUtil::RETURN_STDERR,
-      'java', '-version',
-    );
-    $match = array();
+    $java_v = self::runCommand(ShipItUtil::RETURN_STDERR, 'java', '-version');
+    $match = varray[];
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\preg_match('@version "([0-9\.]+)@', $java_v, &$match)) {
-      \fprintf(\STDERR, "Couldn't identify java version: %s\n", $java_v);
+      ShipItLogger::err( "Couldn't identify java version: %s\n", $java_v);
       exit(1);
     }
 
     if ($match[1] < '1.7') {
-      \fprintf(\STDERR, "Needed Java 1.7, got %s\n", $match[1]);
+      ShipItLogger::err("Needed Java 1.7, got %s\n", $match[1]);
       exit(1);
     }
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\getenv('ANDROID_HOME') === false) {
-      \fwrite(\STDERR, "ANDROID_HOME env variable not set\n");
+      ShipItLogger::err("ANDROID_HOME env variable not set\n");
       exit(1);
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\getenv('NDK_HOME') === false) {
-      \fwrite(\STDERR, "NDK_HOME env variable not set\n");
+      ShipItLogger::err("NDK_HOME env variable not set\n");
       exit(1);
     }
   }

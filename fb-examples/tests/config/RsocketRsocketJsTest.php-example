@@ -5,16 +5,21 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/nzc5mhbg
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class RsocketRsocketJsTest extends FBConfigBaseTest {
   const string RSOCKET = 'fbcode/lithium/rsocket-js/oss';
 
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
-      self::RSOCKET.'/docs/00-index.md' =>
-        'docs/00-index.md',
+      self::RSOCKET.'/docs/00-index.md' => 'docs/00-index.md',
       self::RSOCKET.'/packages/rsocket-core/src/index.js' =>
         'packages/rsocket-core/src/index.js',
     };

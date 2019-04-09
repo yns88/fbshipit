@@ -5,17 +5,23 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/a6r283ly
+ */
 namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\ShipItChangeset;
 
+
+<<\Oncalls('open_source')>>
 final class FacebookChefCookbooksTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       # Example things that *should* make it through
-      'chef/cookbooks/core/fb_cron/README.md' =>
-        'cookbooks/fb_cron/README.md',
+      'chef/cookbooks/core/fb_cron/README.md' => 'cookbooks/fb_cron/README.md',
       'chef/cookbooks/core/fb_cron/recipes/default.rb' =>
         'cookbooks/fb_cron/recipes/default.rb',
       # Example of a cookbook not in the list
@@ -57,32 +63,27 @@ final class FacebookChefCookbooksTest extends FBConfigBaseTest {
     $in = (new ShipItChangeset())
       ->withMessage(
         "Summary: stuff here\n  chef_test_hosts: hostname1, hostname2\n\n".
-          "Reviewers: phild\n"
-        );
+        "Reviewers: phild\n",
+      );
     $out = FacebookChefCookbooks::stripChefTestHostsHeader($in);
-    $this->assertSame(
+    \expect($out->getMessage())->toBeSame(
       "Summary: stuff here\n\nReviewers: phild\n",
-      $out->getMessage(),
     );
     $in = (new ShipItChangeset())
       ->withMessage(
         "Summary: chef_test_hosts: hostname1, hostname2\n\n".
-          "Reviewers: phild\n"
-        );
+        "Reviewers: phild\n",
+      );
     $out = FacebookChefCookbooks::stripChefTestHostsHeader($in);
-    $this->assertSame(
-      "Summary:\n\nReviewers: phild\n",
-      $out->getMessage(),
-    );
+    \expect($out->getMessage())->toBeSame("Summary:\n\nReviewers: phild\n");
     $in = (new ShipItChangeset())
       ->withMessage(
         "Summary:\nSome Message here\n\nchef_test_hosts: ".
-          "hostname1, hostname2\n\nReviewers: phild\n"
-        );
+        "hostname1, hostname2\n\nReviewers: phild\n",
+      );
     $out = FacebookChefCookbooks::stripChefTestHostsHeader($in);
-    $this->assertSame(
+    \expect($out->getMessage())->toBeSame(
       "Summary:\nSome Message here\n\nReviewers: phild\n",
-      $out->getMessage(),
     );
   }
 }

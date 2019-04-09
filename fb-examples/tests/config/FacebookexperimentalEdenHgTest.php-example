@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/4csybil6
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookexperimentalEdenHgTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -15,8 +21,8 @@ final class FacebookexperimentalEdenHgTest extends FBConfigBaseTest {
       'fbcode/eden/hg/LICENSE' => 'eden/hg/LICENSE',
       'fbcode/eden/hg/README.md' => 'eden/hg/README.md',
       'fbcode/eden/hg/eden/__init__.py' => 'eden/hg/eden/__init__.py',
-      'fbcode/eden/hg/eden/FILE_WITH_NO_EXTENSION'
-        => 'eden/hg/eden/FILE_WITH_NO_EXTENSION',
+      'fbcode/eden/hg/eden/FILE_WITH_NO_EXTENSION' =>
+        'eden/hg/eden/FILE_WITH_NO_EXTENSION',
 
       # Files in fbcode/eden/hg/oss/ should end up in the root...
       'fbcode/eden/hg/oss/.gitignore' => '.gitignore',
@@ -25,12 +31,6 @@ final class FacebookexperimentalEdenHgTest extends FBConfigBaseTest {
 
       # ...except for README.facebook
       'fbcode/eden/hg/oss/README.facebook' => null,
-
-      # Code under fbcode/eden/hg/eden/ should be excluded because it should be
-      # exported to https://github.com/facebookexperimental/eden-hg instead.
-      'fbcode/eden/hg/eden/__init__.py' => 'eden/hg/eden/__init__.py',
-      'fbcode/eden/hg/eden/FILE_WITH_NO_EXTENSION'
-        => 'eden/hg/eden/FILE_WITH_NO_EXTENSION',
     };
   }
 }

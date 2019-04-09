@@ -5,11 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/st5ajaqm
+ */
 namespace Facebook\ImportIt;
 
-use type Facebook\ShipIt\ {
-  ShipItShellCommand
-};
+use type Facebook\ShipIt\{ShipItShellCommand};
 
 final class FBRepoInitPhase extends \Facebook\ShipIt\ShipItPhase {
   private bool $allowNuke = false;
@@ -49,11 +52,8 @@ final class FBRepoInitPhase extends \Facebook\ShipIt\ShipItPhase {
   }
 
   <<__Override>>
-  public function runImpl(
-    \Facebook\ShipIt\ShipItBaseConfig $config,
-  ): void {
-    $local_path =
-      $this->side === \Facebook\ShipIt\ShipItRepoSide::SOURCE
+  public function runImpl(\Facebook\ShipIt\ShipItBaseConfig $config): void {
+    $local_path = $this->side === \Facebook\ShipIt\ShipItRepoSide::SOURCE
       ? $config->getSourcePath()
       : $config->getDestinationPath();
 
@@ -61,18 +61,22 @@ final class FBRepoInitPhase extends \Facebook\ShipIt\ShipItPhase {
       $local_path,
     );
 
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\is_dir($local_path)) {
       return;
     }
 
-    $ex_lock = $sh_lock->getExclusive();
-
     // In case the src repo dir was specified by hand
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\basename($local_path) !== $this->name) {
-      \fprintf(
-        \STDERR,
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      ShipItLogger::err(
         'Facebook clone scripts require directory names to match repo names: '.
         "got '%s', expected '%s'\n",
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \basename($local_path),
         $this->name,
       );
@@ -80,23 +84,33 @@ final class FBRepoInitPhase extends \Facebook\ShipIt\ShipItPhase {
     }
 
     $command = $this->getCloneCommand();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $local_parent_path = \dirname($local_path);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\is_dir($local_parent_path)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \mkdir($local_parent_path, 0755, /* recursive = */ true);
     }
     // Make sure that "remove stale temp file" jobs don't clean this up
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \touch($local_parent_path);
 
     (new ShipItShellCommand($local_parent_path, ...$command))
       ->setRetries(2)
       ->setFailureHandler(
-        $_ ==> (new ShipItShellCommand(
-          $local_parent_path,
-          'rm',
-          '-rf',
-          '--preserve-root',
-          $local_path,
-        ))->runSynchronously()
+        $_ ==> (
+          new ShipItShellCommand(
+            $local_parent_path,
+            'rm',
+            '-rf',
+            '--preserve-root',
+            $local_path,
+          )
+        )->runSynchronously(),
       )
       ->runSynchronously();
   }

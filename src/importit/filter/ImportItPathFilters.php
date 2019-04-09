@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/d1j5axht
+ */
 namespace Facebook\ImportIt;
 
 abstract final class ImportItPathFilters {
@@ -53,6 +58,8 @@ abstract final class ImportItPathFilters {
     // that if two src path entries exist such that one of them is a prefix of
     // the other, the prefix always appears last.  This ensures that mappings
     // for subdirectories always take precedence over less-specific mappings.
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \krsort(&$reverse_mapping);
 
     return $reverse_mapping->toImmMap();

@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/gl8oxfjx
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 type ShipItGitHubCredentials = shape(
   'name' => string,
@@ -43,10 +50,8 @@ abstract class ShipItGitHubUtils {
     ShipItTransport $transport,
     ?ShipItGitHubCredentials $credentials,
   ): void {
-    $git_config = ($key, $value) ==> new ShipItShellCommand(
-      $local_path,
-      'git', 'config', $key, $value,
-    );
+    $git_config = (string $key, string $value) ==>
+      new ShipItShellCommand($local_path, 'git', 'config', $key, $value);
 
     $origin = null;
 
@@ -56,7 +61,7 @@ abstract class ShipItGitHubUtils {
           $credentials === null,
           'Credentials should not be specified for SSH transport',
         );
-        $origin = \sprintf(
+        $origin = Str\format(
           'git@github.com:%s/%s.git',
           $organization,
           $project,
@@ -65,8 +70,11 @@ abstract class ShipItGitHubUtils {
         self::cloneAndVerifyRepo($origin, $local_path);
         break;
       case ShipItTransport::HTTPS:
-        $origin =
-          \sprintf('https://github.com/%s/%s.git', $organization, $project);
+        $origin = Str\format(
+          'https://github.com/%s/%s.git',
+          $organization,
+          $project,
+        );
         if ($credentials === null) {
           self::cloneAndVerifyRepo($origin, $local_path);
           break;
@@ -79,11 +87,6 @@ abstract class ShipItGitHubUtils {
         break;
     }
 
-    invariant(
-      $origin !== null,
-      'No origin specified :(',
-    );
-
     $git_config('remote.origin.url', $origin)->runSynchronously();
   }
 
@@ -95,20 +98,31 @@ abstract class ShipItGitHubUtils {
     if ($transport !== ShipItTransport::HTTPS) {
       return $remote_url;
     }
-    $access_token = Shapes::idx($credentials, 'access_token');
-    $auth_user = $access_token !== null
-      ? $access_token
-      : \sprintf(
+    $access_token = $credentials['access_token'];
+    $auth_user = $access_token;
+    if ($auth_user === null) {
+      $user = $credentials['user'];
+      $password = $credentials['password'];
+      invariant(
+        $user is nonnull && $password is nonnull,
+        'Either an access token or user/password is required.',
+      );
+      $auth_user = Str\format(
           '%s:%s',
-          \urlencode($credentials['user']),
-          \urlencode($credentials['password']),
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+          \urlencode($user),
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+          \urlencode($password),
         );
-    if (\strpos($remote_url, self::GIT_HTTPS_URL_PREFIX) === 0) {
-      $prefix_len = \strlen(self::GIT_HTTPS_URL_PREFIX);
-      return \substr($remote_url, 0, $prefix_len).
+    }
+    if (Str\search($remote_url, self::GIT_HTTPS_URL_PREFIX) === 0) {
+      $prefix_len = Str\length(self::GIT_HTTPS_URL_PREFIX);
+      return Str\slice($remote_url, 0, $prefix_len).
         $auth_user.
         '@'.
-        \substr($remote_url, $prefix_len);
+        Str\slice($remote_url, $prefix_len);
     }
     return $remote_url;
   }
@@ -117,6 +131,8 @@ abstract class ShipItGitHubUtils {
     string $origin,
     string $local_path,
   ): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists($local_path)) {
       ShipItRepoGIT::cloneRepo(
         $origin,
@@ -124,6 +140,8 @@ abstract class ShipItGitHubUtils {
       );
     }
     invariant(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \file_exists($local_path.'/.git'),
       '%s is not a git repo',
       $local_path,
@@ -134,53 +152,74 @@ abstract class ShipItGitHubUtils {
     ShipItGitHubCredentials $credentials,
     string $path,
   ): Awaitable<ImmVector<string>> {
-    $results = Vector { };
+    $results = Vector {};
     $request_headers = Vector {
-      'Accept: application/vnd.github.v3.patch'
+      'Accept: application/vnd.github.v3.patch',
     };
 
-    $access_token = Shapes::idx($credentials, 'access_token');
+    $access_token = $credentials['access_token'];
     $use_oauth = $access_token !== null;
 
     if ($use_oauth) {
       $request_headers->add(
-        \sprintf('Authorization: token %s', $access_token),
+        Str\format('Authorization: token %s', $access_token ?? 'null'),
       );
     }
 
-    $url = \sprintf('https://api.github.com%s', $path);
+    $url = Str\format('https://api.github.com%s', $path);
 
     while ($url !== null) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $ch = \curl_init($url);
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \curl_setopt($ch, \CURLOPT_USERAGENT, 'Facebook/ShipIt');
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \curl_setopt($ch, \CURLOPT_HTTPHEADER, $request_headers);
       if (!$use_oauth) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \curl_setopt(
           $ch,
           \CURLOPT_USERPWD,
-          \sprintf('%s:%s', $credentials['user'], $credentials['password']),
+          Str\format(
+            '%s:%s',
+            $credentials['user'] ?? 'null',
+            $credentials['password'] ?? 'null',
+          ),
         );
       }
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \curl_setopt($ch, \CURLOPT_HEADER, 1);
+      /* HH_IGNORE_ERROR[5583] Intentional serial await */
       $response = await \HH\Asio\curl_exec($ch);
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $header_len = \curl_getinfo($ch, \CURLINFO_HEADER_SIZE);
-      $response_header = \substr($response, 0, $header_len);
-      $results[] = \substr($response, $header_len);
+      $response_header = Str\slice($response, 0, $header_len);
+      $results[] = Str\slice($response, $header_len);
 
       $url = null;
-      foreach (\explode("\n", \trim($response_header)) as $header_line) {
-        if (\substr($header_line, 0, 5) === 'HTTP/') {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      foreach (\explode("\n", Str\trim($response_header)) as $header_line) {
+        if (Str\slice($header_line, 0, 5) === 'HTTP/') {
           continue;
         }
-        $sep = \strpos($header_line, ':');
-        if ($sep === false) {
+        $sep = Str\search($header_line, ':');
+        if ($sep === null) {
           continue;
         }
 
-        $name = \strtolower(\substr($header_line, 0, $sep));
+        $name = Str\lowercase(Str\slice($header_line, 0, $sep));
         if ($name === 'link') {
-          $matches = [];
+          $matches = darray[];
           if (
+            /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+            /* HH_IGNORE_ERROR[4107] __PHPStdLib */
             \preg_match(
               '@<(?<next>https://api.github.com[^>]+)>; rel="next"@',
               $header_line,

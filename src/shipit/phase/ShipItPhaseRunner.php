@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/8yredn7r
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\{Str, Math};
 
 class ShipItPhaseRunner {
   public function __construct(
@@ -30,50 +37,50 @@ class ShipItPhaseRunner {
       shape(
         'long_name' => 'base-dir::',
         'description' => 'Path to store repositories',
-        'write' => $x ==>
-          $this->config = $this->config->withBaseDirectory(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withBaseDirectory(Str\trim($x)),
       ),
       shape(
         'long_name' => 'temp-dir::',
         'replacement' => 'base-dir',
-        'write' => $x ==>
-          $this->config = $this->config->withBaseDirectory(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withBaseDirectory(Str\trim($x)),
       ),
       shape(
         'long_name' => 'source-repo-dir::',
         'description' => 'path to fetch source from',
-        'write' => $x ==>
-          $this->config = $this->config->withSourcePath(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withSourcePath(Str\trim($x)),
       ),
       shape(
         'long_name' => 'destination-repo-dir::',
         'description' => 'path to push filtered changes to',
-        'write' => $x ==>
-          $this->config = $this->config->withDestinationPath(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withDestinationPath(Str\trim($x)),
       ),
       shape(
         'long_name' => 'source-branch::',
         'description' => "Branch to sync from",
-        'write' => $x ==>
-          $this->config = $this->config->withSourceBranch(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withSourceBranch(Str\trim($x)),
       ),
       shape(
         'long_name' => 'src-branch::',
         'replacement' => 'source-branch',
-        'write' => $x ==>
-          $this->config = $this->config->withSourceBranch(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withSourceBranch(Str\trim($x)),
       ),
       shape(
         'long_name' => 'destination-branch::',
         'description' => 'Branch to sync to',
-        'write' => $x ==>
-          $this->config = $this->config->withDestinationBranch(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withDestinationBranch(Str\trim($x)),
       ),
       shape(
         'long_name' => 'dest-branch::',
         'replacement' => 'destination-branch',
-        'write' => $x ==>
-          $this->config = $this->config->withDestinationBranch(\trim($x)),
+        'write' => $x ==> $this->config = $this->config
+          ->withDestinationBranch(Str\trim($x)),
       ),
       shape(
         'long_name' => 'debug',
@@ -82,15 +89,14 @@ class ShipItPhaseRunner {
       shape(
         'long_name' => 'skip-project-specific',
         'description' => 'Skip anything project-specific',
-        'write' => $_ ==>
-          $this->config = $this->config->withProjectSpecificPhasesDisabled(),
+        'write' => $_ ==> $this->config = $this->config
+          ->withProjectSpecificPhasesDisabled(),
       ),
       shape(
         'short_name' => 'v',
         'long_name' => 'verbose',
         'description' => 'Give more verbose output',
-        'write' => $x ==>
-          $this->config = $this->config->withVerboseEnabled(),
+        'write' => $_ ==> $this->config = $this->config->withVerboseEnabled(),
       ),
     };
   }
@@ -115,8 +121,9 @@ class ShipItPhaseRunner {
       );
 
       invariant(
-        !($handler !== null
-          && !($description !== null || $replacement !== null)),
+        !(
+          $handler !== null && !($description !== null || $replacement !== null)
+        ),
         '--%s does something, and is undocumented',
         $name,
       );
@@ -127,18 +134,22 @@ class ShipItPhaseRunner {
 
   final protected function parseOptions(
     ImmVector<ShipItCLIArgument> $config,
-    array<string, mixed> $raw_opts,
+    dict<string, mixed> $raw_opts,
   ): void {
     foreach ($config as $opt) {
-      $is_optional = \substr($opt['long_name'], -2) === '::';
-      $is_required = !$is_optional && \substr($opt['long_name'], -1) === ':';
+      $is_optional = Str\slice($opt['long_name'], -2) === '::';
+      $is_required = !$is_optional && Str\slice($opt['long_name'], -1) === ':';
       $is_bool = !$is_optional && !$is_required;
-      $short = \rtrim(Shapes::idx($opt, 'short_name', ''), ':');
-      $long = \rtrim($opt['long_name'], ':');
+      $short = Str\trim_right(Shapes::idx($opt, 'short_name', ''), ':');
+      $long = Str\trim_right($opt['long_name'], ':');
 
-      if ($short && \array_key_exists($short, $raw_opts)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      if ($short is nonnull && \array_key_exists($short, $raw_opts)) {
         $key = '-'.$short;
         $value = $is_bool ? true : $raw_opts[$short];
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       } else if (\array_key_exists($long, $raw_opts)) {
         $key = '--'.$long;
         $value = $is_bool ? true : $raw_opts[$long];
@@ -160,7 +171,7 @@ class ShipItPhaseRunner {
 
       $handler = Shapes::idx($opt, 'write');
       if ($handler && $value !== '' && $value !== false) {
-        $handler((string) $value);
+        $handler((string)$value);
       }
 
       if ($key === null) {
@@ -176,8 +187,7 @@ class ShipItPhaseRunner {
 
       $replacement = Shapes::idx($opt, 'replacement');
       if ($replacement !== null) {
-        \fprintf(
-          \STDERR,
+        ShipItLogger::err(
           "%s %s, use %s instead\n",
           $key,
           $handler ? 'is deprecated' : 'has been removed',
@@ -193,19 +203,25 @@ class ShipItPhaseRunner {
           'documented replacement.',
           $key,
         );
-        \fprintf(\STDERR, "%s is deprecated and a no-op\n", $key);
+        ShipItLogger::err( "%s is deprecated and a no-op\n", $key);
       }
     }
   }
 
-  protected function parseCLIArguments(
-  ): void {
+  protected function parseCLIArguments(): void {
     $config = $this->getCLIArguments();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $raw_opts = \getopt(
-      \implode('', $config->map($opt ==> Shapes::idx($opt, 'short_name', ''))),
+      Str\join($config->map($opt ==> Shapes::idx($opt, 'short_name', '')), ''),
       $config->map($opt ==> $opt['long_name']),
-    );
+    )
+      |> dict($$);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\array_key_exists('h', $raw_opts) ||
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \array_key_exists('help', $raw_opts)) {
       self::printHelp($config);
       exit(0);
@@ -216,7 +232,8 @@ class ShipItPhaseRunner {
   protected static function printHelp(
     ImmVector<ShipItCLIArgument> $config,
   ): void {
-    $filename = /* UNSAFE_EXPR */ $_SERVER['SCRIPT_NAME'];
+    /* HH_FIXME[2050] Previously hidden by unsafe_expr */
+    $filename = $_SERVER['SCRIPT_NAME'];
     $max_left = 0;
     $rows = Map {};
     foreach ($config as $opt) {
@@ -237,27 +254,32 @@ class ShipItPhaseRunner {
 
       $short = Shapes::idx($opt, 'short_name');
       $long = $opt['long_name'];
-      $is_optional = \substr($long, -2) === '::';
-      $is_required = !$is_optional && \substr($long, -1) === ':';
-      $long = \rtrim($long, ':');
-      $prefix = $short !== null
-        ? '-'.\rtrim($short, ':').', '
-        : '';
+      $is_optional = Str\slice($long, -2) === '::';
+      $is_required = !$is_optional && Str\slice($long, -1) === ':';
+      $long = Str\trim_right($long, ':');
+      $prefix = $short !== null ? '-'.Str\trim_right($short, ':').', ' : '';
       $suffix = $is_optional ? "=VALUE" : ($is_required ? "=$long" : '');
       $left = '  '.$prefix.'--'.$long.$suffix;
-      $max_left = \max(\strlen($left), $max_left);
+      $max_left = Math\maxva(Str\length($left), $max_left);
 
       $rows[$long] = tuple($left, $description);
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \ksort(&$rows);
 
     $help = $rows['help'];
     $rows->removeKey('help');
-    $rows = (Map { 'help' => $help })->setAll($rows);
+    $rows = (Map {'help' => $help})->setAll($rows);
 
-    $opt_help = \implode("", $rows->map($row ==>
-      \sprintf("%s  %s\n", \str_pad($row[0], $max_left), $row[1])
-    ));
+    $opt_help = Str\join(
+      $rows->map(
+        $row ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      Str\format("%s  %s\n", \str_pad($row[0], $max_left), $row[1]),
+      ),
+      "",
+    );
     echo <<<EOF
 Usage:
 ${filename} [options]

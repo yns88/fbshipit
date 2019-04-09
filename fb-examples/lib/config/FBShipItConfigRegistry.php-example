@@ -1,106 +1,183 @@
-<?hh //strict
+<?hh // strict
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/kt4fmxnx
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ FBShipItConfig;
+use namespace HH\Lib\{C, Keyset, Str, Vec};
+use type Facebook\ShipIt\{FBShipItConfig, ShipItShellCommand};
 
 final class FBShipItConfigRegistry {
 
-    private static ?ImmSet<classname<FBShipItConfig>>
-      $config_classes = null;
-
-    private static function makeCamelCase(string $name): string {
-      return $name
+  private static function makeCamelCase(string $name): string {
+    return $name
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         |> \preg_replace_callback(
-          '/[-_\.]([a-zA-Z0-9])/',
-          $matches ==> \strtoupper($matches[1]),
-          $$,
-        )
-        |> \ucfirst($$);
-    }
+        '/[-_\.]([a-zA-Z0-9])/',
+        $matches ==> Str\uppercase($matches[1]),
+        $$,
+      )
+      |> Str\capitalize($$);
+  }
 
-    /**
-     * 'facebook/fbshipit' => 'Facebook\ShipIt\Config\FacebookFbshipit'
-     */
-    final public static function getClassName(
-      string $org,
-      string $repo,
-      bool $include_namespace = false,
-    ): classname<FBShipItConfig> {
-      invariant(\strlen($org) > 0, 'Org cannot be empty');
-      invariant(\strlen($repo) > 0, 'Repo cannot be empty');
-      $prefix = '';
-      if ($include_namespace) {
-        $prefix = 'Facebook\\ShipIt\\Config\\';
-      }
-      /* HH_IGNORE_ERROR[4110]: dynamic classname generation */
+  /**
+   * 'facebook/fbshipit' => 'Facebook\ShipIt\Config\FacebookFbshipit'
+   */
+  final public static function getClassName(
+    string $org,
+    string $repo,
+    bool $include_namespace = false,
+  ): classname<FBShipItConfig> {
+    invariant(Str\length($org) > 0, 'Org cannot be empty');
+    invariant(Str\length($repo) > 0, 'Repo cannot be empty');
+    $prefix = '';
+    if ($include_namespace) {
+      $prefix = 'Facebook\\ShipIt\\Config\\';
+    }
+    /* HH_IGNORE_ERROR[4110]: dynamic classname generation */
       return $prefix.
-        self::makeCamelCase(\strtolower($org)).
-        self::makeCamelCase(\strtolower($repo));
-    }
+        self::makeCamelCase(Str\lowercase($org)).
+        self::makeCamelCase(Str\lowercase($repo));
+  }
 
-    public static function loadConfigClasses(
-    ): ImmSet<classname<FBShipItConfig>> {
-      $config_classes = Set {};
-      // TODO use hhvm-autoload and parse from the autoload map
-      // instead of walking the filetree
-      $shipit_root = __DIR__.'../../../..';
-      $directory = new \RecursiveDirectoryIterator($shipit_root.'/config/');
-      $iterator = new \RecursiveIteratorIterator($directory);
-      $regex = new \RegexIterator(
-        $iterator,
-        '@^.+\.php$@i',
-        \RecursiveRegexIterator::GET_MATCH
-      );
+  private static function loadConfigClasses(
+  ): ImmSet<classname<FBShipItConfig>> {
+    $config_classes = Set {};
+    $shipit_root = __DIR__.'../../../..';
+    $directory = new \RecursiveDirectoryIterator($shipit_root.'/config/');
+    $iterator = new \RecursiveIteratorIterator($directory);
+    $regex = new \RegexIterator(
+      $iterator,
+      '@^.+\.php$@i',
+      \RecursiveRegexIterator::GET_MATCH,
+    );
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       foreach(\array_keys(\iterator_to_array($regex)) as $filename) {
         $class_name = self::getClassName(
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \basename(\dirname($filename)),
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \basename($filename, '.php'),
           /* include_namespace */ true,
         );
         $config_classes[] = $class_name;
       }
-      return new ImmSet($config_classes);
-    }
+    return new ImmSet($config_classes);
+  }
 
-    public static function getShipItConfigClasses(
-    ): ImmSet<classname<FBShipItConfig>> {
-      if (self::$config_classes === null) {
-        self::$config_classes = self::loadConfigClasses();
-      }
-      return self::$config_classes;
-    }
-
-    public static function getRepoShipItConfig(
-      string $org,
-      string $repo,
-    ): classname<FBShipItConfig> {
-      $config_classes = self::$config_classes;
-      if ($config_classes === null) {
-        $config_classes = self::loadConfigClasses();
-        self::$config_classes = $config_classes;
-      }
-      $class_name = self::getClassName(
-        $org,
-        $repo,
-        /* include_namespace */ true,
-      );
-      invariant(
-        $config_classes->contains($class_name),
-        'Unknown repo: %s/%s',
-        $org,
-        $repo,
-      );
-      invariant(
+  public static function getRepoShipItConfig(
+    string $org,
+    string $repo,
+  ): classname<FBShipItConfig> {
+    $class_name = self::getClassName(
+      $org,
+      $repo,
+      /* include_namespace */ true,
+    );
+    invariant(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \class_exists($class_name),
-        'ShipItConfigRegistry error -- invalid classname: %s',
-        $class_name,
-      );
-      return $class_name;
-    }
+      "ShipItConfigRegistry error -- invalid classname: %s\n".
+      "  If you have created a new file, please run `meerkat`.\n",
+      $class_name,
+    );
+    return $class_name;
+  }
+
+  private static function filterTagItClasses(
+    Traversable<classname<FBShipItConfig>> $classes,
+  ): keyset<classname<FBShipItConfig>> {
+    $tagit_bin_path = __DIR__.'/../../../../tagit/bin/'; // @oss-enable
+    // @oss-disable: $tagit_bin_path = \php_root().'/scripts/opensource/tagit';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      $tagit_files = \scandir($tagit_bin_path);
+    invariant(
+      $tagit_files is nonnull && $tagit_files !== false,
+      "ERROR: Could not find TagIt files at %s\n",
+      $tagit_bin_path,
+    );
+    $tagit_projects = Vec\map(
+      $tagit_files,
+      $filename ==> Str\strip_prefix($filename, 'tagit_')
+        |> Str\strip_suffix($$, '.php'),
+    );
+    return Keyset\filter(
+      $classes,
+      $class ==>
+        C\contains($tagit_projects, $class::getStaticConfig()['githubProject']),
+    );
+  }
+
+  public static function generateMapFileContents(): string {
+    $classes = self::loadConfigClasses();
+    $classes_str = $classes
+      |> Vec\map($$, $class_name ==> Str\format('\\%s::class,', $class_name))
+      |> Vec\sort($$)
+      |> Str\join($$, "\n    ");
+    $tagit_classes_str = self::filterTagItClasses($classes)
+      |> Vec\map($$, $class_name ==> Str\format('\\%s::class,', $class_name))
+      |> Vec\sort($$)
+      |> Str\join($$, "\n    ");
+    $signing_token = \SignedSource::getSigningToken();
+    $contents = <<<EOF
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * To regenerate: run `meerkat`
+ * $signing_token
+ */
+
+namespace Facebook\ShipIt\Config;
+
+use type Facebook\ShipIt\FBShipItConfig;
+
+final abstract class FBShipItConfigClasses {
+
+  const keyset<classname<FBShipItConfig>> CONFIG_CLASSES = keyset[
+    $classes_str
+  ];
+
+  const keyset<classname<FBShipItConfig>> TAGIT_CONFIG_CLASSES = keyset[
+    $tagit_classes_str
+  ];
+
+  public static function getClasses(): keyset<classname<FBShipItConfig>> {
+    return self::CONFIG_CLASSES;
+  }
+
+  public static function getTagItClasses(): keyset<classname<FBShipItConfig>> {
+    return self::TAGIT_CONFIG_CLASSES;
+  }
+}
+
+EOF;
+    return \SignedSource::signFile($contents);
+  }
+
+  public static function generateMapFile(): void {
+    $filename = __DIR__.'/FBShipItConfigClasses.php';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    \file_put_contents($filename, self::generateMapFileContents());
+  }
 }

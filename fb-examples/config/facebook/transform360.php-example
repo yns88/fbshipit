@@ -5,12 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/db965rqz
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
-};
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookTransform360 extends FBShipItConfig {
   const string ROOT = 'fbcode/vrapps/video/Transform360/';
@@ -18,10 +20,14 @@ final class FacebookTransform360 extends FBShipItConfig {
   <<__Override>>
   protected static function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
-      '@^'.self::ROOT.'Transform360/Library/' .
-        'FBVideoFrameTransformUtilities.h@',
-      '@^'.self::ROOT.'Transform360/Library/' .
-        'FBVideoFrameTransformUtilities.cpp@',
+      '@^'.
+      self::ROOT.
+      'Transform360/Library/'.
+      'FBVideoFrameTransformUtilities.h@',
+      '@^'.
+      self::ROOT.
+      'Transform360/Library/'.
+      'FBVideoFrameTransformUtilities.cpp@',
       '@^'.self::ROOT.'Transform360/Library/TARGETS@',
       '@^'.self::ROOT.'Transform360/Library/TransformFrame.cpp@',
       '@^'.self::ROOT.'Transform360/Library/VideoFrameTransformTest.cpp@',

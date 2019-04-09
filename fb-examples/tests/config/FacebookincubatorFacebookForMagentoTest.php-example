@@ -5,13 +5,19 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/7fn5rf6m
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookincubatorFacebookForMagentoTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
-      'facebook_ads_toolbox/magento_v1.x/README.md' => 'README.md'
+      'facebook_ads_toolbox/magento_v1.x/README.md' => 'README.md',
     };
   }
 }

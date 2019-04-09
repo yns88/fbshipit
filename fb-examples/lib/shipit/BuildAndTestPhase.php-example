@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/znc3a1ln
+ */
 namespace Facebook\ShipIt;
 
 abstract class BuildAndTestPhase extends ShipItPhase {
@@ -49,6 +54,8 @@ abstract class BuildAndTestPhase extends ShipItPhase {
     // Get rid of codes like ^[[31;31m that may get output to stdout or stderr.
     // 0x1B is the hex code for the escape sequence ^[
     $color_escape_code_pattern = "/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K|G]/";
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     return \preg_replace($color_escape_code_pattern, "", $line);
   }
 
@@ -63,7 +70,7 @@ abstract class BuildAndTestPhase extends ShipItPhase {
   ): void {
     foreach ($steps as $_ => $command) {
       // throws if any step fails
-/* HH_FIXME[4128] Use ShipItShellCommand */
+      /* HH_FIXME[4128] Use ShipItShellCommand */
       ShipItUtil::shellExec(
         $config->getDestinationPath(),
         /* stdin = */ null,

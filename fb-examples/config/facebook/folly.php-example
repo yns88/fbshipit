@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/m008udr5
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCodeBuilder,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -21,9 +26,8 @@ final class FacebookFolly extends FBShipItConfig {
       'fbcode/folly/' => 'folly/',
     };
     return ImmMap::fromItems(
-      $localMappings->items()->concat(
-        FBCodeBuilder::getPathMappings()->items()
-      )
+      $localMappings->items()
+        ->concat(FBCodeBuilder::getPathMappings()->items()),
     );
   }
 
@@ -42,14 +46,12 @@ final class FacebookFolly extends FBShipItConfig {
       '@^fbcode/folly/folly-config\\.h$@',
       '@^fbcode/folly/public_tld/build/facebook_.*@',
     };
-    return $localStrippedFiles->concat(
-      FBCodeBuilder::getSrcStrippedFiles()
-    );
+    return $localStrippedFiles->concat(FBCodeBuilder::getSrcStrippedFiles());
   }
 
   <<__Override>>
   protected static function getDefaultStrippedFileExceptions(
   ): ImmVector<string> {
-    return FBCodeBuilder::getSrcStrippedFileExceptions(ImmSet{});
+    return FBCodeBuilder::getSrcStrippedFileExceptions(ImmSet {});
   }
 }

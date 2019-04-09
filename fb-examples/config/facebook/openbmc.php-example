@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/vthuww43
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCommonFilters,
   FBOpenbmcCommonFilters,
   FBShipItCLIStaticConfig,
@@ -32,26 +37,26 @@ final class FacebookOpenbmc extends FBShipItConfig {
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings())
       |> FBOpenbmcCommonFilters::applyAll($$, 'openbmc')
       |> FBCommonFilters::applyAll(
-          $$,
-          shape(
-            // skip all the default strips.
-            'stripCommonFiles/exceptions' =>
-              self::getStripCommonFilesExceptions(),
-            'filterMessageSections/keepFields' => ImmSet {
-              'summary',
-              'pulled by',
-              'reviewed by',
-              'test plan',
-            },
-          ),
-        );
+        $$,
+        shape(
+          // skip all the default strips.
+          'stripCommonFiles/exceptions' =>
+            self::getStripCommonFilesExceptions(),
+          'filterMessageSections/keepFields' => ImmSet {
+            'summary',
+            'pulled by',
+            'reviewed by',
+            'test plan',
+          },
+        ),
+      );
   }
 
   <<__Override>>
   protected static function getStripCommonFilesExceptions(): ImmVector<string> {
     // skip all the default strips.
     return ImmVector {
-      '/.*/'
+      '/.*/',
     };
   }
 
@@ -113,8 +118,12 @@ final class FacebookOpenbmc extends FBShipItConfig {
         'meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bb',
       'github/meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bbappend' =>
         'meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bbappend',
+      'github/meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bb' =>
+        'meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bb',
+      'github/meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bbappend' =>
+        'meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bbappend',
       'github/meta-aspeed/recipes-kernel/linux/linux-aspeed.inc' =>
-      'meta-aspeed/recipes-kernel/linux/linux-aspeed.inc',
+        'meta-aspeed/recipes-kernel/linux/linux-aspeed.inc',
       'github/sync_yocto.sh' => 'sync_yocto.sh',
       'github/yocto/.gitignore' => 'yocto/.gitignore',
       # Keep the rest where it was
@@ -163,6 +172,8 @@ final class FacebookOpenbmc extends FBShipItConfig {
       '@^meta-aspeed/recipes-kernel/linux/linux-aspeed_4.17.bbappend@',
       '@^meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bb@',
       '@^meta-aspeed/recipes-kernel/linux/linux-aspeed_4.18.bbappend@',
+      '@^meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bb@',
+      '@^meta-aspeed/recipes-kernel/linux/linux-aspeed_5.0.bbappend@',
       '@^meta-aspeed/recipes-kernel/linux/linux-aspeed.inc@',
     };
   }
@@ -176,30 +187,22 @@ final class FacebookOpenbmc extends FBShipItConfig {
       // These files are replaced by GitHub specific versions
       // at shipit time and should never come back to us on import
       // with modifications.
-      |> self::errorOnPaths(
-        $$,
-        static::getUnsupportedImportPaths(),
-      );
+      |> self::errorOnPaths($$, static::getUnsupportedImportPaths());
   }
 
-  <<TestsBypassVisibility>>
-  protected static function errorOnPaths(
+  <<\TestsBypassVisibility>>
+  private static function errorOnPaths(
     ShipItChangeset $changeset,
     ImmVector<string> $unsupported_path_patterns,
   ): ShipItChangeset {
     foreach ($changeset->getDiffs() as $diff) {
       $path = $diff['path'];
 
-      $match = ShipItUtil::matchesAnyPattern(
-        $path,
-        $unsupported_path_patterns,
-      );
+      $match = ShipItUtil::matchesAnyPattern($path, $unsupported_path_patterns);
 
       if ($match !== null) {
         // This could be handled more gracefully in the future.
-        throw new ShipItException(
-          "Importing changes unsupported: ".$path
-        );
+        throw new ShipItException("Importing changes unsupported: ".$path);
       }
     }
 

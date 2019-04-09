@@ -5,11 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/pdovatys
+ */
 namespace Facebook\ImportIt;
 
 abstract final class ImportItRustPathFilters {
-  private static ImmVector<string> $oss_config_files =
-    ImmVector { 'rustfmt.toml' };
+  private static ImmVector<string> $ossConfigFiles = ImmVector {'rustfmt.toml'};
 
   const RUST_OSS_CONFIGS = 'tools/rust/ossconfigs/';
 
@@ -31,7 +35,7 @@ abstract final class ImportItRustPathFilters {
     // these mappings must come first -- and we unfortunately can't insert to
     // the beginning of a map in PHP/Hack, so create a new map.
     $rust_mapping = Map {};
-    foreach (self::$oss_config_files as $filename) {
+    foreach (self::$ossConfigFiles as $filename) {
       $rust_mapping[$filename] = self::RUST_OSS_CONFIGS.$filename;
     }
     $rust_mapping->setAll($mapping);

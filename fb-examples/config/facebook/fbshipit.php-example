@@ -5,9 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/f97s02wi
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use namespace HH\Lib\Str;
+use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
   FBSourceBranchConfig,
@@ -17,11 +23,11 @@ use type Facebook\ShipIt\ {
   ShipItPathFilters,
 };
 
-final class FacebookFbshipit extends FBShipItConfig {
+final class FacebookFbshipit extends FBWWWBase {
   <<__Override>>
   public static function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
-      'internalRepo' => 'fbsource',
+      'internalRepo' => 'www',
       'githubOrg' => 'facebook',
       'githubProject' => 'fbshipit',
     );
@@ -35,7 +41,8 @@ final class FacebookFbshipit extends FBShipItConfig {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \str_replace('/public_tld/dot_', '/public_tld/.', $path),
+        $path ==> Str\replace($path, '/public_tld/dot_', '/public_tld/.')
+          |> \Regex::replace('@(github/.+)\.github@', '$1', $$),
       )
       |> parent::defaultProjectFilterChangeset($$, $get_path_mappings)
       |> self::changeExampleExtensions($$);
@@ -44,7 +51,7 @@ final class FacebookFbshipit extends FBShipItConfig {
   <<__Override>>
   protected static function getStripCommonFilesExceptions(): ImmVector<string> {
     return ImmVector {
-      '@^fbcode/opensource/shipit/config/.*$@',
+      '@^flib/intern/opensource/shipit/config/.*$@',
     };
   }
 
@@ -52,50 +59,36 @@ final class FacebookFbshipit extends FBShipItConfig {
   protected static function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@/fb-private/@',
-      // Replacement implementation in public_tld
-      '@(^|/)autoload.php$@',
-      '@(^|fbcode/opensource/shipit/)composer.json$@',
       '@(^|/)fb_.+\.sh$@',
       '@(^|/)fb_.+\.py$@',
-      '@(^|/)bin/generate-autoload-map.php@',
       // Do not sync examples for old-style projects
-      '@(^|/)bin/(shipit_|importit_).*\.php@',
-      '@(^|/)tests/(shipit|importit)/.*/projects/.*\.php@',
+      '@(^|/)scripts/opensource/shipit/(shipit_|importit_).*\.php@',
+      '@(^|/)__tests__/(shipit|importit)/.*/projects/.*\.php@',
     };
   }
 
   <<__Override>>
   public static function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
-      'fbcode/opensource/shipit/public_tld/' => '',
-      'fbcode/opensource/shipit/bin/' => 'fb-examples/bin/',
-      'fbcode/opensource/shipit/config/fb-specific-but-public/' =>
+      'flib/intern/opensource/shipit/public_tld/' => '',
+      'scripts/opensource/shipit/' => 'fb-examples/bin/',
+      'flib/intern/opensource/shipit/config/fb-specific-but-public/' =>
         'fb-examples/config/',
-      'fbcode/opensource/shipit/src/config/fb-specific-but-public/' =>
+      'flib/intern/opensource/shipit/src/config/fb-specific-but-public/' =>
         'fb-examples/lib/config/',
-      'fbcode/opensource/shipit/src/importit/fb-specific-but-public/' =>
+      'flib/intern/opensource/shipit/src/importit/fb-specific-but-public/' =>
         'fb-examples/lib/importit/',
-      'fbcode/opensource/shipit/tests/importit/fb-specific-but-public/' =>
-        'fb-examples/tests/importit/',
-      'fbcode/opensource/shipit/src/shipit/fb-specific-but-public/' =>
+      'flib/intern/opensource/shipit/src/shipit/fb-specific-but-public/' =>
         'fb-examples/lib/shipit/',
-      'fbcode/opensource/shipit/tests/shipit/fb-specific-but-public/' =>
+      'flib/intern/opensource/shipit/__tests__/importit/fb-specific-but-public/' =>
+        'fb-examples/tests/importit/',
+      'flib/intern/opensource/shipit/__tests__/shipit/fb-specific-but-public/' =>
         'fb-examples/tests/shipit/',
-      'fbcode/opensource/shipit/tests/config/fb-specific-but-public/' =>
+      'flib/intern/opensource/shipit/__tests__/config/fb-specific-but-public/' =>
         'fb-examples/tests/config/',
-      'fbcode/opensource/shipit/src/' => 'src/',
-      'fbcode/opensource/shipit/tests/' => 'tests/',
-      'fbcode/opensource/shipit/.hhconfig' => '.hhconfig',
+      'flib/intern/opensource/shipit/src/' => 'src/',
+      'flib/intern/opensource/shipit/__tests__/' => 'tests/',
     };
-  }
-
-  <<__Override>>
-  public static function getBaseConfig(
-    FBSourceBranchConfig $branch_config,
-  ): ShipItBaseConfig {
-    return parent::getBaseConfig($branch_config)->withSourceRoots(
-      ImmSet { 'fbcode/opensource/shipit/' },
-    );
   }
 
   <<__Override>>
@@ -106,9 +99,22 @@ final class FacebookFbshipit extends FBShipItConfig {
     return $changeset
       |> self::reverseExampleExtensions($$)
       |> parent::projectImportChangeset($$, $branch_config)
+      // Undo FBWWWBase assumptions about test locations
+      // ShipIt tests are currently all in a root __tests__ above src/.
       |> ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> \str_replace('/public_tld/.', '/public_tld/dot_', $path),
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+        $path ==> \preg_replace(
+          '@src/(.+/)?(__tests__)/(.+)@',
+          '\2/\1\3',
+          $path,
+        ),
+      )
+      |> ShipItPathFilters::rewritePaths(
+        $$,
+        $path ==> Str\replace($path, '/public_tld/.', '/public_tld/dot_')
+          |> \Regex::replace('@(github/.+)@', '$1.github', $$),
       );
   }
 
@@ -122,6 +128,8 @@ final class FacebookFbshipit extends FBShipItConfig {
   ): ShipItChangeset {
     return ShipItPathFilters::rewritePaths(
       $changeset,
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $path ==> \preg_replace('@^(fb-examples/.+\.php)-example$@', '\1', $path),
     );
   }
@@ -137,15 +145,9 @@ final class FacebookFbshipit extends FBShipItConfig {
   ): ShipItChangeset {
     return ShipItPathFilters::rewritePaths(
       $changeset,
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $path ==> \preg_replace('@^fb-examples/.+\.php$@', '\0-example', $path),
     );
-  }
-
-  private static function getProjectFilePatterns(): ImmSet<string> {
-    return ImmSet {
-      '@(^|/)bin/importit_(?<project>[^/]+)\.php$@',
-      '@(^|/)bin/shipit_(?<project>[^/]+)\.php$@',
-      '@(^|/)tests(/[^/]+)*/projects/(?<project>[^/]+)Test\.php$@',
-    };
   }
 }

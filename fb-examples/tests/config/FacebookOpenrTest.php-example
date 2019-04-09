@@ -5,10 +5,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/ezfxp43r
+ */
 namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\FBCodeBuilder;
 
+<<\Oncalls('open_source')>>
 final class FacebookOpenrTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -17,7 +23,7 @@ final class FacebookOpenrTest extends FBConfigBaseTest {
       'fbcode/openr/spark/TARGETS' => null,
       'fbcode/openr/TARGETS' => null,
       'fbcode/openr/spark/tests/SparkTest.cpp' =>
-          'openr/spark/tests/SparkTest.cpp',
+        'openr/spark/tests/SparkTest.cpp',
       'fbcode/openr/kvstore/KvStoreClient.h' => 'openr/kvstore/KvStoreClient.h',
       'fbcode/openr/public_tld/PATENTS' => 'PATENTS',
       FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',

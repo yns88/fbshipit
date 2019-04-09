@@ -5,11 +5,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/j2zf8wd1
+ */
 namespace Facebook\ShipIt;
 
-class ShipItException extends \Exception {}
+use namespace HH\Lib\Str;
 
-class ShipItSync {
+final class ShipItException extends \Exception {}
+
+final class ShipItSync {
   public function __construct(
     private ShipItBaseConfig $baseConfig,
     private ShipItSyncConfig $syncConfig,
@@ -34,7 +41,7 @@ class ShipItSync {
     $config = $this->syncConfig;
     $src = $this->getRepo(ShipItSourceRepo::class);
 
-    $changesets = Vector { };
+    $changesets = Vector {};
     $rev = $this->getFirstSourceID();
     while ($rev !== null) {
       $changeset = $src->getChangesetFromID($rev);
@@ -49,24 +56,23 @@ class ShipItSync {
     return $changesets->toImmVector();
   }
 
-  private function getFilteredChangesets(
-  ): ImmVector<ShipItChangeset> {
+  private function getFilteredChangesets(): ImmVector<ShipItChangeset> {
     $base_config = $this->baseConfig;
     $skipped_ids = $this->syncConfig->getSkippedSourceCommits();
     $filter = $this->syncConfig->getFilter();
 
-    $changesets = Vector { };
+    $changesets = Vector {};
     foreach ($this->getSourceChangesets() as $changeset) {
       $skip_match = null;
       foreach ($skipped_ids as $skip_id) {
-        if (\strpos($changeset->getID(), $skip_id) === 0) {
+        if (Str\search($changeset->getID(), $skip_id) === 0) {
           $skip_match = $skip_id;
           break;
         }
       }
       if ($skip_match !== null) {
         $changesets[] = $changeset
-          ->withDiffs(ImmVector { })
+          ->withDiffs(ImmVector {})
           ->withDebugMessage(
             'USER SKIPPED COMMIT: id "%s" matches "%s"',
             $changeset->getID(),
@@ -76,7 +82,7 @@ class ShipItSync {
       }
 
       $changeset = $filter($base_config, $changeset);
-      if ($changeset->getDiffs()->isEmpty()) {
+      if (!$this->isValidChangeToSync($changeset)) {
         $changesets[] = $changeset->withDebugMessage(
           'SKIPPED COMMIT: no matching files',
         );
@@ -96,7 +102,11 @@ class ShipItSync {
     }
 
     $patches_dir = $this->syncConfig->getPatchesDirectory();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if ($patches_dir !== null && !\file_exists($patches_dir)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \mkdir($patches_dir, 0755, /* recursive = */ true);
     }
 
@@ -109,11 +119,21 @@ class ShipItSync {
     $changesets_skipped = Vector {};
     foreach ($changesets as $changeset) {
       if ($patches_dir !== null) {
-        $file = $patches_dir.'/'.$this->baseConfig->getDestinationBranch().'-'.
-          $changeset->getID().'.patch';
+        $file = $patches_dir.
+          '/'.
+          $this->baseConfig->getDestinationBranch().
+          '-'.
+          $changeset->getID().
+          '.patch';
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         if (\file_exists($file)) {
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \printf("Overwriting patch file: %s\n", $file);
         }
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \file_put_contents($file, $dest::renderPatch($changeset));
         $changeset = $changeset->withDebugMessage(
           'Saved patch file: %s',
@@ -125,7 +145,9 @@ class ShipItSync {
         $changeset->dumpDebugMessages();
       }
 
-      if (!$changeset->isValid()) {
+      if (!$this->isValidChangeToSync($changeset)) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \printf(
           "  SKIP %s %s\n",
           $changeset->getShortID(),
@@ -137,6 +159,8 @@ class ShipItSync {
 
       try {
         $dest->commitPatch($changeset);
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \printf(
           "  OK %s %s\n",
           $changeset->getShortID(),
@@ -145,8 +169,7 @@ class ShipItSync {
         $changesets_applied->add($changeset);
         continue;
       } catch (ShipItRepoException $e) {
-        \fprintf(
-          \STDERR,
+        ShipItLogger::err(
           "Failed to apply patch %s (%s): %s\n",
           $changeset->getID(),
           $changeset->getMessage(),
@@ -174,8 +197,12 @@ class ShipItSync {
     }
     $destination_branch = $this->baseConfig->getDestinationBranch();
     // Support logging stats for a project with multiple branches.
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\is_dir($filename)) {
       // Slashes are allowed in branch names but not filenames.
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $namesafe_branch = \preg_replace(
         '/[^a-zA-Z0-9_\-.]/',
         '_',
@@ -189,35 +216,52 @@ class ShipItSync {
     $destination_changeset = $this
       ->getRepo(ShipItDestinationRepo::class)
       ->getHeadChangeset();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \file_put_contents(
       $filename,
-      \json_encode(array(
-        'source' => array(
+      \json_encode(dict[
+        'source' => dict[
           'id' => $source_changeset?->getID(),
           'timestamp' => $source_changeset?->getTimestamp(),
           'branch' => $this->baseConfig->getSourceBranch(),
-        ),
-        'destination' => array(
+        ],
+        'destination' => dict[
           'id' => $destination_changeset?->getID(),
           'timestamp' => $destination_changeset?->getTimestamp(),
           'branch' => $destination_branch,
-        ),
+        ],
         'changesets' => $changesets_applied
           ->map($changeset ==> $changeset->getID())
-          ->toArray(),
+          |> vec($$),
         'skipped' => $changesets_skipped
           ->map($changeset ==> $changeset->getID())
-          ->toArray(),
-      )),
+          |> vec($$),
+      ]),
+    );
+  }
+
+  /** Sync the change ONLY if:
+  *  ChangeSet is not Empty OR
+  *  ChangeSet isTaggedEmpty and the project allows empty commit.
+  */
+  private function isValidChangeToSync(ShipItChangeset $changeset): bool {
+    $isEmpty = $changeset->isEmptyChange();
+    $isTaggedEmptyCommit = $changeset->getIsTaggedEmptyCommit();
+    return (
+      !$isEmpty ||
+      ($this->syncConfig->getAllowEmptyCommits() && $isTaggedEmptyCommit)
     );
   }
 
   private static function checkLastRev(?string $diff): string {
     if ($diff === null) {
       throw new ShipItException(
-        "Unable to determine last differential revision pushed to dest repo"
+        "Unable to determine last differential revision pushed to dest repo",
       );
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\preg_match('/^D[0-9]{6,}$/', $diff)) {
       throw new ShipItException(
         "Last differential revision number ('{$diff}') is invalid"
@@ -263,8 +307,7 @@ class ShipItSync {
     );
   }
 
-  private function findLastSyncedCommit(
-  ): string {
+  private function findLastSyncedCommit(): string {
     $dest = $this->getRepo(ShipItDestinationRepo::class);
 
     $src_commit = $dest->findLastSourceCommit(
@@ -283,8 +326,7 @@ class ShipItSync {
     if ($rev === null) {
       $rev = $changeset->getID();
     }
-    $new_message = $changeset->getMessage()."\n\n".
-      'fbshipit-source-id: '.$rev;
-    return $changeset->withMessage(\trim($new_message));
+    $new_message = $changeset->getMessage()."\n\n".'fbshipit-source-id: '.$rev;
+    return $changeset->withMessage(Str\trim($new_message));
   }
 }

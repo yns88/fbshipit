@@ -5,10 +5,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/omydwv3p
+ */
 namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\FBCodeBuilder;
 
+<<\Oncalls('open_source')>>
 final class FacebookWatchmanTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
@@ -24,6 +30,19 @@ final class FacebookWatchmanTest extends FBConfigBaseTest {
       'fbcode/watchman/TARGETS' => null,
       'fbcode/watchman/defs.bzl' => null,
 
+      # We use the same common/ stub files as fboss, and publish them
+      # from the fboss directory.
+      'fbcode/fboss/common/fb303/if/fb303.thrift' =>
+        'common/fb303/if/fb303.thrift',
+      # Other fboss files should be excluded.
+      'fbcode/fboss/agent/Constants.h' => null,
+
+      'fbcode/eden/fs/service/shipit_test_file.txt' =>
+        'eden/fs/service/shipit_test_file.txt',
+      'fbcode/eden/fs/service/eden.thrift' => 'eden/fs/service/eden.thrift',
+      'fbcode/eden/fs/service/CMakeFiles.txt' => null,
+      'fbcode/eden/fs/service/EdenServer.cpp' => null,
+
       // fbcode_builder is shared between several projects, but it's easiest
       // to just copy it into each project's Github repo.
       FBCodeBuilder::SRC_FBCODE_BUILDER.'fbcode_builder.py' =>
@@ -32,7 +51,8 @@ final class FacebookWatchmanTest extends FBConfigBaseTest {
         FBCodeBuilder::DEST_GITHUB_HASHES.'folly-rev.txt',
       FBCodeBuilder::SRC_GITHUB_HASHES.'wangle-rev.txt' =>
         FBCodeBuilder::DEST_GITHUB_HASHES.'wangle-rev.txt',
-
+      FBCodeBuilder::SRC_GITHUB_HASHES.'fbthrift-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'fbthrift-rev.txt',
     };
   }
 }

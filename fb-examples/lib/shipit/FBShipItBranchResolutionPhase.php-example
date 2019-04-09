@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/y50573nt
+ */
 namespace Facebook\ShipIt;
 
 
@@ -96,8 +101,9 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
     ) {
       $arcanist_project = null;
     } else {
-      $arcanist_project =
-        RepoArcanistProject::getArcanistProject($internal_repo);
+      $arcanist_project = RepoArcanistProject::getArcanistProject(
+        $internal_repo,
+      );
     }
     return shape(
       'land_branch' => $config_class::getLandBranch(),
@@ -113,6 +119,8 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
     $config_class = $this->configClass;
     $branch_configs = $this->getBranchConfigs();
     if ($this->repoMetadataFile !== null) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \file_put_contents(
         $this->repoMetadataFile,
         \json_encode($this->getRepoMetadata()),
@@ -120,6 +128,8 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
       exit(0);
     }
     foreach ($branch_configs as $branch_config) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \printf(
         "--- Running for branch: (%s, %s)\n",
         $branch_config['internal'],

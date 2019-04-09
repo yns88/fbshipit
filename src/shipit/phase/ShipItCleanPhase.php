@@ -5,12 +5,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/pwbsg729
+ */
 namespace Facebook\ShipIt;
 
 final class ShipItCleanPhase extends ShipItPhase {
-  public function __construct(
-    private ShipItRepoSide $side,
-  ) {}
+  public function __construct(private ShipItRepoSide $side) {}
 
   <<__Override>>
   protected function isProjectSpecific(): bool {

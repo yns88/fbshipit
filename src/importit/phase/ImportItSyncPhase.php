@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/tvejazta
+ */
 namespace Facebook\ImportIt;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   ShipItBaseConfig,
   ShipItChangeset,
   ShipItDestinationRepo,
@@ -52,30 +57,28 @@ final class ImportItSyncPhase extends \Facebook\ShipIt\ShipItPhase {
       ),
       shape(
         'long_name' => 'save-patches-to::',
-        'description' => 'Directory to copy created patches to. Useful for '.
-                         'debugging',
+        'description' =>
+          'Directory to copy created patches to. Useful for '.'debugging',
         'write' => $x ==> $this->patchesDirectory = $x,
       ),
       shape(
         'long_name' => 'skip-pull-request',
         'description' => 'Dont fetch a PR, instead just use the local '.
-                          'expected-head-revision',
+          'expected-head-revision',
         'write' => $_ ==> $this->skipPullRequest = true,
       ),
       shape(
         'long_name' => 'apply-to-latest',
         'description' => 'Apply the PR patch to the latest internal revision, '.
-                         'instead of on the internal commit that matches the '.
-                         'PR base.',
+          'instead of on the internal commit that matches the '.
+          'PR base.',
         'write' => $_ ==> $this->applyToLatest = true,
       ),
     };
   }
 
   <<__Override>>
-  final protected function runImpl(
-    ShipItBaseConfig $config,
-  ): void {
+  final protected function runImpl(ShipItBaseConfig $config): void {
     list($changeset, $destination_base_rev) =
       $this->getSourceChangsetAndDestinationBaseRevision($config);
     $this->applyPatchToDestination($config, $changeset, $destination_base_rev);
@@ -96,7 +99,7 @@ final class ImportItSyncPhase extends \Facebook\ShipIt\ShipItPhase {
       invariant(
         $pr_number !== null && $expected_head_rev !== null,
         '--expected-head-revision must be set! '.
-          'And either --pull-request-number or --skip-pull-request must be set',
+        'And either --pull-request-number or --skip-pull-request must be set',
       );
     }
     $source_repo = new ImportItRepoGIT(
@@ -121,23 +124,31 @@ final class ImportItSyncPhase extends \Facebook\ShipIt\ShipItPhase {
       $config->getDestinationBranch(),
     );
     if ($base_rev !== null) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \printf("  Updating destination branch to new base revision...\n");
       $destination_repo->updateBranchTo($base_rev);
     }
     invariant(
-      $destination_repo instanceof ShipItDestinationRepo,
+      $destination_repo is ShipItDestinationRepo,
       'The destination repository must implement ShipItDestinationRepo!',
     );
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf("  Filtering...\n",);
     $filter_fn = $this->filter;
     $changeset = $filter_fn($changeset);
     if ($config->isVerboseEnabled()) {
       $changeset->dumpDebugMessages();
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf("  Exporting...\n",);
     $this->maybeSavePatch($destination_repo, $changeset);
     try {
       $rev = $destination_repo->commitPatch($changeset);
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \printf(
         "  Done.  %s committed in %s\n",
         $rev,
@@ -145,11 +156,15 @@ final class ImportItSyncPhase extends \Facebook\ShipIt\ShipItPhase {
       );
     } catch (\Exception $e) {
       if ($this->patchesDirectory !== null) {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \printf(
           "  Failure to apply patch at %s\n",
           $this->getPatchLocationForChangeset($changeset),
         );
       } else {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         \printf(
           "  Failure to apply patch:\n%s\n",
           $destination_repo::renderPatch($changeset),
@@ -163,25 +178,31 @@ final class ImportItSyncPhase extends \Facebook\ShipIt\ShipItPhase {
     ShipItDestinationRepo $destination_repo,
     ShipItChangeset $changeset,
   ): void {
-    if ($this->patchesDirectory === null) {
+    $patchesDirectory = $this->patchesDirectory;
+    if ($patchesDirectory === null) {
       return;
     }
-    if (!\file_exists($this->patchesDirectory)) {
-      \mkdir($this->patchesDirectory, 0755, /* recursive = */ true);
-    } elseif (!\is_dir($this->patchesDirectory)) {
-      \fprintf(
-        \STDERR,
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    if (!\file_exists($patchesDirectory)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      \mkdir($patchesDirectory, 0755, /* recursive = */ true);
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    } else if (!\is_dir($patchesDirectory)) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      ShipItLogger::err(
         "Cannot log to %s: the path exists and is not a directory.\n",
-        $this->patchesDirectory,
+        $patchesDirectory,
       );
       return;
     }
     $file = $this->getPatchLocationForChangeset($changeset);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \file_put_contents($file, $destination_repo::renderPatch($changeset));
-    $changeset = $changeset->withDebugMessage(
-      'Saved patch file: %s',
-      $file,
-    );
+    $changeset->withDebugMessage('Saved patch file: %s', $file);
   }
 
   private function getPatchLocationForChangeset(

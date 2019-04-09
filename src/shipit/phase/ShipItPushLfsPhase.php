@@ -5,6 +5,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/my89qibg
+ */
 namespace Facebook\ShipIt;
 
 final class ShipItPushLfsPhase extends ShipItPhase {
@@ -14,6 +19,7 @@ final class ShipItPushLfsPhase extends ShipItPhase {
     private string $organization,
     private string $project,
     bool $enabled,
+    private classname<ShipItGitHubUtils> $gitHubUtilsClass,
   ) {
     if (!$enabled) {
       $this->skip();
@@ -59,6 +65,7 @@ final class ShipItPushLfsPhase extends ShipItPhase {
   }
 
   final private function getLfsPushEndpoint(): string {
+    $github_utils_class = $this->gitHubUtilsClass;
     $pushUrl = 'https://github.com/'.
       $this->organization.
       '/'.
@@ -68,7 +75,7 @@ final class ShipItPushLfsPhase extends ShipItPhase {
     $auth_url = ShipItGitHubUtils::authHttpsRemoteUrl(
       $pushUrl,
       ShipItTransport::HTTPS,
-      FBGitHubUtils::getCredentialsForProject(
+      $github_utils_class::getCredentialsForProject(
         $this->organization,
         $this->project,
       ),

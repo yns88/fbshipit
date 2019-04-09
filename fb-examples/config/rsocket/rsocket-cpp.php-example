@@ -5,16 +5,39 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/fsvx2vxu
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
+  FBCodeBuilderTrait,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
 };
 
 final class RsocketRsocketCpp extends FBShipItConfig {
+  use FBCodeBuilderTrait;
+
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
+    return ImmSet {
+      'folly',
+    };
+  }
+
+  <<__Override>>
+  protected static function getFBCodeBuilderTravisConfig(): string {
+    // We have a pre-existing travis config that knows about more than
+    // fbcode_builder, so don't clobber it.
+    return 'fbcode/rsocket/public_tld/.travis.yml';
+  }
+
+  <<__Override>>
+  public static function getPathMappingsNonFBCodeBuilder(
+  ): ImmMap<string, string> {
     return ImmMap {
       // This structure is a bit weird, but mirrors what we currently have.
       // On github all rsocket code is in the rsocket dir, while it's in root

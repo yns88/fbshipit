@@ -5,14 +5,29 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/rylz5y0y
+ */
 namespace Facebook\ShipIt;
 
+use namespace HH\Lib\C;
+
+
+<<\Oncalls('open_source')>>
 final class FBShipItPreviewTest extends BaseTest {
 
   // Make a string act like a file or stdin.
   private static function streamify(string $string): resource {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $stream = \fopen('php://memory', 'r+');
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \fwrite($stream, $string);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \rewind($stream);
     return $stream;
   }
@@ -25,15 +40,15 @@ final class FBShipItPreviewTest extends BaseTest {
       ->withSubject('Test Commit')
       ->withMessage("Summary:\n Stuff")
       ->withDiffs(ImmVector {
-          shape(
-            'path' => 'public/example.php',
-            'body' => 'Testing events from GitHub author date\n',
-          ),
-          shape(
-            'path' => 'facebook/filtered.txt',
-            'body' => 'Testing events from GitHub author date\n',
-          ),
-        });
+        shape(
+          'path' => 'public/example.php',
+          'body' => 'Testing events from GitHub author date\n',
+        ),
+        shape(
+          'path' => 'facebook/filtered.txt',
+          'body' => 'Testing events from GitHub author date\n',
+        ),
+      });
   }
 
   /**
@@ -58,23 +73,28 @@ final class FBShipItPreviewTest extends BaseTest {
     }
     ===END===';
     // Capture stdout
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \ob_start();
     (new FBShipItPreview())->shipItPreview(self::streamify($data));
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $stdout = \ob_get_contents();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \ob_end_clean();
-    $this->assertEquals(
-      \json_decode($stdout, true),
-      array(
+    \expect(
+      varray[
         shape(
-          'changeset' => shape (
+          'changeset' => shape(
             'id' => 'deadbeef',
             'timestamp' => 12345,
             'author' => 'yrahbar',
             'subject' => 'Test Commit',
             'message' => 'Summary: Stuff',
-            'diffs' => array(
+            'diffs' => varray[
               shape('path' => 'public/example.php', 'body' => ''),
-            ),
+            ],
           ),
           'githubOrg' => 'facebook',
           'githubProject' => 'phabtest1_git',
@@ -84,15 +104,15 @@ final class FBShipItPreviewTest extends BaseTest {
           'error' => null,
         ),
         shape(
-          'changeset' => shape (
+          'changeset' => shape(
             'id' => 'deadbeef',
             'timestamp' => 12345,
             'author' => 'yrahbar',
             'subject' => 'Test Commit',
             'message' => 'Summary: Stuff',
-            'diffs' => array(
+            'diffs' => varray[
               shape('path' => 'subdirectory/public/example.php', 'body' => ''),
-            ),
+            ],
           ),
           'githubOrg' => 'facebook',
           'githubProject' => 'phabtest1_git',
@@ -101,17 +121,18 @@ final class FBShipItPreviewTest extends BaseTest {
           'patch' => null,
           'error' => null,
         ),
-      ),
-    );
+      ],
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    )->toBePHPEqual(\json_decode($stdout, true));
   }
 
   public function testHandleChangeset(): void {
     $changeset = self::makeChangeset();
     $result = (new FBShipItPreview())
       ->handleChangeset('phabtest1_git', 'side_branch', $changeset, null);
-    $this->assertEquals(\count($result), 1);
-    $this->assertEquals(
-      $result[0]['changeset'],
+    \expect(1)->toBePHPEqual(C\count($result));
+    \expect(
       shape(
         'id' => 'deadbeef',
         'timestamp' => 12345,
@@ -119,62 +140,61 @@ final class FBShipItPreviewTest extends BaseTest {
         'subject' => 'Test Commit',
         'message' => 'Summary: Stuff',
         'diffs' => vec[
-          shape('path' => 'public/example.php', 'body' => ''),
+          shape(
+            'path' => 'public/example.php',
+            'body' => 'Testing events from GitHub author date\\n',
+          ),
         ],
       ),
-    );
-    $this->assertEquals($result[0]['githubOrg'], 'facebook');
-    $this->assertEquals($result[0]['githubProject'], 'phabtest1_git');
-    $this->assertEquals(
-      $result[0]['commitMessage'],
-      "Test Commit\n\nSummary: Stuff",
-    );
-    $this->assertEquals($result[0]['patch'], null);
+    )->toBePHPEqual($result[0]['changeset']);
+    \expect('facebook')->toBePHPEqual($result[0]['githubOrg']);
+    \expect('phabtest1_git')->toBePHPEqual($result[0]['githubProject']);
+    \expect("Test Commit\n\nSummary: Stuff")
+      ->toBePHPEqual($result[0]['commitMessage']);
+    \expect(null)->toBePHPEqual($result[0]['patch']);
   }
 
   public function testHandleFullPatch(): void {
     $changeset = self::makeChangeset();
     // Actual Phabricator git-style raw patch of an fbsource diff
-    $patch = \file_get_contents(__DIR__.'/example_fbsource_git_diff.patch');
+    $patch = \file_get_contents(__DIR__.'/example_www_git_diff.patch');
     $result = (new FBShipItPreview())
-      ->handleChangeset('fbsource', 'master', $changeset, $patch);
-    $this->assertEquals(
-      \file_get_contents(__DIR__.'/example_fbshipit_git_diff.patch'),
-      $result[0]['patch'],
-    );
+      ->handleChangeset('facebook-www', 'master', $changeset, $patch);
+    \expect($result[0]['patch'])
+      ->toBePHPEqual(
+        \file_get_contents(__DIR__.'/example_fbshipit_git_diff.patch'),
+      );
     $diffs = $result[0]['changeset']['diffs'];
-    $this->assertEquals(2, \count($diffs));
-    $this->assertEquals(
-      'fb-examples/tests/shipit/FBCommonFiltersTest.php-example',
-      $diffs[0]['path'],
-    );
-    $this->assertEquals(
-      'fb-examples/lib/shipit/FBCommonFilters.php-example',
-      $diffs[1]['path'],
-    );
-    $this->assertEquals($result[0]['error'], null);
+    \expect(C\count($diffs))->toBePHPEqual(2);
+    \expect($diffs[0]['path'])
+      ->toBePHPEqual(
+        'fb-examples/tests/shipit/FBCommonFiltersTest.php-example',
+      );
+    \expect($diffs[1]['path'])
+      ->toBePHPEqual('fb-examples/lib/shipit/FBCommonFilters.php-example');
+    \expect(null)->toBePHPEqual($result[0]['error']);
   }
 
   public function testHandleRenames(): void {
     $changeset = self::makeChangeset()->withDiffs(ImmVector {
       shape(
         'path' =>
-          'from fbcode/opensource/shipit/src/shipit/fb-private/file.php',
+          'from flib/intern/opensource/shipit/src/shipit/fb-private/file.php',
         'body' => '_',
       ),
       shape(
-        'path' => 'fbcode/opensource/shipit/src/shipit/file.php',
+        'path' => 'flib/intern/opensource/shipit/src/shipit/file.php',
         'body' => '_',
       ),
     });
     $patch = \file_get_contents(__DIR__.'/example_rename_git_diff.patch');
     $result = (new FBShipItPreview())
-      ->handleChangeset('fbsource', 'master', $changeset, $patch);
+      ->handleChangeset('facebook-www', 'master', $changeset, $patch);
     $error = $result[0]['error'];
     invariant($error !== null, 'Expected error');
-    $this->assertStringStartsWith('This patch contains renamed', $error);
+    \expect($error)->toContainSubstring('This patch contains renamed');
     $diffs = $result[0]['changeset']['diffs'];
-    $this->assertEquals(1, \count($diffs));
-    $this->assertEquals($diffs[0]['path'], 'src/shipit/file.php');
+    \expect(C\count($diffs))->toBePHPEqual(1);
+    \expect('src/shipit/file.php')->toBePHPEqual($diffs[0]['path']);
   }
 }

@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/plvxi19e
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 /**
  * We only publish the scripts for public repos. This creates an issue
@@ -15,7 +22,7 @@ namespace Facebook\ShipIt;
  */
 final class FBShipItPublicizeSyncScriptsPhase extends ShipItPhase {
   public function __construct(
-    private (function(ShipItChangeset):ShipItChangeset) $filter,
+    private (function(ShipItChangeset): ShipItChangeset) $filter,
   ) {
   }
 
@@ -37,7 +44,7 @@ final class FBShipItPublicizeSyncScriptsPhase extends ShipItPhase {
       $config->getDestinationBranch(),
     );
 
-    $src_rev = $dest->findLastSourceCommit(ImmSet { });
+    $src_rev = $dest->findLastSourceCommit(ImmSet {});
     if ($src_rev === null) {
       return;
     }
@@ -61,20 +68,24 @@ final class FBShipItPublicizeSyncScriptsPhase extends ShipItPhase {
       '/fb-examples/tests/importit/projects/*.php-example',
       '/fb-examples/tests/shipit/projects/*.php-example',
     };
-    $files = Set { };
+    $files = Set {};
     foreach ($globs as $glob) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $files->addAll(\glob($export_root.$glob));
     }
     $files = $files->map($file ==> \realpath($file))->toImmSet();
 
     foreach ($files as $file) {
       invariant(
-        \substr($file, 0, \strlen($export_root)) === $export_root,
+        Str\slice($file, 0, Str\length($export_root)) === $export_root,
         'file %s is not inside %s',
         $file,
         $export_root,
       );
-      $dest_file = $dest_root.\substr($file, \strlen($export_root));
+      $dest_file = $dest_root.Str\slice($file, Str\length($export_root));
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       if (!\file_exists($dest_file)) {
         $this->releaseFile(
           $dest,
@@ -91,21 +102,25 @@ final class FBShipItPublicizeSyncScriptsPhase extends ShipItPhase {
     string $destination_file,
   ): void {
     $dest_root = $repo->getPath();
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \copy($exported_file, $destination_file);
 
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $dest_root,
       /* stdin = */  null,
       ShipItUtil::DONT_VERBOSE,
       'git', 'add', $destination_file,
     );
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $dest_root,
       /* stdin = */  null,
       ShipItUtil::DONT_VERBOSE,
       'git', 'commit', '-m',
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       '[autocommit] release '.\basename($destination_file),
     );
   }

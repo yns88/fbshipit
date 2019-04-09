@@ -5,11 +5,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/z8axydvl
+ */
 namespace Facebook\ShipIt;
 
 use type Facebook\ImportIt\FBImportItBranchResolutionPhase;
+
 use type Facebook\ShipIt\Config\FacebookPhabtest1Git;
 
+<<\Oncalls('open_source')>>
 final class FBShipItProjectRunnerTest extends BaseTest {
 
   private static function getPhases(
@@ -33,13 +40,13 @@ final class FBShipItProjectRunnerTest extends BaseTest {
       FacebookPhabtest1Git::class,
     )[0];
     invariant(
-      $phase instanceof FBShipItBranchResolutionPhase,
+      $phase is FBShipItBranchResolutionPhase,
       'Unexpected phase type: %s',
       $phase,
     );
-    $this->assertNotInstanceOf(FBImportItBranchResolutionPhase::class, $phase);
+    \expect($phase)->toNotBeInstanceOf(FBImportItBranchResolutionPhase::class);
     $branches = $phase->getBranchConfigs();
-    $this->assertEquals(3, $branches->count());
+    \expect($branches->count())->toBePHPEqual(3);
   }
 
   public function testGetPhasesWithBranch(): void {
@@ -49,14 +56,14 @@ final class FBShipItProjectRunnerTest extends BaseTest {
       'side_branch',
     )[0];
     invariant(
-      $phase instanceof FBShipItBranchResolutionPhase,
+      $phase is FBShipItBranchResolutionPhase,
       'Unexpected phase type: %s',
       $phase,
     );
-    $this->assertNotInstanceOf(FBImportItBranchResolutionPhase::class, $phase);
+    \expect($phase)->toNotBeInstanceOf(FBImportItBranchResolutionPhase::class);
     $branches = $phase->getBranchConfigs();
-    $this->assertEquals(1, $branches->count());
-    $this->assertEquals('side_branch', $branches[0]['internal']);
+    \expect($branches->count())->toBePHPEqual(1);
+    \expect($branches[0]['internal'])->toBePHPEqual('side_branch');
   }
 
   public function testGetPhasesImportIt(): void {
@@ -66,14 +73,14 @@ final class FBShipItProjectRunnerTest extends BaseTest {
       'master',
     )[0];
     invariant(
-      $phase instanceof FBImportItBranchResolutionPhase,
+      $phase is FBImportItBranchResolutionPhase,
       'Unexpected phase type: %s',
       $phase,
     );
-    $this->assertInstanceOf(FBImportItBranchResolutionPhase::class, $phase);
+    \expect($phase)->toBeInstanceOf(FBImportItBranchResolutionPhase::class);
     $branches = $phase->getBranchConfigs();
-    $this->assertEquals(1, $branches->count());
-    $this->assertEquals('master', $branches[0]['internal']);
+    \expect($branches->count())->toBePHPEqual(1);
+    \expect($branches[0]['internal'])->toBePHPEqual('master');
   }
 
   public function testGetPhasesImportItRequiresBranch(): void {
@@ -82,12 +89,13 @@ final class FBShipItProjectRunnerTest extends BaseTest {
       FacebookPhabtest1Git::class,
     )[0];
     invariant(
-      $phase instanceof FBImportItBranchResolutionPhase,
+      $phase is FBImportItBranchResolutionPhase,
       'Unexpected phase type: %s',
       $phase,
     );
-    $this->assertInstanceOf(FBImportItBranchResolutionPhase::class, $phase);
-    $this->expectException(InvariantException::class);
-    $branches = $phase->getBranchConfigs();
+    \expect($phase)->toBeInstanceOf(FBImportItBranchResolutionPhase::class);
+    \expect(() ==> $phase->getBranchConfigs())
+      // @oss-disable: ->toThrow(\InvariantViolationException::class);
+    ->toThrow(\HH\InvariantException::class); // @oss-enable
   }
 }

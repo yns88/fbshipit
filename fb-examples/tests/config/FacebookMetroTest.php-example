@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/voz00xnl
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookMetroTest extends FBConfigBaseTest {
   const string ROOT = 'xplat/js/metro';
 
@@ -20,8 +26,7 @@ final class FacebookMetroTest extends FBConfigBaseTest {
     return ImmMap {
       self::ROOT.'/foo.js' => 'foo.js',
       self::ROOT.'/.github.flowconfig' => '.flowconfig',
-      self::ROOT.'/packages/metro/foo.js' =>
-        'packages/metro/foo.js',
+      self::ROOT.'/packages/metro/foo.js' => 'packages/metro/foo.js',
       'react-native-github/packager/src/index.js' => null,
       'xplat/js/react-native-github/Libraries/View.js' => null,
 

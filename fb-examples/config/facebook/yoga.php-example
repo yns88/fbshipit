@@ -5,12 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/82cbpepp
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
-};
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookYoga extends FBShipItConfig {
   const string ROOT = 'xplat/yoga/';
@@ -35,7 +37,8 @@ final class FacebookYoga extends FBShipItConfig {
   <<__Override>>
   public static function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
-      'xplat/yoga/facebook/third-party/googletest-rev.txt' => 'lib/gtest/googletest',
+      'xplat/yoga/facebook/third-party/googletest-rev.txt' =>
+        'lib/gtest/googletest',
     };
   }
 
@@ -46,7 +49,7 @@ final class FacebookYoga extends FBShipItConfig {
       '@(^|/)fb(/|$)@',
 
       // Fallout from adding bzl files to common ShipIt filters
-      '@yoga_defs\.bzl$@',
+      '@\.bzl$@',
     };
   }
 }

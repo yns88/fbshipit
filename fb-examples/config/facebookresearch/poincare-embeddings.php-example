@@ -1,0 +1,46 @@
+<?hh // strict
+/**
+ * Copyright (c) 2018-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+namespace Facebook\ShipIt\Config;
+
+use \Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
+
+final class FacebookresearchPoincareEmbeddings extends FBShipItConfig {
+  const string ROOT = 'fbcode/deeplearning/projects/hyperbolic-embeddings/';
+
+  <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/exporter.py@',
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/exporter-cli.py@',
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/hype/download_edges.py@',
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/hype/arsgd.py@',
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/hype/transe.py@',
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/TARGETS@',
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/tests@',
+      '@^fbcode/deeplearning/projects/hyperbolic-embeddings/fb_embed.py@',
+    };
+  }
+
+  <<__Override>>
+  public static function getDefaultPathMappings(): ImmMap<string, string> {
+    return ImmMap {
+      self::ROOT => '',
+    };
+  }
+
+  <<__Override>>
+  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+    return shape(
+      'internalRepo' => 'fbsource',
+      'githubOrg' => 'facebookresearch',
+      'githubProject' => 'poincare-embeddings',
+    );
+  }
+}

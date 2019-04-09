@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/knifcioh
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookincubatorFbtTest extends FBConfigBaseTest {
 
   <<__Override>>
@@ -27,14 +33,15 @@ final class FacebookincubatorFbtTest extends FBConfigBaseTest {
       FacebookincubatorFbt::BABEL.'/babel-plugin-fbt/index.js' =>
         'transform/babel-plugin-fbt/index.js',
       FacebookincubatorFbt::BABEL.'/babel-plugin-fbt-runtime/index.js' =>
-      'transform/babel-plugin-fbt-runtime/index.js',
-      FacebookincubatorFbt::BABEL.'/util/syntax-plugins.js' =>
-        'transform/util/syntax-plugins.js',
-      FacebookincubatorFbt::BABEL.'/util/test-util.js' =>
-        'transform/util/test-util.js',
+        'transform/babel-plugin-fbt-runtime/index.js',
+      FacebookincubatorFbt::BABEL.'/fb-babel-plugin-utils/TestUtil.js' =>
+        'transform/fb-babel-plugin-utils/TestUtil.js',
+      FacebookincubatorFbt::BABEL.'/fb-babel-plugin-utils/package.json' =>
+        'transform/fb-babel-plugin-utils/package.json',
       'scripts/intl/js/oss-fbt/nonfb-runtime/IntlNumberType.js' =>
         'runtime/nonfb/IntlNumberType.js',
-      'scripts/intl/js/oss-fbt/demo-app/package.json' =>
+      'scripts/intl/js/oss-fbt/runtime/package.json' => 'runtime/package.json',
+      'scripts/intl/js/oss-fbt/__github__/demo-app/package.json' =>
         'demo-app/package.json',
       'scripts/intl/js/oss-fbt/__github__/.github' => '.github',
       'scripts/intl/js/oss-fbt/__github__/LICENSE' => 'LICENSE',
@@ -43,6 +50,11 @@ final class FacebookincubatorFbtTest extends FBConfigBaseTest {
       // path that contains the "fb-only" folder
       'html/shared/intl/fbt/fb-only/integration_tests/IntlFBTTestData.js' =>
         null,
+      // symlinks in __github__ should stay out of Github
+      'scripts/intl/js/oss-fbt/__github__/runtime' => null,
+      'scripts/intl/js/oss-fbt/__github__/transform' => null,
+      'scripts/intl/js/oss-fbt/runtime/nonfb' => null,
+      'scripts/intl/js/oss-fbt/runtime/shared' => null,
     };
   }
 }

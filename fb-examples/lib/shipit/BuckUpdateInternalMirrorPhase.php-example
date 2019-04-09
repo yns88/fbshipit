@@ -5,7 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/kfg813go
+ */
 namespace Facebook\ShipIt;
+
+use namespace HH\Lib\Str;
 
 final class BuckUpdateInternalMirrorPhase extends ShipItPhase {
   <<__Override>>
@@ -23,7 +30,7 @@ final class BuckUpdateInternalMirrorPhase extends ShipItPhase {
     return ImmVector {
       shape(
         'long_name' => 'skip-sync-internal',
-        'description' => "Don't ".\strtolower($this->getReadableName()),
+        'description' => "Don't ".Str\lowercase($this->getReadableName()),
         'write' => $_ ==> $this->skip(),
       ),
     };
@@ -33,7 +40,7 @@ final class BuckUpdateInternalMirrorPhase extends ShipItPhase {
   public function runImpl(ShipItBaseConfig $config): void {
     // Remove it remote first in case it's changed, NO_THROW in case git errors
     // because the remote already doesn't exist
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $config->getSourcePath(),
       /* stdin = */ null,
@@ -45,8 +52,8 @@ final class BuckUpdateInternalMirrorPhase extends ShipItPhase {
     );
 
     // Long-form because https://github.com/facebook/hhvm/issues/6883
-    $exec = function (...$command): void use ($config) {
-/* HH_FIXME[4128] Use ShipItShellCommand */
+    $exec = function(...$command): void use ($config) {
+      /* HH_FIXME[4128] Use ShipItShellCommand */
       ShipItUtil::shellExec(
         $config->getSourcePath(),
         /* stdin = */ null,

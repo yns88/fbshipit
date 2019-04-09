@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/mgvo917c
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookFlipperTest extends FBConfigBaseTest {
 
   <<__Override>>
@@ -14,6 +20,8 @@ final class FacebookFlipperTest extends FBConfigBaseTest {
     return ImmMap {
       'xplat/sonar/package.json' => 'package.json',
       'xplat/sonar/android/build.gradle' => 'android/build.gradle',
+      'xplat/sonar/android/src/test/fb/java/com/facebook/flipper/plugins/syncprotocol/BUCK' =>
+        null,
       'xplat/sonar/iOS/FlipperKit/FBCxxUtils/' => null,
       'xplat/sonar/iOS/Plugins/Facebook/' => null,
       'xplat/sonar/scripts/facebook/create-plugin.py' => null,

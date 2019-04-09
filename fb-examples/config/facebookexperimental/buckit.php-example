@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/afh36s1p
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -24,47 +29,57 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
-    return
-      $changeset
-        |> FBCommonFilters::applyAll(
-            $$,
-            shape('stripCommonFiles/exceptions' => ImmVector {
-              '@(?<!/facebook)/BUCK$@',
-              '@(?<!/facebook)/TARGETS$@',
-              '@/.*\.bzl$@',
-            }))
-        |> ShipItPathFilters::stripPaths(
-          $$,
-          // This looks redundant with FBCommonFilters, but is actually
-          // required to strip BUCK/TARGETS/*.bzl files from `facebook`
-          // subdirs, since we explicitly whitelisted all of those above.
-          ImmVector {
-            // NB: The Buckit repo will probably never contain Java, so keep
-            // this filter simpler than `stripCommonFiles`.
-           '@(^|/)facebook(/|$)@',
+    return $changeset
+      |> FBCommonFilters::applyAll(
+        $$,
+        shape(
+          'stripCommonFiles/exceptions' => ImmVector {
+            '@(?<!/facebook)/BUCK$@',
+            '@(?<!/facebook)/TARGETS$@',
+            '@/.*\.bzl$@',
           },
-        )
-        |> ShipItPathFilters::moveDirectories($$, $get_path_mappings())
-        /**
-         * Drop internal versions of files that have oss counterparts,
-         * as well as some other random files
-         */
-        |> ShipItPathFilters::stripPaths(
-            $$,
-            static::$FilesToExclude->concat(
-              static::$FilesWithOssExtension->map($path ==> '@^'.$path.'$@')))
-        |> static::rewriteRemovingOssExtension($$)
-        |> ShipItPathFilters::rewritePaths(
-          $$,
+        ),
+      )
+      |> ShipItPathFilters::stripPaths(
+        $$,
+        // This looks redundant with FBCommonFilters, but is actually
+        // required to strip BUCK/TARGETS/*.bzl files from `facebook`
+        // subdirs, since we explicitly whitelisted all of those above.
+        ImmVector {
+          // NB: The Buckit repo will probably never contain Java, so keep
+          // this filter simpler than `stripCommonFiles`.
+          '@(^|/)facebook(/|$)@',
+        },
+      )
+      |> ShipItPathFilters::moveDirectories($$, $get_path_mappings())
+      /**
+       * Drop internal versions of files that have oss counterparts,
+       * as well as some other random files
+       */
+      |> ShipItPathFilters::stripPaths(
+        $$,
+        static::$filesToExclude->concat(
+          static::$filesWithOssExtension->map($path ==> '@^'.$path.'$@'),
+        ),
+      )
+      |> static::rewriteRemovingOssExtension($$)
+      |> ShipItPathFilters::rewritePaths(
+        $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace(
-            '@^((?!infra_macros/fbcode_macros).*)/TARGETS$@', '\1/BUCK', $path));
+            '@^((?!infra_macros/fbcode_macros).*)/TARGETS$@',
+            '\1/BUCK',
+            $path,
+          ),
+      );
   }
 
-  private static ImmVector<string> $FilesToExclude = ImmVector {
+  private static ImmVector<string> $filesToExclude = ImmVector {
     '@infra_macros/macro_lib/convert/java.*\.py@',
   };
 
-  private static ImmSet<string> $FilesWithOssExtension = ImmSet {
+  private static ImmSet<string> $filesWithOssExtension = ImmSet {
     'infra_macros/package.json',
     'infra_macros/.buckconfig',
     'infra_macros/fbcode_macros/build_defs/allocator_targets.bzl',
@@ -89,7 +104,8 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
     'infra_macros/fbcode_macros/build_defs/core_tools_targets.bzl',
   };
 
-  const BuckFilesToRewrite = '@^((?!specs|infra_macros/fbcode_macros).*)/BUCK$@';
+  const string BUCK_FILES_TO_REWRITE =
+    '@^((?!specs|infra_macros/fbcode_macros).*)/BUCK$@';
 
   private static function rewriteRemovingOssExtension(
     ShipItChangeset $changeset,
@@ -97,13 +113,16 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
     return ShipItPathFilters::rewritePaths(
       $changeset,
       $path ==> {
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $stripped = \preg_replace('@(.*)\.oss$@', '\1', $path);
-        if(static::$FilesWithOssExtension->contains($stripped)) {
+        if (static::$filesWithOssExtension->contains($stripped)) {
           return $stripped;
         } else {
           return $path;
         }
-      });
+      },
+    );
   }
 
   <<__Override>>
@@ -114,7 +133,7 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
       'fbcode/experimental/pjameson/buckit/buckit/README' => 'README',
       'fbcode/experimental/pjameson/buckit/buckit/' => 'buckit/',
       'fbcode/experimental/pjameson/buckit/specs/' => 'specs/',
-      'fbcode/fs_image/' => 'fs_image/',  # Used by `image_*` macros.
+      'fbcode/fs_image/' => 'fs_image/', # Used by `image_*` macros.
       'fbcode/tools/build/buck/infra_macros/' => 'infra_macros/',
     };
   }
@@ -137,25 +156,29 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
       |> static::rewriteAddingOssExtension($$)
       |> ShipItPathFilters::rewritePaths(
         $$,
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $path ==> \preg_replace(
-          self::BuckFilesToRewrite,
+          self::BUCK_FILES_TO_REWRITE,
           '\1/TARGETS',
-          $path))
+          $path),
+      )
       |> parent::projectImportChangeset($$, $branch_config);
   }
 
   private static function rewriteAddingOssExtension(
-    ShipItChangeset $changeset
+    ShipItChangeset $changeset,
   ): ShipItChangeset {
     return ShipItPathFilters::rewritePaths(
       $changeset,
       $path ==> {
-        if(self::$FilesWithOssExtension->contains($path)) {
-          return $path . '.oss';
+        if (self::$filesWithOssExtension->contains($path)) {
+          return $path.'.oss';
         } else {
           return $path;
         }
-      });
+      },
+    );
   }
 
 }

@@ -5,20 +5,27 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/ll7xvs6e
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookexperimentalEdenTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       # Example things that *should* make it through.
-      'fbcode/eden/DEFS'
-        => 'eden/DEFS',
-      'fbcode/eden/fs/store/test/LocalStoreTest.cpp'
-        => 'eden/fs/store/test/LocalStoreTest.cpp',
+      'fbcode/eden/DEFS' => 'eden/DEFS',
+      'fbcode/eden/fs/store/test/LocalStoreTest.cpp' =>
+        'eden/fs/store/test/LocalStoreTest.cpp',
 
       # README.facebook should be excluded.
       'fbcode/eden/oss/README.facebook' => null,
+      'fbcode/eden/locale/README.facebook' => null,
+      'fbcode/eden/fs/README.notfacebook' => 'eden/fs/README.notfacebook',
 
       # Contents of facebook/ directories should also be excluded.
       'fbcode/eden/fs/service/facebook/EdenServer.cpp' => null,
@@ -36,11 +43,10 @@ final class FacebookexperimentalEdenTest extends FBConfigBaseTest {
 
       # We use the same common/ stub files as fboss, and publish them
       # from the fboss directory.
-      'fbcode/fboss/common/fb303/if/fb303.thrift'
-        => 'common/fb303/if/fb303.thrift',
+      'fbcode/fboss/common/fb303/if/fb303.thrift' =>
+        'common/fb303/if/fb303.thrift',
       # Other fboss files should be excluded.
-      'fbcode/fboss/agent/Constants.h'
-      => null,
+      'fbcode/fboss/agent/Constants.h' => null,
       # TARGETS files get stripped
       'fbcode/eden/fs/config/test/TARGETS' => null,
       # The eden-config.h file gets stripped

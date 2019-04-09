@@ -5,9 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/4nzb5hpd
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
+use type Facebook\ShipIt\{
   FBCodeBuilderTrait,
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -21,13 +26,14 @@ final class FacebookWatchman extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
+      'fbthrift',
       'folly',
       'wangle',
     };
   }
 
-  protected static function getFBCodeBuilderTravisConfig(
-  ): string {
+  <<__Override>>
+  protected static function getFBCodeBuilderTravisConfig(): string {
     // Watchman has a pre-existing travis config that knows about more than
     // fbcode_builder, so don't clobber it.
     return self::ROOT.'.travis.yml';
@@ -43,9 +49,27 @@ final class FacebookWatchman extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getPathMappingsNonFBCodeBuilder(): ImmMap<string, string> {
+  public static function getPathMappingsNonFBCodeBuilder(
+  ): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
+      // Also want to publish the common thrift defs so that we can generate
+      // an thrift client for the Eden integration
+      'fbcode/fboss/common/' => 'common/',
+      'fbcode/eden/fs/service/' => 'eden/fs/service/',
+    };
+  }
+
+  <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      // exclude the source code from the eden bits; we just want the
+      // thrift and cmake info.  We include shipit_test_file.txt in here
+      // because shipit has a sanity check that we're not excluding everything
+      // that uses that file name.  In this case we're saying we want everything
+      // to be excluded except for thrift files and the test file name.  This is
+      // covered in the unit tests and checked by inspecting the shipit output.
+      '@^fbcode/eden/fs/service/(?!.*\\.thrift|shipit_test_file\\.txt)@',
     };
   }
 

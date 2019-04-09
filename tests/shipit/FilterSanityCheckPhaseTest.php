@@ -5,74 +5,80 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/beb4xz2n
+ */
 namespace Facebook\ShipIt;
 
+use namespace HH\Lib\Str;
+
+
+<<\Oncalls('open_source')>>
 final class FilterSanityCheckPhaseTest extends BaseTest {
   public function testAllowsValidCombination(): void {
     $phase = new ShipItFilterSanityCheckPhase(
       $changeset ==> $changeset->withDiffs(
-        $changeset->getDiffs()->filter(
-          $diff ==> \substr($diff['path'], 0, 4) === 'foo/',
-        ),
+        $changeset->getDiffs()
+          ->filter($diff ==> Str\slice($diff['path'], 0, 4) === 'foo/'),
       ),
     );
-    $phase->assertValid(ImmSet { 'foo/' });
+    $phase->assertValid(ImmSet {'foo/'});
     // no exception thrown :)
   }
 
-  public function exampleEmptyRoots(): array<string, array<ImmSet<string>>> {
-    return [
-      'empty set' => [ImmSet { }],
-      'empty string' => [ImmSet { '' }],
-      '.' => [ImmSet { '.' }],
-      './' => [ImmSet { './' }],
+  public function exampleEmptyRoots(): dict<string, vec<ImmSet<string>>> {
+    return dict[
+      'empty set' => vec[ImmSet {}],
+      'empty string' => vec[ImmSet {''}],
+      '.' => vec[ImmSet {'.'}],
+      './' => vec[ImmSet {'./'}],
     ];
   }
 
-  /**
-   * @dataProvider exampleEmptyRoots
-   */
+  <<\DataProvider('exampleEmptyRoots')>>
   public function testAllowsIdentityFunctionForEmptyRoots(
     ImmSet<string> $roots,
   ): void {
-    $phase = new ShipItFilterSanityCheckPhase(
-      $changeset ==> $changeset,
-    );
+    $phase = new ShipItFilterSanityCheckPhase($changeset ==> $changeset);
     $phase->assertValid($roots);
     // no exception thrown :)
   }
 
-  /**
-   * @expectedException \HH\InvariantException
-   */
   public function testThrowsForIdentityFunctionWithRoots(): void {
-    $phase = new ShipItFilterSanityCheckPhase(
-      $changeset ==> $changeset, // stuff outside of 'foo' should be removed
-    );
-    $phase->assertValid(ImmSet { 'foo/' });
+    \expect(() ==> {
+      $phase = new ShipItFilterSanityCheckPhase(
+        $changeset ==> $changeset, // stuff outside of 'foo' should be removed
+      );
+      $phase->assertValid(ImmSet {'foo/'});
+    })
+      // @oss-disable: ->toThrow(\InvariantViolationException::class);
+    ->toThrow(\HH\InvariantException::class); // @oss-enable
   }
 
-  /**
-   * @expectedException \HH\InvariantException
-   */
   public function testThrowsForEmptyChangeset(): void {
-    $phase = new ShipItFilterSanityCheckPhase(
-      $changeset ==> (new ShipItChangeset()),
-    );
-    $phase->assertValid(ImmSet { 'foo/' });
+    \expect(() ==> {
+      $phase = new ShipItFilterSanityCheckPhase(
+        $_changeset ==> (new ShipItChangeset()),
+      );
+      $phase->assertValid(ImmSet {'foo/'});
+    })
+      // @oss-disable: ->toThrow(\InvariantViolationException::class);
+    ->toThrow(\HH\InvariantException::class); // @oss-enable
   }
 
-  /**
-   * @expectedException \HH\InvariantException
-   */
   public function testThrowsForPartialMatch(): void {
-    $phase = new ShipItFilterSanityCheckPhase(
-      $changeset ==> $changeset->withDiffs(
-        $changeset->getDiffs()->filter(
-          $diff ==> \substr($diff['path'], 0, 3) === 'foo',
-        )
-      ),
-    );
-    $phase->assertValid(ImmSet { 'foo/', 'herp/' });
+    \expect(() ==> {
+      $phase = new ShipItFilterSanityCheckPhase(
+        $changeset ==> $changeset->withDiffs(
+          $changeset->getDiffs()
+            ->filter($diff ==> Str\slice($diff['path'], 0, 3) === 'foo'),
+        ),
+      );
+      $phase->assertValid(ImmSet {'foo/', 'herp/'});
+    })
+      // @oss-disable: ->toThrow(\InvariantViolationException::class);
+    ->toThrow(\HH\InvariantException::class); // @oss-enable
   }
 }

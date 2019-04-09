@@ -5,11 +5,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/30wn9w88
+ */
 namespace Facebook\ShipIt;
 
 final class OSTeamFilters {
   public static function rewriteEmails(
-    ShipItChangeset $changeset
+    ShipItChangeset $changeset,
   ): ShipItChangeset {
     /*
      * !!!!!!!!!!!!!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!!!!!
@@ -17,7 +22,7 @@ final class OSTeamFilters {
      * linked to your internal profile so that FB can track copyright and commit
      * stats correctly.
      */
-    $emailMap = ImmMap{
+    $emailMap = ImmMap {
       'Phil Dibowitz <phild@fb.com>' => 'Phil Dibowitz <phil@ipom.com>',
       'Marcin Sawicki <odcinek@fb.com>' => 'Marcin Sawicki <odcinek@gmail.com>',
       'Bryan Wann <bwann@fb.com>' => 'Bryan Wann <bwann@wann.net>',

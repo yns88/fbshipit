@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/6jqntkxk
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class FacebookLithoTest extends FBConfigBaseTest {
   const string COMPONENTS_ROOT = 'fbandroid/libraries/components';
   <<__Override>>
@@ -19,30 +25,31 @@ final class FacebookLithoTest extends FBConfigBaseTest {
       self::COMPONENTS_ROOT.'/README.md' => 'README.md',
       self::COMPONENTS_ROOT.'/.gitignore' => '.gitignore',
       // Basic class test
-      self::COMPONENTS_ROOT.'/litho-core/src/main/'.
-        'java/com/facebook/components/InternalNode.java'
-        => 'litho-core/src/main/java/com/facebook/components/InternalNode.java',
+      self::COMPONENTS_ROOT.
+      '/litho-core/src/main/'.
+      'java/com/facebook/components/InternalNode.java' =>
+        'litho-core/src/main/java/com/facebook/components/InternalNode.java',
       // Buck files
       self::COMPONENTS_ROOT.'/BUCK' => 'BUCK',
-      self::COMPONENTS_ROOT.'/litho-core/src/debug/java/com/facebook/components/BUCK'
-        => 'litho-core/src/debug/java/com/facebook/components/BUCK',
-      self::COMPONENTS_ROOT.'/litho-core/src/main/java/com/facebook/components/BUCK'
-        => 'litho-core/src/main/java/com/facebook/components/BUCK',
+      self::COMPONENTS_ROOT.
+      '/litho-core/src/debug/java/com/facebook/components/BUCK' =>
+        'litho-core/src/debug/java/com/facebook/components/BUCK',
+      self::COMPONENTS_ROOT.
+      '/litho-core/src/main/java/com/facebook/components/BUCK' =>
+        'litho-core/src/main/java/com/facebook/components/BUCK',
       // Folders containing 'fb' in their name
-      self::COMPONENTS_ROOT.'/lib/fb/BUCK'
-        => 'lib/fb/BUCK',
-      self::COMPONENTS_ROOT.'/lib/fb'
-        => 'lib/fb',
-      self::COMPONENTS_ROOT.'/lib/fb/include/fb/ALog.h'
-        => 'lib/fb/include/fb/ALog.h',
+      self::COMPONENTS_ROOT.'/lib/fb/BUCK' => 'lib/fb/BUCK',
+      self::COMPONENTS_ROOT.'/lib/fb' => 'lib/fb',
+      self::COMPONENTS_ROOT.'/lib/fb/include/fb/ALog.h' =>
+        'lib/fb/include/fb/ALog.h',
       // bzl
-      self::COMPONENTS_ROOT.'/tools/build_defs/oss/litho_defs.bzl'
-        => 'tools/build_defs/oss/litho_defs.bzl',
+      self::COMPONENTS_ROOT.'/tools/build_defs/oss/litho_defs.bzl' =>
+        'tools/build_defs/oss/litho_defs.bzl',
       // Test for excluding other folders
       self::COMPONENTS_ROOT.'/facebook/README.fb' => null,
       'fbandroid/java/com/facebook/components' => null,
-      'fbandroid/java/com/facebook/components/FbComponentsSystrace.java'
-        => null,
+      'fbandroid/java/com/facebook/components/FbComponentsSystrace.java' =>
+        null,
       'fbandroid/components/foo' => null,
       'fbandroid/abc/components/foo' => null,
     };

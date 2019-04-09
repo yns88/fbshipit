@@ -5,8 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/rw7ojzhj
+ */
 namespace Facebook\ShipIt\Config;
 
+<<\Oncalls('open_source')>>
 final class InstagramIglistkitTest extends FBConfigBaseTest {
   const string ROOT = 'fbobjc/VendorLib/IGListKit/src';
 
@@ -18,7 +24,8 @@ final class InstagramIglistkitTest extends FBConfigBaseTest {
       self::ROOT.'/IGListKit.podspec' => 'IGListKit.podspec',
       self::ROOT.'/Source/IGListKit.h' => 'Source/IGListKit.h',
       self::ROOT.'/Source/IGListDiff.mm' => 'Source/IGListDiff.mm',
-      self::ROOT.'/Source/Internal/UICollectionView+IGListBatchUpdateData.h' => 'Source/Internal/UICollectionView+IGListBatchUpdateData.h',
+      self::ROOT.'/Source/Internal/UICollectionView+IGListBatchUpdateData.h' =>
+        'Source/Internal/UICollectionView+IGListBatchUpdateData.h',
       self::ROOT.'/Tests/IGListAdapterTests.m' => 'Tests/IGListAdapterTests.m',
 
       // Test internal files in the parent of the root are not included
@@ -26,7 +33,8 @@ final class InstagramIglistkitTest extends FBConfigBaseTest {
       'fbobjc/VendorLib/IGListKit/IGListAssert.h' => null,
 
       // Test neighbor dirs are not included
-      'fbobjc/VendorLib/IGListKit/IGListKitPerformanceTests/IGListDiffPerformanceTests.m' => null,
+      'fbobjc/VendorLib/IGListKit/IGListKitPerformanceTests/IGListDiffPerformanceTests.m' =>
+        null,
 
       // Test changes made to Instagram are not included
       'fbobjc/Apps/Instagram/Instagram/BUCK' => null,

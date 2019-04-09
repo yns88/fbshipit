@@ -5,12 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/71daopmd
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
-};
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookFatal extends FBShipItConfig {
 
@@ -18,7 +20,7 @@ final class FacebookFatal extends FBShipItConfig {
   protected static function getStripCommonFilesExceptions(): ImmVector<string> {
     return ImmVector {
       // Fallout from adding bzl files to common ShipIt filters
-      '@fatal/type/benchmark/trie/defs\.bzl$@'
+      '@fatal/type/benchmark/trie/defs\.bzl$@',
     };
   }
 

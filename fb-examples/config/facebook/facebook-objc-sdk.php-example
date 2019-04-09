@@ -5,12 +5,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/blvmptph
+ */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\ {
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
-};
+use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookFacebookObjcSdk extends FBShipItConfig {
   const string ROOT = 'fbobjc/ios-sdk/';
@@ -21,6 +23,7 @@ final class FacebookFacebookObjcSdk extends FBShipItConfig {
       '@^'.self::ROOT.'\.DS_Store$@',
       '@^'.self::ROOT.'BUCK$@',
       '@^'.self::ROOT.'README.fb$@',
+      '@^'.self::ROOT.'README.fb.md$@',
       '@.*build-buck.sh@',
       '@.*Buck-Info.plist@',
       '@.*Entitlements@',
@@ -45,7 +48,6 @@ final class FacebookFacebookObjcSdk extends FBShipItConfig {
   <<__Override>>
   public static function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
-      self::ROOT.'submodules/Bolts-ObjC.txt' => 'Carthage/Checkouts/Bolts-ObjC',
       self::ROOT.'submodules/ocmock.txt' => 'Carthage/Checkouts/ocmock',
       self::ROOT.'submodules/OHHTTPStubs.txt' =>
         'Carthage/Checkouts/OHHTTPStubs',

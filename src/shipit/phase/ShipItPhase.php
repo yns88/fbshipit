@@ -5,9 +5,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-namespace Facebook\ShipIt;
 
-require_once(__DIR__.'/ShipItCLIArgument.php');
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/lhprnur6
+ */
+namespace Facebook\ShipIt;
 
 abstract class ShipItPhase {
   private bool $skipped = false;
@@ -30,7 +33,7 @@ abstract class ShipItPhase {
   abstract protected function isProjectSpecific(): bool;
 
   public function getCLIArguments(): ImmVector<ShipItCLIArgument> {
-    return ImmVector { };
+    return ImmVector {};
   }
 
   final public function isSkipped(): bool {
@@ -47,24 +50,33 @@ abstract class ShipItPhase {
 
   final public function run(ShipItBaseConfig $config): void {
     if (
-      $this->isProjectSpecific()
-      && !$config->areProjectSpecificPhasesEnabled()
+      $this->isProjectSpecific() && !$config->areProjectSpecificPhasesEnabled()
     ) {
       $this->skip();
     }
 
     if ($this->isSkipped()) {
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \printf("Skipping phase: %s\n", $this->getReadableName());
       return;
     }
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf(
       "Starting phase%s: %s\n",
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $config->isVerboseEnabled() ? ' ('.\date('H:i:s').')' : '',
       $this->getReadableName(),
     );
     $this->runImpl($config);
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf(
       "Finished phase%s: %s\n",
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $config->isVerboseEnabled() ? ' ('.\date('H:i:s').')' : '',
       $this->getReadableName(),
     );
