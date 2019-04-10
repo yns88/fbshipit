@@ -26,13 +26,13 @@ class ShimExpectObj<T> extends Facebook\FBExpect\ExpectObj<T> {
     $this->toNotContain($needle, $msg);
   }
 
-  public function toMatchRegex(string $expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toMatchRegex(string $expected, string $msg = '', mixed ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertRegExp($expected, (string) $this->varShim, $msg);
   }
 
-  public function toNotMatchRegex(string $expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toNotMatchRegex(string $expected, string $msg = '', mixed ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotRegExp($expected, (string) $this->varShim, $msg);
   }
 }
