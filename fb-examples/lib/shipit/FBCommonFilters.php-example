@@ -40,8 +40,8 @@ final class FBCommonFilters {
       |> self::referencePullRequestNumber($$)
       |> self::stripSevRevertSummary($$)
       |> self::delinkifyDifferentialURLs($$)
-      |> self::restoreGitHubAuthor($$)
       |> ShipItUserFilters::rewriteSVNAuthor($$, FBToGitHubUserInfo::class)
+      |> self::restoreGitHubAuthor($$)
       |> self::filterMessageSections(
         $$,
         $config['filterMessageSections/keepFields'] ??
