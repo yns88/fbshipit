@@ -15,9 +15,13 @@ namespace Facebook\ShipIt;
 
 <<\Oncalls('open_source')>>
 final class SyncTrackingTest extends BaseTest {
-  public function testLastSourceCommitWithGit(): void {
-    $tempdir = new ShipItTempDir('git-sync-test');
-    $path = $tempdir->getPath();
+
+  private ?ShipItTempDir $tempDir;
+
+  <<__Override>>
+  public async function setUp(): Awaitable<void> {
+    $this->tempDir = new ShipItTempDir('git-sync-test');
+    $path = $this->tempDir->getPath();
 
     // Prepare an empty repo
     (new ShipItShellCommand($path, 'git', 'init'))->runSynchronously();
@@ -39,26 +43,38 @@ final class SyncTrackingTest extends BaseTest {
         'fbshipit@example.com',
       )
     )->runSynchronously();
+  }
 
+  <<__Override>>
+  public async function tearDown(): Awaitable<void> {
+    $this->tempDir?->remove();
+  }
+
+  private function getGITRepoWithCommit(string $message): ShipItRepoGIT {
     // Add a tracked commit
+    $path = \expect($this->tempDir?->getPath())->toNotBeNull();
+    (
+      new ShipItShellCommand(
+        $path,
+        'git',
+        'commit',
+        '--cleanup=verbatim',
+        '--allow-empty',
+        '-m',
+        $message,
+      )
+    )->runSynchronously();
+    return new ShipItRepoGIT($path, 'master');
+  }
+
+  public function testLastSourceCommitWithGit(): void {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fake_commit_id = \bin2hex(\random_bytes(16));
     $message = ShipItSync::addTrackingData(
       (new ShipItChangeset())->withID($fake_commit_id),
     )->getMessage();
-    (
-      new ShipItShellCommand(
-        $path,
-        'git',
-        'commit',
-        '--allow-empty',
-        '-m',
-        $message,
-      )
-    )->runSynchronously();
-
-    $repo = new ShipItRepoGIT($path, 'master');
+    $repo = $this->getGITRepoWithCommit($message);
     \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
   }
 
@@ -83,6 +99,45 @@ final class SyncTrackingTest extends BaseTest {
     )->runSynchronously();
 
     $repo = new ShipItRepoHG($path, 'master');
+    \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
+  }
+
+  public function testLastSourceCommitMultipleMarkers(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $fake_commit_id_1 = \bin2hex(\random_bytes(16));
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $fake_commit_id_2 = \bin2hex(\random_bytes(16));
+    $message_1 = ShipItSync::addTrackingData(
+      (new ShipItChangeset())->withID($fake_commit_id_1),
+    )->getMessage();
+    $message_2 = ShipItSync::addTrackingData(
+      (new ShipItChangeset())->withID($fake_commit_id_2),
+    )->getMessage();
+    $repo = $this->getGITRepoWithCommit($message_1."\n\n".$message_2);
+    \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame(
+      $fake_commit_id_2,
+    );
+  }
+
+  public function testLastSourceCommitWithWhitespace(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $fake_commit_id = \bin2hex(\random_bytes(16));
+    $message = ShipItSync::addTrackingData(
+      (new ShipItChangeset())->withID($fake_commit_id),
+    )->getMessage();
+    $repo = $this->getGITRepoWithCommit($message." ");
+    \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
+  }
+
+  public function testLastSourceCommitMissingWhitespace(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $fake_commit_id = \bin2hex(\random_bytes(16));
+    $message = "fbshipit-source-id:".$fake_commit_id;
+    $repo = $this->getGITRepoWithCommit($message);
     \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
   }
 }

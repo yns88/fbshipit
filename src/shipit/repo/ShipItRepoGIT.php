@@ -79,7 +79,7 @@ class ShipItRepoGIT
   ): ?string {
     $log = $this->gitCommand(
       'log', '-1', '--grep',
-      '^\\(fb\\)\\?shipit-source-id: [a-z0-9]\\+$',
+      '^\\(fb\\)\\?shipit-source-id: \\?[a-z0-9]\\+\\s*$',
       ...$roots,
     );
     $log = Str\trim($log);
@@ -87,8 +87,8 @@ class ShipItRepoGIT
     if (
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      !\preg_match(
-        '/^ *(fb)?shipit-source-id: (?<commit>[a-z0-9]+)$/m',
+      !\preg_match_all(
+        '/^ *(fb)?shipit-source-id: ?(?<commit>[a-z0-9]+)$/m',
         $log,
         &$matches,
       )
@@ -103,7 +103,10 @@ class ShipItRepoGIT
     if (!\array_key_exists('commit', $matches)) {
       return null;
     }
-    return $matches['commit'];
+    if (!\is_array($matches['commit'])) {
+      return null;
+    }
+    return C\last($matches['commit']);
   }
 
   public function findNextCommit(

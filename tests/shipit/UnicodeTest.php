@@ -22,8 +22,7 @@ final class UnicodeTest extends BaseTest {
   private ?string $ctype;
 
   <<__Override>>
-  // @oss-disable: public async function setUp(): Awaitable<void> {
-    public async function beforeEachTestAsync(): Awaitable<void> { // @oss-enable
+  public async function setUp(): Awaitable<void> {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $ctype = \getenv('LC_CTYPE');
@@ -36,8 +35,7 @@ final class UnicodeTest extends BaseTest {
   }
 
   <<__Override>>
-  // @oss-disable: public async function tearDown(): Awaitable<void> {
-    public async function afterEachTestAsync(): Awaitable<void> { // @oss-enable
+  public async function tearDown(): Awaitable<void> {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \putenv('LC_CTYPE='.$this->ctype);

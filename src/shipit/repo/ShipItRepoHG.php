@@ -118,7 +118,7 @@ class ShipItRepoHG extends ShipItRepo
       '--limit',
       '1',
       '--keyword',
-      'fbshipit-source-id: ',
+      'fbshipit-source-id:',
       '--template',
       '{desc}',
       ...$roots,
@@ -129,7 +129,7 @@ class ShipItRepoHG extends ShipItRepo
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       !\preg_match_all(
-        '/^ *fbshipit-source-id: (?<commit>[a-z0-9]+)$/m',
+        '/^ *fbshipit-source-id: ?(?<commit>[a-z0-9]+)$/m',
         $log,
         &$matches,
       )
