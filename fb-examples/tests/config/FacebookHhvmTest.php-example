@@ -70,8 +70,7 @@ final class FacebookHhvmTest extends FBConfigBaseTest {
       'fbcode/hphp/doc/Makefile' => 'hphp/doc/Makefile',
       'fbcode/hphp/nothack/src/Makefile' => null,
 
-      'fbcode/hphp/hack/src/utils/sys/.merlin' =>
-        'hphp/hack/src/utils/sys/.merlin',
+      'fbcode/hphp/hack/src/utils/sys/.merlin' => null,
       'fbcode/hphp/hack/.merlin' => null,
 
       'fbcode/hphp/DEFS' => null,
