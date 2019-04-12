@@ -14,6 +14,20 @@ namespace Facebook\ShipIt;
 
 abstract class BaseTest extends \Facebook\HackTest\HackTest { // @oss-enable
 // @oss-disable: abstract class BaseTest extends \HackTest {
+
+  public async function setUp(): Awaitable<void> {} // @oss-enable
+  public async function tearDown(): Awaitable<void> {} // @oss-enable
+
+  <<__Override>> // @oss-enable
+  public async function beforeEachTestAsync(): Awaitable<void> { // @oss-enable
+    await $this->setUp(); // @oss-enable
+  } // @oss-enable
+
+  <<__Override>> // @oss-enable
+  public async function afterEachTestAsync(): Awaitable<void> { // @oss-enable
+    await $this->tearDown(); // @oss-enable
+  } // @oss-enable
+
   protected static function diffsFromMap(
     ImmMap<string, string> $diffs,
   ): ImmVector<ShipItDiff> {
