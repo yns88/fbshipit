@@ -9,7 +9,7 @@ namespace Facebook\ShipIt\Config;
 
 <<\Oncalls('open_source')>>
 final class FacebookFbmemoryprofilerTest extends FBConfigBaseTest {
-  const string ROOT = 'fbobjc/vendorlib/fbmemoryprofiler/src';
+  const string ROOT = 'fbobjc/VendorLib/FBMemoryProfiler/src';
 
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {

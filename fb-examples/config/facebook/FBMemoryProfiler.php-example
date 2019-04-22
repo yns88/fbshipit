@@ -10,7 +10,7 @@ namespace Facebook\ShipIt\Config;
 use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookFbmemoryprofiler extends FBShipItConfig {
-  const string ROOT = 'fbobjc/vendorlib/fbmemoryprofiler/src/';
+  const string ROOT = 'fbobjc/VendorLib/FBMemoryProfiler/src/';
 
   <<__Override>>
   public static function getDefaultPathMappings(): ImmMap<string, string> {
