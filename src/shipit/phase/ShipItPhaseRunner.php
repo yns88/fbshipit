@@ -276,6 +276,7 @@ class ShipItPhaseRunner {
       $rows->map(
         $row ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      /* HH_FIXME[4297] Exposed by upgraded typechecker (new_inference) */
       Str\format("%s  %s\n", \str_pad($row[0], $max_left), $row[1]),
       ),
       "",
