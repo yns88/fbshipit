@@ -12,11 +12,41 @@
  */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
+use type Facebook\ShipIt\{
+  FBCodeBuilderTrait,
+  FBShipItCLIStaticConfig,
+  FBShipItConfig,
+};
 
 final class FacebookexperimentalEden extends FBShipItConfig {
+  use FBCodeBuilderTrait;
+
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
+    // TODO: It's rather unfortunate that this dependency information currently
+    // has to be manually copied into this script, rather than being discovered
+    // automatically from the fbcode_builder spec for the project.
+    //
+    // It's also unfortunate that we have to recursively list all dependencies,
+    // rather than having it automatically figure out transitive dependencies
+    // for us.
+    return ImmSet {
+      'fbthrift',
+      'folly',
+      'wangle',
+      # TODO: We also transitively (through fbthrift) depend on the following
+      # projects.  Unfortunately the fbcode_builder shipit code currently only
+      # ships files under project_hashes/facebook/, and these projects are
+      # under different directories:
+      # - fizz  (part of facebookincubator rather than facebook)
+      # - rsocket-cpp: (part of rsocket rather than facebook, and submodule
+      #          syncing currently isn't enabled for this project)
+    };
+  }
+
+  <<__Override>>
+  public static function getPathMappingsNonFBCodeBuilder(
+  ): ImmMap<string, string> {
     return ImmMap {
       'fbcode/eden/oss/' => '',
       'fbcode/eden/' => 'eden/',

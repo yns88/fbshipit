@@ -12,6 +12,8 @@
  */
 namespace Facebook\ShipIt\Config;
 
+use type Facebook\ShipIt\{FBCodeBuilder};
+
 <<\Oncalls('open_source')>>
 final class FacebookexperimentalEdenTest extends FBConfigBaseTest {
   <<__Override>>
@@ -51,6 +53,18 @@ final class FacebookexperimentalEdenTest extends FBConfigBaseTest {
       'fbcode/eden/fs/config/test/TARGETS' => null,
       # The eden-config.h file gets stripped
       'fbcode/eden/fs/eden-config.h' => null,
+
+      // fbcode_builder is shared between several projects, but it's easiest
+      // to just copy it into each project's Github repo.
+      FBCodeBuilder::SRC_FBCODE_BUILDER.'fbcode_builder.py' =>
+        FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
+      FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',
+
+      // We should pull in project hashes for projects we depend on
+      FBCodeBuilder::SRC_GITHUB_HASHES.'wangle-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'wangle-rev.txt',
+      // But not for projects that are not dependencies
+      FBCodeBuilder::SRC_GITHUB_HASHES.'fbzmq-rev.txt' => null,
     };
   }
 }
