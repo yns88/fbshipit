@@ -124,12 +124,14 @@ final class FBRepoInitPhase extends ShipItPhase {
           '/usr/local/bin/hg-clone-fbsource',
           '--no-working-dir',
           '--simple',
+          '--no-cloud-rejoin',
         };
       case 'www':
         return ImmVector {
           '/usr/local/bin/hg-clone-www',
           '--no-working-dir',
           '--simple',
+          '--no-cloud-rejoin',
         };
       case 'pse-demos':
         return ImmVector {
@@ -143,6 +145,7 @@ final class FBRepoInitPhase extends ShipItPhase {
           '/usr/local/bin/hg-clone-opsfiles',
           '--no-working-dir',
           '--simple',
+          '--no-cloud-rejoin',
         };
       case 'connectivity-lab':
         return ImmVector {
@@ -205,6 +208,7 @@ final class FBRepoInitPhase extends ShipItPhase {
           '/usr/local/bin/hg-clone-si_sigma',
           '--no-working-dir',
           '--simple',
+          '--no-cloud-rejoin',
         };
       case 'phabtest1_git':
         return ImmVector {
