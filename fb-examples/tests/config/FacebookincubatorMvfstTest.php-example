@@ -1,0 +1,32 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+use \Facebook\ShipIt\FBCodeBuilder;
+
+<<\Oncalls('open_source')>>
+final class FacebookincubatorMvfstTest extends FBConfigBaseTest {
+  <<__Override>>
+  public static function getExamplePathMappings(): ImmMap<string, ?string> {
+    return ImmMap {
+      "fbcode/quic/api/Server.cpp" => "quic/api/Server.cpp",
+      "fbcode/quic/api/TARGETS" => null,
+      "fbcode/quic/TARGETS" => null,
+      "fbcode/quic/facebook/BarInternal.cpp" => null,
+      "fbcode/quic/facebook/congestion_controller/BBR.cpp" => null,
+      "fbcode/quic/public_root/README" => "README",
+      FBCodeBuilder::SRC_FBCODE_BUILDER.'fbcode_builder.py' =>
+        FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
+      FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',
+      # Only care about our deps
+      FBCodeBuilder::SRC_GITHUB_HASHES.'folly-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'folly-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'wangle-rev.txt' => null,
+    };
+  }
+}
