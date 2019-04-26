@@ -31,9 +31,9 @@ final class FacebookWangleTest extends FBConfigBaseTest {
         FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
       FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',
       // Wangle is only interested in the Github revisions its dependencies.
-      FBCodeBuilder::SRC_GITHUB_HASHES.'folly-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'folly-rev.txt',
-      FBCodeBuilder::SRC_GITHUB_HASHES.'proxygen-rev.txt' => null,
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/folly-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/folly-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/proxygen-rev.txt' => null,
     };
   }
 }

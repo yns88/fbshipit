@@ -24,10 +24,10 @@ final class FacebookBistro extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
-      'fbthrift',
-      'folly',
-      'proxygen',
-      'wangle',
+      'facebook/fbthrift',
+      'facebook/folly',
+      'facebook/proxygen',
+      'facebook/wangle',
     };
   }
 

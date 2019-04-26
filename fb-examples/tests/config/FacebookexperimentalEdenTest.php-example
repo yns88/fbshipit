@@ -61,10 +61,14 @@ final class FacebookexperimentalEdenTest extends FBConfigBaseTest {
       FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',
 
       // We should pull in project hashes for projects we depend on
-      FBCodeBuilder::SRC_GITHUB_HASHES.'wangle-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'wangle-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/wangle-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/wangle-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebookincubator/fizz-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebookincubator/fizz-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'rsocket/rsocket-cpp-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'rsocket/rsocket-cpp-rev.txt',
       // But not for projects that are not dependencies
-      FBCodeBuilder::SRC_GITHUB_HASHES.'fbzmq-rev.txt' => null,
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/fbzmq-rev.txt' => null,
     };
   }
 }

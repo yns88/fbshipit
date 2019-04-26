@@ -24,10 +24,10 @@ final class FacebookOpenr extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
-      'folly',
-      'fbthrift',
-      'fbzmq',
-      'wangle',
+      'facebook/folly',
+      'facebook/fbthrift',
+      'facebook/fbzmq',
+      'facebook/wangle',
     };
   }
 

@@ -31,9 +31,9 @@ final class FacebookBistroTest extends FBConfigBaseTest {
         FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
       FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',
       // Bistro is only interested in the Github revisions its dependencies.
-      FBCodeBuilder::SRC_GITHUB_HASHES.'wangle-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'wangle-rev.txt',
-      FBCodeBuilder::SRC_GITHUB_HASHES.'yoga-rev.txt' => null,
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/wangle-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/wangle-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/yoga-rev.txt' => null,
     };
   }
 }

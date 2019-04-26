@@ -30,9 +30,9 @@ final class FacebookFbzmqTest extends FBConfigBaseTest {
       FBCodeBuilder::SRC_FBCODE_BUILDER.'fbcode_builder.py' =>
         FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
       // fbzmq is only interested in the Github revisions its dependencies.
-      FBCodeBuilder::SRC_GITHUB_HASHES.'folly-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'folly-rev.txt',
-      FBCodeBuilder::SRC_GITHUB_HASHES.'yoga-rev.txt' => null,
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/folly-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/folly-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/yoga-rev.txt' => null,
     };
   }
 }

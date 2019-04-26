@@ -26,9 +26,9 @@ final class FacebookWatchman extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
-      'fbthrift',
-      'folly',
-      'wangle',
+      'facebook/fbthrift',
+      'facebook/folly',
+      'facebook/wangle',
     };
   }
 

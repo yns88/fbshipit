@@ -24,7 +24,7 @@ final class FacebookWangle extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
-      'folly',
+      'facebook/folly',
     };
   }
 

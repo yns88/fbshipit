@@ -47,12 +47,12 @@ final class FacebookWatchmanTest extends FBConfigBaseTest {
       // to just copy it into each project's Github repo.
       FBCodeBuilder::SRC_FBCODE_BUILDER.'fbcode_builder.py' =>
         FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
-      FBCodeBuilder::SRC_GITHUB_HASHES.'folly-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'folly-rev.txt',
-      FBCodeBuilder::SRC_GITHUB_HASHES.'wangle-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'wangle-rev.txt',
-      FBCodeBuilder::SRC_GITHUB_HASHES.'fbthrift-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'fbthrift-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/folly-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/folly-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/wangle-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/wangle-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/fbthrift-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/fbthrift-rev.txt',
     };
   }
 }

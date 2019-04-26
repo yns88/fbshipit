@@ -24,9 +24,9 @@ final class FacebookFbzmq extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
-      'folly',
-      'fbthrift',
-      'wangle',
+      'facebook/folly',
+      'facebook/fbthrift',
+      'facebook/wangle',
     };
   }
 

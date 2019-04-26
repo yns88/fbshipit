@@ -31,16 +31,11 @@ final class FacebookexperimentalEden extends FBShipItConfig {
     // rather than having it automatically figure out transitive dependencies
     // for us.
     return ImmSet {
-      'fbthrift',
-      'folly',
-      'wangle',
-      # TODO: We also transitively (through fbthrift) depend on the following
-      # projects.  Unfortunately the fbcode_builder shipit code currently only
-      # ships files under project_hashes/facebook/, and these projects are
-      # under different directories:
-      # - fizz  (part of facebookincubator rather than facebook)
-      # - rsocket-cpp: (part of rsocket rather than facebook, and submodule
-      #          syncing currently isn't enabled for this project)
+      'facebook/fbthrift',
+      'facebook/folly',
+      'facebook/wangle',
+      'facebookincubator/fizz',
+      'rsocket/rsocket-cpp',
     };
   }
 

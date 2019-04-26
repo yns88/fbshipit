@@ -21,8 +21,8 @@ final class FBCodeBuilder {
   // The github hashes change frequently. We keep them under build/ so that
   // `git log projectname/` stays relatively un-spammy.  Then, nest under
   // `facebook` for a future-proof pattern of `<github user>/<github repo>`.
-  const string SRC_GITHUB_HASHES = 'fbcode/opensource/project_hashes/facebook/';
-  const string DEST_GITHUB_HASHES = 'build/deps/github_hashes/facebook/';
+  const string SRC_GITHUB_HASHES = 'fbcode/opensource/project_hashes/';
+  const string DEST_GITHUB_HASHES = 'build/deps/github_hashes/';
 
   public static function getPathMappings(
     ?string $travis_config = null,

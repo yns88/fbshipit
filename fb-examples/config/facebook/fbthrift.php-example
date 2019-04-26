@@ -24,8 +24,8 @@ final class FacebookFbthrift extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
-      'folly',
-      'wangle',
+      'facebook/folly',
+      'facebook/wangle',
     };
   }
 
