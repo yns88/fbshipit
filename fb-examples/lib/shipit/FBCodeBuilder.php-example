@@ -65,40 +65,6 @@ final class FBCodeBuilder {
       '@^'.FBCodeBuilder::DEST_GITHUB_HASHES.'shipit_test_file.txt$@',
     };
   }
-
-  // The newer FBShipItConfig classes strip on source paths rather than
-  // destination paths.
-  //
-  // TODO: These unfortunately cannot easily strip files that get installed at
-  // build/facebook_.*
-  // Individual projects have to provide their own rules for these files.
-  public static function getSrcStrippedFiles(): ImmVector<string> {
-    return ImmVector {
-      '@^'.FBCodeBuilder::SRC_GITHUB_HASHES.'@',
-      '@^'.FBCodeBuilder::SRC_FBCODE_BUILDER.'facebook_@',
-      '@^'.FBCodeBuilder::SRC_FBCODE_BUILDER.'README.facebook$@',
-      '@^'.FBCodeBuilder::SRC_FBCODE_BUILDER.'TARGETS@',
-    };
-  }
-  public static function getSrcStrippedFileExceptions(
-    ImmSet<string> $dependencies,
-  ): ImmVector<string> {
-    return ImmVector {
-      '@^'.FBCodeBuilder::SRC_GITHUB_HASHES.'$@',
-      '@^'.
-      FBCodeBuilder::SRC_GITHUB_HASHES.
-      '('.
-      Str\join(
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $dependencies->map($d ==> \preg_quote($d, '@')),
-        '|',
-      ).
-      ')-rev.txt$@',
-      // This is just to appease ShipItFilterSanityCheckPhase
-      '@^'.FBCodeBuilder::SRC_GITHUB_HASHES.'shipit_test_file.txt$@',
-    };
-  }
 }
 
 interface ISupportsFBCodeBuilder {}

@@ -23,6 +23,7 @@ final class FacebookFollyTest extends FBConfigBaseTest {
       'fbcode/folly/public_tld/TLDFile.txt' => 'TLDFile.txt',
       'fbcode/folly/folly-config.h' => null, // Written by autoconf
       'fbcode/folly/facebook/secret' => null,
+      'fbcode/folly/public_tld/build/facebook_fbcode_builder_config.py' => null,
       // fbcode_builder is shared between several projects, but it's easiest
       // to just copy it into each project's Github repo.
       FBCodeBuilder::SRC_FBCODE_BUILDER.'fbcode_builder.py' =>
