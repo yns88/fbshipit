@@ -24,9 +24,9 @@ final class FacebookincubatorMvfstTest extends FBConfigBaseTest {
         FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
       FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml' => '.travis.yml',
       # Only care about our deps
-      FBCodeBuilder::SRC_GITHUB_HASHES.'folly-rev.txt' =>
-        FBCodeBuilder::DEST_GITHUB_HASHES.'folly-rev.txt',
-      FBCodeBuilder::SRC_GITHUB_HASHES.'wangle-rev.txt' => null,
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/folly-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/folly-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/wangle-rev.txt' => null,
     };
   }
 }

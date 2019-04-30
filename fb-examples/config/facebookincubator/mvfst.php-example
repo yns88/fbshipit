@@ -21,8 +21,8 @@ final class FacebookincubatorMvfst extends FBShipItConfig {
   <<__Override>>
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
-      'folly',
-      'fizz',
+      'facebook/folly',
+      'facebook/fizz',
     };
   }
 
@@ -32,14 +32,6 @@ final class FacebookincubatorMvfst extends FBShipItConfig {
     return ImmMap {
       self::ROOT.'public_root/' => '',
       self::ROOT => 'quic/',
-    };
-  }
-
-  <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
-    return ImmVector {
-      '@^'.self::ROOT.'build/deps/github_hashes/@',
-      // github hash of dependencies
     };
   }
 
