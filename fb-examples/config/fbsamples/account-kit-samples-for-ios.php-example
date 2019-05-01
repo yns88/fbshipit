@@ -17,6 +17,7 @@ final class FbsamplesAccountKitSamplesForIos extends FBShipItConfig {
     return ImmVector {
       '@^'.self::ROOT.'AccountKitSample/BUCK$@',
       '@^'.self::ROOT.'AccountKitSample/build-buck.sh$@',
+      '@^'.self::ROOT.'AccountKitSample/Entitlements@',
     };
   }
 
