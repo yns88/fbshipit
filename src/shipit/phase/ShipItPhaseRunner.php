@@ -203,7 +203,7 @@ class ShipItPhaseRunner {
           'documented replacement.',
           $key,
         );
-        ShipItLogger::err( "%s is deprecated and a no-op\n", $key);
+        ShipItLogger::err("%s is deprecated and a no-op\n", $key);
       }
     }
   }
@@ -217,12 +217,14 @@ class ShipItPhaseRunner {
       $config->map($opt ==> $opt['long_name']),
     )
       |> dict($$);
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (\array_key_exists('h', $raw_opts) ||
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    if (
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      \array_key_exists('h', $raw_opts) ||
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \array_key_exists('help', $raw_opts)) {
+        \array_key_exists('help', $raw_opts)
+    ) {
       self::printHelp($config);
       exit(0);
     }

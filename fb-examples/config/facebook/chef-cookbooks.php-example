@@ -85,11 +85,7 @@ final class FacebookChefCookbooks extends FBShipItConfig {
     return $changeset->withMessage(
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_replace(
-        '/\s*chef_test_hosts:.*/',
-        '',
-        $changeset->getMessage(),
-      ),
+      \preg_replace('/\s*chef_test_hosts:.*/', '', $changeset->getMessage()),
     );
   }
 

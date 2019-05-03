@@ -23,7 +23,7 @@ final class BuckEnvironmentCheckPhase extends EnvironmentCheckPhase {
       /* path = */ '.',
       /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE | ShipItUtil::NO_THROW | $extra_flags,
-      ...$command,
+      ...$command
     );
   }
 
@@ -38,11 +38,11 @@ final class BuckEnvironmentCheckPhase extends EnvironmentCheckPhase {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\preg_match('@version ([0-9\.]+)@', $ant_v, &$match)) {
-      ShipItLogger::err( "Couldn't identify ant version: %s\n", $ant_v);
+      ShipItLogger::err("Couldn't identify ant version: %s\n", $ant_v);
       exit(1);
     }
     if ($match[1] < '1.9') {
-      ShipItLogger::err( "Needed ant 1.9, got %s\n", $match[1]);
+      ShipItLogger::err("Needed ant 1.9, got %s\n", $match[1]);
       exit(1);
     }
 
@@ -51,7 +51,7 @@ final class BuckEnvironmentCheckPhase extends EnvironmentCheckPhase {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\preg_match('@version "([0-9\.]+)@', $java_v, &$match)) {
-      ShipItLogger::err( "Couldn't identify java version: %s\n", $java_v);
+      ShipItLogger::err("Couldn't identify java version: %s\n", $java_v);
       exit(1);
     }
 

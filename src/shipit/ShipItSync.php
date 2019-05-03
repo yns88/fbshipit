@@ -264,7 +264,7 @@ final class ShipItSync {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\preg_match('/^D[0-9]{6,}$/', $diff)) {
       throw new ShipItException(
-        "Last differential revision number ('{$diff}') is invalid"
+        "Last differential revision number ('{$diff}') is invalid",
       );
     }
     return $diff;

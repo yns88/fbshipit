@@ -68,10 +68,10 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace(
-            '@^((?!infra_macros/fbcode_macros).*)/TARGETS$@',
-            '\1/BUCK',
-            $path,
-          ),
+          '@^((?!infra_macros/fbcode_macros).*)/TARGETS$@',
+          '\1/BUCK',
+          $path,
+        ),
       );
   }
 
@@ -156,12 +156,9 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
       |> static::rewriteAddingOssExtension($$)
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        $path ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        $path ==> \preg_replace(
-          self::BUCK_FILES_TO_REWRITE,
-          '\1/TARGETS',
-          $path),
+          \preg_replace(self::BUCK_FILES_TO_REWRITE, '\1/TARGETS', $path),
       )
       |> parent::projectImportChangeset($$, $branch_config);
   }

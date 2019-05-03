@@ -29,10 +29,7 @@ final class RenameFileTest extends BaseTest {
     $temp_dir = new ShipItTempDir('rename-file-test');
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \file_put_contents(
-      $temp_dir->getPath().'/initial.txt',
-      'my content here',
-    );
+    \file_put_contents($temp_dir->getPath().'/initial.txt', 'my content here');
 
     $this->execSteps($temp_dir->getPath(), ImmVector {'hg', 'init'});
     $this->configureHg($temp_dir);

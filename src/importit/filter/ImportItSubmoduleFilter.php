@@ -54,7 +54,7 @@ final class ImportItSubmoduleFilter {
       $old_rev = $new_rev = null;
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      foreach(\explode("\n", $body) as $line) {
+      foreach (\explode("\n", $body) as $line) {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         if (!\strncmp('-Subproject commit ', $line, 19)) {

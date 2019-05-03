@@ -65,13 +65,13 @@ abstract class FBConfigBaseTest
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \expect(\basename(\dirname($reflector->getFileName())))->toBePHPEqual(
       $config['githubOrg'],
-      'Config parent directory must match GitHub Org: '.$config_class
+      'Config parent directory must match GitHub Org: '.$config_class,
     );
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \expect(\basename($reflector->getFileName()))->toBePHPEqual(
       $config['githubProject'].'.php',
-      'Config filename must match GitHub Repo: '.$config_class
+      'Config filename must match GitHub Repo: '.$config_class,
     );
   }
 

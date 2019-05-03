@@ -19,14 +19,12 @@ final class ShipItRepoHGException extends ShipItRepoException {}
 /**
  * HG specialization of ShipItRepo
  */
-class ShipItRepoHG extends ShipItRepo
+class ShipItRepoHG
+  extends ShipItRepo
   implements ShipItDestinationRepo, ShipItSourceRepo {
   private ?string $branch;
 
-  public function __construct(
-    string $path,
-    string $branch,
-  ): void {
+  public function __construct(string $path, string $branch): void {
     parent::__construct($path, $branch);
 
     try {
@@ -55,8 +53,7 @@ class ShipItRepoHG extends ShipItRepo
   }
 
   <<__Override>>
-  public function getHeadChangeset(
-  ): ?ShipItChangeset {
+  public function getHeadChangeset(): ?ShipItChangeset {
     $branch = $this->branch;
     if ($branch === null) {
       throw new ShipItRepoHGException($this, "setBranch must be called first.");
@@ -67,16 +64,18 @@ class ShipItRepoHG extends ShipItRepo
       '1',
       '-r',
       $branch,
-       '--template',
-       '{node}\\n',
+      '--template',
+      '{node}\\n',
     );
     $log = Str\trim($log);
     if ($log === '') {
       return null;
     }
     if (Str\length($log) !== 40) {
-      throw new ShipItRepoHGException($this, "{$log} doesn't look like a valid".
-                                            " hg changeset id");
+      throw new ShipItRepoHGException(
+        $this,
+        "{$log} doesn't look like a valid"." hg changeset id",
+      );
     }
     return $this->getChangesetFromID($log);
   }
@@ -95,24 +94,24 @@ class ShipItRepoHG extends ShipItRepo
       '1',
       '-r',
       "({$revision}::{$branch}) - {$revision}",
-       '--template',
-       '{node}\\n',
-       ...$roots,
+      '--template',
+      '{node}\\n',
+      ...$roots
     );
     $log = Str\trim($log);
     if ($log === '') {
       return null;
     }
     if (Str\length($log) !== 40) {
-      throw new ShipItRepoHGException($this, "{$log} doesn't look like a valid".
-                                            " hg changeset id");
+      throw new ShipItRepoHGException(
+        $this,
+        "{$log} doesn't look like a valid"." hg changeset id",
+      );
     }
     return $log;
   }
 
-  public function findLastSourceCommit(
-    ImmSet<string> $roots,
-  ): ?string {
+  public function findLastSourceCommit(ImmSet<string> $roots): ?string {
     $log = $this->hgCommand(
       'log',
       '--limit',
@@ -121,7 +120,7 @@ class ShipItRepoHG extends ShipItRepo
       'fbshipit-source-id:',
       '--template',
       '{desc}',
-      ...$roots,
+      ...$roots
     );
     $log = Str\trim($log);
     $matches = null;
@@ -154,13 +153,17 @@ class ShipItRepoHG extends ShipItRepo
     if ($patch->getDiffs()->count() === 0) {
       // This is an empty commit, which `hg patch` does not handle properly.
       $this->hgCommand(
-        '--config', 'ui.allowemptycommit=True',
+        '--config',
+        'ui.allowemptycommit=True',
         'commit',
-        '--user', $patch->getAuthor(),
+        '--user',
+        $patch->getAuthor(),
+        '--date',
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        '--date', \date('c', $patch->getTimestamp()),
-        '-m', self::getCommitMessage($patch),
+        \date('c', $patch->getTimestamp()),
+        '-m',
+        self::getCommitMessage($patch),
       );
     } else {
       $diff = self::renderPatch($patch);
@@ -176,12 +179,14 @@ class ShipItRepoHG extends ShipItRepo
     // mailboxes. cf. https://git-scm.com/docs/git-format-patch
     $commit_message = self::getCommitMessage($patch);
     $ret = "From {$patch->getID()} Mon Sep 17 00:00:00 2001\n".
-           "From: {$patch->getAuthor()}\n".
-           /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-           "Date: ".\date('r', $patch->getTimestamp())."\n".
-           "Subject: [PATCH] {$commit_message}\n---\n\n";
-    foreach($patch->getDiffs() as $diff) {
+      "From: {$patch->getAuthor()}\n".
+      "Date: ".
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      \date('r', $patch->getTimestamp()).
+      "\n".
+      "Subject: [PATCH] {$commit_message}\n---\n\n";
+    foreach ($patch->getDiffs() as $diff) {
       $path = $diff['path'];
       $body = $diff['body'];
 
@@ -206,7 +211,7 @@ class ShipItRepoHG extends ShipItRepo
     $contents = '';
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    foreach(\explode("\n", $patch) as $line) {
+    foreach (\explode("\n", $patch) as $line) {
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $line = \preg_replace('/(\r\n|\n)/', "\n", $line);
@@ -217,13 +222,13 @@ class ShipItRepoHG extends ShipItRepo
         \preg_match(
           '@^diff --git( ([ab]/(.*?)|/dev/null)){2}@',
           Str\trim_right($line),
-        )
-        && $contents !== ''
+        ) &&
+        $contents !== ''
       ) {
         yield $contents;
         $contents = '';
       }
-      $contents .= $line . "\n";
+      $contents .= $line."\n";
     }
     if ($contents !== '') {
       yield $contents;
@@ -247,8 +252,8 @@ class ShipItRepoHG extends ShipItRepo
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         if (!\strncasecmp($line, '# User ', 7)) {
           $changeset = $changeset->withAuthor(Str\slice($line, 7));
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         } else if (!\strncasecmp($line, '# Date ', 7)) {
           $changeset = $changeset->withTimestamp((int)Str\slice($line, 7));
         }
@@ -263,27 +268,35 @@ class ShipItRepoHG extends ShipItRepo
     }
 
     return $changeset
-      ->withSubject((string) $subject)
+      ->withSubject((string)$subject)
       ->withMessage(Str\trim($message));
   }
 
   public function getNativePatchFromID(string $revision): string {
     return $this->hgCommand(
       'log',
-      '--config', 'diff.git=True',
-      '-r', $revision,
-      '--encoding', 'UTF-8',
-      '--template', '{diff()}',
+      '--config',
+      'diff.git=True',
+      '-r',
+      $revision,
+      '--encoding',
+      'UTF-8',
+      '--template',
+      '{diff()}',
     );
   }
 
   public function getNativeHeaderFromID(string $revision): string {
     return $this->hgCommand(
       'log',
-      '--config', 'diff.git=True',
-      '-r', $revision,
-      '--encoding', 'UTF-8',
-      '--template', '# User {author}
+      '--config',
+      'diff.git=True',
+      '-r',
+      $revision,
+      '--encoding',
+      'UTF-8',
+      '--template',
+      '# User {author}
 # Date {date}
 # Node ID {node}
 {desc}',
@@ -293,11 +306,7 @@ class ShipItRepoHG extends ShipItRepo
   public function getChangesetFromID(string $revision): ?ShipItChangeset {
     $header = $this->getNativeHeaderFromID($revision);
     $patch = $this->getNativePatchFromID($revision);
-    $changeset = $this->getChangesetFromNativePatch(
-      $revision,
-      $header,
-      $patch,
-    );
+    $changeset = $this->getChangesetFromNativePatch($revision, $header, $patch);
     return $changeset;
   }
 
@@ -344,10 +353,7 @@ class ShipItRepoHG extends ShipItRepo
         ->getDiffs()
         ->filter($diff ==> !$needs_git->contains($diff['path']))
         ->toVector();
-      $diffs->addAll($this->makeDiffsUsingGit(
-        $revision,
-        $needs_git,
-      ));
+      $diffs->addAll($this->makeDiffsUsingGit($revision, $needs_git));
       $changeset = $changeset->withDiffs($diffs->toImmVector());
     }
 
@@ -358,8 +364,8 @@ class ShipItRepoHG extends ShipItRepo
   public static function getDiffsFromPatch(
     string $patch,
   ): ImmVector<ShipItDiff> {
-    $diffs = Vector { };
-    foreach(self::parseHgRegions($patch) as $region) {
+    $diffs = Vector {};
+    foreach (self::parseHgRegions($patch) as $region) {
       $diff = self::parseDiffHunk($region);
       if ($diff !== null) {
         $diffs[] = $diff;
@@ -439,15 +445,18 @@ class ShipItRepoHG extends ShipItRepo
     $this->checkoutFilesAtRevToPath($files, $rev.'^', $path.'/a');
     $this->checkoutFilesAtRevToPath($files, $rev, $path.'/b');
 
-    $result = (new ShipItShellCommand(
-      $path,
-        'git', 'diff',
+    $result = (
+      new ShipItShellCommand(
+        $path,
+        'git',
+        'diff',
         '--binary',
         '--no-prefix',
         '--no-renames',
         'a',
         'b',
-      ))->setNoExceptions()->runSynchronously();
+      )
+    )->setNoExceptions()->runSynchronously();
 
     invariant(
       $result->getExitCode() === 1,
@@ -457,7 +466,7 @@ class ShipItRepoHG extends ShipItRepo
     );
     $patch = $result->getStdOut();
 
-    $diffs = Vector { };
+    $diffs = Vector {};
     foreach (ShipItUtil::parsePatch($patch) as $hunk) {
       $diff = self::parseDiffHunk($hunk);
       if ($diff !== null) {
@@ -485,11 +494,9 @@ class ShipItRepoHG extends ShipItRepo
      *   ... which is https://github.com/facebook/nuclide/commit/2057807d2653dd1af359f44f658eadac6eaae34b
      */
     if ($files->count() === 0) {
-      $files = ImmSet { '.' };
+      $files = ImmSet {'.'};
     }
-    $patterns = $files->map(
-      $file ==> 'path:'.$file,
-    );
+    $patterns = $files->map($file ==> 'path:'.$file);
     $patterns = Str\join($patterns, "\n");
 
     // Prefetch is needed for reasonable performance with the remote file
@@ -499,7 +506,8 @@ class ShipItRepoHG extends ShipItRepo
       $this->hgPipeCommand(
         $patterns,
         'prefetch',
-        '-r', $rev,
+        '-r',
+        $rev,
         'listfile:/dev/stdin',
       );
     } catch (ShipItShellCommandException $_e) {
@@ -511,9 +519,12 @@ class ShipItRepoHG extends ShipItRepo
     $this->hgPipeCommand(
       $patterns,
       'archive',
-      '--config', 'ui.archivemeta=False',
-      '-r', $rev,
-      '-I', 'listfile:/dev/stdin',
+      '--config',
+      'ui.archivemeta=False',
+      '-r',
+      $rev,
+      '-I',
+      'listfile:/dev/stdin',
       $path,
     );
   }
@@ -527,21 +538,11 @@ class ShipItRepoHG extends ShipItRepo
       throw new ShipItRepoHGException($this, 'setBranch must be called first.');
     }
     if ($rev === null) {
-      $rev = $this->hgCommand(
-        'log',
-        '-r',
-        $branch,
-        '-T',
-        '{node}'
-      );
+      $rev = $this->hgCommand('log', '-r', $branch, '-T', '{node}');
     }
 
     $temp_dir = new ShipItTempDir('hg-export');
-    $this->checkoutFilesAtRevToPath(
-      $roots,
-      $rev,
-      $temp_dir->getPath(),
-    );
+    $this->checkoutFilesAtRevToPath($roots, $rev, $temp_dir->getPath());
 
     return shape('tempDir' => $temp_dir, 'revision' => $rev);
   }

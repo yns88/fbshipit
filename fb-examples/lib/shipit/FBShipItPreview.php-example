@@ -155,7 +155,7 @@ order to preview the full patch.';
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \printf(
-"Preview ShipIt actions for a given changeset.
+      "Preview ShipIt actions for a given changeset.
 
 The input should be JSON ShipItChangesetData objects,
 separated by '%s' terminators.
@@ -170,7 +170,7 @@ Options:
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \basename(__FILE__, ""),
-);
+    );
   }
 
   final public function shipItPreview(resource $in_stream): void {

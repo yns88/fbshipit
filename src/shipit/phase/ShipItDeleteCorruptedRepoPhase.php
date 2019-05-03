@@ -70,7 +70,15 @@ final class ShipItDeleteCorruptedRepoPhase extends ShipItPhase {
       (new ShipItShellCommand($path, 'rm', '-rf', $local_path))
         ->runSynchronously();
     } else {
-      (new ShipItShellCommand($path, 'rm', '-rf', '--preserve-root', $local_path))
+      (
+        new ShipItShellCommand(
+          $path,
+          'rm',
+          '-rf',
+          '--preserve-root',
+          $local_path,
+        )
+      )
         ->runSynchronously();
     }
   }

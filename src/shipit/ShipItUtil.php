@@ -47,9 +47,14 @@ abstract class ShipItUtil {
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $line = \preg_replace('/(\r\n|\n)/', "\n", $line);
 
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      if (\preg_match('@^diff --git [ab]/(.*?) [ab]/(.*?)$@', Str\trim_right($line))) {
+      if (
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+        \preg_match(
+          '@^diff --git [ab]/(.*?) [ab]/(.*?)$@',
+          Str\trim_right($line),
+        )
+      ) {
         if ($contents !== '') {
           yield $contents;
         }
@@ -67,9 +72,9 @@ abstract class ShipItUtil {
         )
       ) {
         $minus_lines = $matches['minus_lines'] ?? '';
-        $minus_lines = $minus_lines === '' ? 1 : (int) $minus_lines;
+        $minus_lines = $minus_lines === '' ? 1 : (int)$minus_lines;
         $plus_lines = $matches['plus_lines'] ?? '';
-        $plus_lines = $plus_lines === '' ? 1 : (int) $plus_lines;
+        $plus_lines = $plus_lines === '' ? 1 : (int)$plus_lines;
 
         $contents .= $line."\n";
         $seen_range_header = true;
@@ -77,7 +82,7 @@ abstract class ShipItUtil {
       }
 
       if (!$seen_range_header) {
-        $contents .= $line ."\n";
+        $contents .= $line."\n";
         continue;
       }
 
@@ -103,10 +108,7 @@ abstract class ShipItUtil {
         --$plus_lines;
         --$minus_lines;
       } else {
-        invariant_violation(
-          "Can't parse hunk line: %s",
-          $line,
-        );
+        invariant_violation("Can't parse hunk line: %s", $line);
       }
       $contents .= $line."\n";
     }

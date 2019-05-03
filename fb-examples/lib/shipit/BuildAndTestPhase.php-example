@@ -75,7 +75,7 @@ abstract class BuildAndTestPhase extends ShipItPhase {
         $config->getDestinationPath(),
         /* stdin = */ null,
         ShipItUtil::VERBOSE_SHELL_OUTPUT,
-        ...$command,
+        ...$command
       );
     }
   }

@@ -32,17 +32,19 @@ final class FacebookReactNative extends FBShipItConfig {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        $path ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $path ==> \preg_replace('@/\.github\.flowconfig$@',
-            '/.flowconfig', $path),
+          \preg_replace('@/\.github\.flowconfig$@', '/.flowconfig', $path),
       )
       |> ShipItPathFilters::rewritePaths(
         $$,
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $path ==> \preg_replace('@/\.github\.flowconfig.android$@',
-            '/.flowconfig.android', $path),
+          $path ==> \preg_replace(
+          '@/\.github\.flowconfig.android$@',
+          '/.flowconfig.android',
+          $path,
+        ),
       )
       |> parent::defaultProjectFilterChangeset($$, $get_path_mappings);
   }
@@ -94,23 +96,19 @@ final class FacebookReactNative extends FBShipItConfig {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        $path ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $path ==> \preg_replace(
-            '@(^|/)\.flowconfig$@',
-            '\1.github.flowconfig',
-            $path,
-          ),
+          \preg_replace('@(^|/)\.flowconfig$@', '\1.github.flowconfig', $path),
       )
       |> ShipItPathFilters::rewritePaths(
         $$,
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           $path ==> \preg_replace(
-            '@(^|/)\.flowconfig.android$@',
-            '\1.github.flowconfig.android',
-            $path,
-          ),
+          '@(^|/)\.flowconfig.android$@',
+          '\1.github.flowconfig.android',
+          $path,
+        ),
       )
       |> parent::projectImportChangeset($$, $branch_config);
   }

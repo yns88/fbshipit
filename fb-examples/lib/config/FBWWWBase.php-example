@@ -35,11 +35,7 @@ abstract class FBWWWBase extends FBShipItConfig {
         $$,
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        $path ==> \preg_replace(
-          '@^src/(.+/)?__tests__/@',
-          'tests/\1',
-          $path,
-        ),
+        $path ==> \preg_replace('@^src/(.+/)?__tests__/@', 'tests/\1', $path),
       )
       |> self::renameGenToAsync($$);
   }
@@ -149,11 +145,7 @@ abstract class FBWWWBase extends FBShipItConfig {
         $$,
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        $path ==> \preg_replace(
-          '@^tests/(.+/)?@',
-          'src/\1__tests__/',
-          $path,
-        ),
+        $path ==> \preg_replace('@^tests/(.+/)?@', 'src/\1__tests__/', $path),
       )
       |> ShipItConditionalLinesFilter::uncommentLines($$, '@oss-disable', '//')
       |> ShipItConditionalLinesFilter::commentLines($$, '@oss-enable', '//')

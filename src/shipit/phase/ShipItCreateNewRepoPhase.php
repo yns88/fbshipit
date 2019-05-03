@@ -246,7 +246,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
         $path,
         /* stdin = */ null,
         ShipItUtil::DONT_VERBOSE,
-        ...$step,
+        ...$step
       );
     }
   }

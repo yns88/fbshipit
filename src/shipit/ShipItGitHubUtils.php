@@ -108,14 +108,14 @@ abstract class ShipItGitHubUtils {
         'Either an access token or user/password is required.',
       );
       $auth_user = Str\format(
-          '%s:%s',
-          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        '%s:%s',
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \urlencode($user),
-          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \urlencode($password),
-        );
+      );
     }
     if (Str\search($remote_url, self::GIT_HTTPS_URL_PREFIX) === 0) {
       $prefix_len = Str\length(self::GIT_HTTPS_URL_PREFIX);
@@ -134,10 +134,7 @@ abstract class ShipItGitHubUtils {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists($local_path)) {
-      ShipItRepoGIT::cloneRepo(
-        $origin,
-        $local_path,
-      );
+      ShipItRepoGIT::cloneRepo($origin, $local_path);
     }
     invariant(
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */

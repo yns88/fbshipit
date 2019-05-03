@@ -58,7 +58,7 @@ final class BuckUpdateInternalMirrorPhase extends ShipItPhase {
         $config->getSourcePath(),
         /* stdin = */ null,
         ShipItUtil::DONT_VERBOSE,
-        ...$command,
+        ...$command
       );
     };
 

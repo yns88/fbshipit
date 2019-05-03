@@ -45,8 +45,8 @@ final class FBShipItConfigRegistry {
     }
     /* HH_IGNORE_ERROR[4110]: dynamic classname generation */
       return $prefix.
-        self::makeCamelCase(Str\lowercase($org)).
-        self::makeCamelCase(Str\lowercase($repo));
+      self::makeCamelCase(Str\lowercase($org)).
+      self::makeCamelCase(Str\lowercase($repo));
   }
 
   private static function loadConfigClasses(
@@ -62,18 +62,18 @@ final class FBShipItConfigRegistry {
     );
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      foreach(\array_keys(\iterator_to_array($regex)) as $filename) {
-        $class_name = self::getClassName(
-          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      foreach (\array_keys(\iterator_to_array($regex)) as $filename) {
+      $class_name = self::getClassName(
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \basename(\dirname($filename)),
-          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
           \basename($filename, '.php'),
-          /* include_namespace */ true,
-        );
-        $config_classes[] = $class_name;
-      }
+        /* include_namespace */ true,
+      );
+      $config_classes[] = $class_name;
+    }
     return new ImmSet($config_classes);
   }
 

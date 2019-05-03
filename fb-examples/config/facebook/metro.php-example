@@ -35,13 +35,9 @@ final class FacebookMetro extends FBShipItConfig {
       |> FBCommonFilters::applyAll($$)
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $path ==> \preg_replace(
-            '@/\.github\.flowconfig$@',
-            '/.flowconfig',
-            $path,
-          ),
+        $path ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+            /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+          \preg_replace('@/\.github\.flowconfig$@', '/.flowconfig', $path),
       )
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings());
   }
@@ -54,13 +50,9 @@ final class FacebookMetro extends FBShipItConfig {
     return $changeset
       |> \Facebook\ShipIt\ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+        $path ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
           /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $path ==> \preg_replace(
-            '@(^|/)\.flowconfig$@',
-            '\1.github.flowconfig',
-            $path,
-          ),
+          \preg_replace('@(^|/)\.flowconfig$@', '\1.github.flowconfig', $path),
       )
       |> parent::projectImportChangeset($$, $branch_config);
   }

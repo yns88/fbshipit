@@ -132,7 +132,8 @@ final class SubmoduleTest extends \Facebook\ShipIt\BaseTest {
       $dest_dir->getPath().'/.gitmodules',
       '[submodule "test"]
          path=submodule-test
-         url='.$submodule_dir->getPath(),
+         url='.
+      $submodule_dir->getPath(),
     );
     (
       new ShipItShellCommand(

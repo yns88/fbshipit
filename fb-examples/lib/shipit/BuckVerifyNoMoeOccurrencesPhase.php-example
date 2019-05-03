@@ -31,7 +31,9 @@ final class BuckVerifyNoMoeOccurrencesPhase extends BuildAndTestPhase {
       $config->getDestinationPath(),
       /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE | ShipItUtil::NO_THROW,
-      'grep', '-r', 'MOE',
+      'grep',
+      '-r',
+      'MOE',
     );
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */

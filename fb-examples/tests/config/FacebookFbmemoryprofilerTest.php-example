@@ -20,8 +20,7 @@ final class FacebookFbmemoryprofilerTest extends FBConfigBaseTest {
         'FBMemoryProfile/FBMemoryProfiler.h',
       self::ROOT.'/FBMemoryProfile/FBMemoryProfiler.mm' =>
         'FBMemoryProfile/FBMemoryProfiler.mm',
-      self::ROOT.'/Example/README.md' =>
-        'Example/README.md',
+      self::ROOT.'/Example/README.md' => 'Example/README.md',
       self::ROOT.'/Example/ExampleApp/AppDelegate.h' =>
         'Example/ExampleApp/AppDelegate.h',
     };

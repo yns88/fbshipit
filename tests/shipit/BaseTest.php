@@ -43,7 +43,7 @@ abstract class BaseTest extends \Facebook\HackTest\HackTest { // @oss-enable
         $cwd,
         /* stdin = */ null,
         ShipItUtil::DONT_VERBOSE,
-        ...$step,
+        ...$step
       );
     }
   }

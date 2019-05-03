@@ -46,7 +46,9 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       $docsPath,
       /* stdin = */ null,
       $verbose,
-      'git', 'checkout', '--detach',
+      'git',
+      'checkout',
+      '--detach',
     );
 
     // Delete the current branch.
@@ -55,7 +57,11 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       $docsPath,
       /* stdin = */ null,
       $verbose,
-      'git', 'branch', '--delete', '--force', $branch,
+      'git',
+      'branch',
+      '--delete',
+      '--force',
+      $branch,
     );
 
     // Create a historyless branch in its place.
@@ -64,7 +70,10 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       $docsPath,
       /* stdin = */ null,
       $verbose,
-      'git', 'checkout', '--orphan', $branch,
+      'git',
+      'checkout',
+      '--orphan',
+      $branch,
     );
 
     // Erase all existing files.
@@ -73,7 +82,11 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       $docsPath,
       /* stdin = */ null,
       $verbose,
-      'git', 'rm', '--force', '-r', '.',
+      'git',
+      'rm',
+      '--force',
+      '-r',
+      '.',
     );
 
     $pipes = varray[];
@@ -87,7 +100,7 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
         2 => varray['file', '/dev/null', 'w'],
       ],
       &$pipes,
-      $sourcePath
+      $sourcePath,
     );
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
@@ -99,7 +112,8 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
         $sourcePath,
         /* stdin = */ null,
         $verbose,
-        'docs/soy2html.sh', $docsPath,
+        'docs/soy2html.sh',
+        $docsPath,
       );
     } finally {
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
@@ -109,8 +123,11 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
         // kill whole tree of docs/soyweb-prod.sh
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \exec('pstree -pl '.$status['pid'].
-             ' | grep -o "([0-9]\+)" | sed "s/(\|)//g" | xargs kill');
+        \exec(
+          'pstree -pl '.
+          $status['pid'].
+          ' | grep -o "([0-9]\+)" | sed "s/(\|)//g" | xargs kill',
+        );
       }
     }
 
@@ -119,7 +136,9 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       $docsPath,
       /* stdin = */ null,
       $verbose,
-      'git', 'add', '.',
+      'git',
+      'add',
+      '.',
     );
 
     /* HH_FIXME[4128] Use ShipItShellCommand */
@@ -127,15 +146,20 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       $sourcePath,
       /* stdin = */ null,
       $verbose,
-      'git', 'log', '-1', '--format=%H',
+      'git',
+      'log',
+      '-1',
+      '--format=%H',
     ));
     /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $docsPath,
       /* stdin = */ null,
       $verbose,
-      'git', 'commit',
-      '-m', Str\format('Updated HTML documentation to %s.', $sourceCommitHash),
+      'git',
+      'commit',
+      '-m',
+      Str\format('Updated HTML documentation to %s.', $sourceCommitHash),
     );
   }
 }

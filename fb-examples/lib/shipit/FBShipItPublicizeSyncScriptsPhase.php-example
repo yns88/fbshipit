@@ -87,11 +87,7 @@ final class FBShipItPublicizeSyncScriptsPhase extends ShipItPhase {
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       if (!\file_exists($dest_file)) {
-        $this->releaseFile(
-          $dest,
-          $file,
-          $dest_file,
-        );
+        $this->releaseFile($dest, $file, $dest_file);
       }
     }
   }
@@ -109,16 +105,20 @@ final class FBShipItPublicizeSyncScriptsPhase extends ShipItPhase {
     /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $dest_root,
-      /* stdin = */  null,
+      /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE,
-      'git', 'add', $destination_file,
+      'git',
+      'add',
+      $destination_file,
     );
     /* HH_FIXME[4128] Use ShipItShellCommand */
     ShipItUtil::shellExec(
       $dest_root,
-      /* stdin = */  null,
+      /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE,
-      'git', 'commit', '-m',
+      'git',
+      'commit',
+      '-m',
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       '[autocommit] release '.\basename($destination_file),

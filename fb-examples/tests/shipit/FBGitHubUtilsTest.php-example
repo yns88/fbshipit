@@ -104,8 +104,6 @@ final class FBGitHubUtilsTest extends BaseTest {
     );
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \expect(\ctype_xdigit($token))->toBeTrue(
-      'Password field is not hex-like',
-    );
+    \expect(\ctype_xdigit($token))->toBeTrue('Password field is not hex-like');
   }
 }

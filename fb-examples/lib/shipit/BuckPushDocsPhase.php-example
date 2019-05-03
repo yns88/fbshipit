@@ -62,7 +62,11 @@ final class BuckPushDocsPhase extends ShipItPhase {
       $docsPath,
       /* stdin = */ null,
       $verbose,
-      'git', 'push', '--force', 'origin', 'HEAD:'.$branch,
+      'git',
+      'push',
+      '--force',
+      'origin',
+      'HEAD:'.$branch,
     );
   }
 }

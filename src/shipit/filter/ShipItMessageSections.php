@@ -39,7 +39,7 @@ final class ShipItMessageSections {
     $section = '';
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    foreach(\explode("\n", $changeset->getMessage()) as $line) {
+    foreach (\explode("\n", $changeset->getMessage()) as $line) {
       $line = Str\trim_right($line);
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
@@ -55,7 +55,8 @@ final class ShipItMessageSections {
             /* HH_IGNORE_ERROR[2049] __PHPStdLib */
             /* HH_IGNORE_ERROR[4107] __PHPStdLib */
             \preg_match('/^[a-zA-Z ]+:/', $value)
-            && $valid_sections !== null
+            &&
+            $valid_sections !== null
           ) {
             $h = Str\lowercase(Str\slice($value, 0, Str\search($value, ':')));
             if ($valid_sections->contains($h)) {

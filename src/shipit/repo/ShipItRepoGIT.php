@@ -32,10 +32,7 @@ class ShipItRepoGIT
   private string $branch = 'master';
   private ShipItTempDir $fakeHome;
 
-  public function __construct(
-    string $path,
-    string $branch,
-  ) {
+  public function __construct(string $path, string $branch) {
     $this->fakeHome = new ShipItTempDir('fake_home_for_git');
     parent::__construct($path, $branch);
   }
@@ -60,12 +57,8 @@ class ShipItRepoGIT
   }
 
   <<__Override>>
-  public function getHeadChangeset(
-  ): ?ShipItChangeset {
-    $rev = $this->gitCommand(
-      'rev-parse',
-      $this->branch,
-    );
+  public function getHeadChangeset(): ?ShipItChangeset {
+    $rev = $this->gitCommand('rev-parse', $this->branch);
 
     $rev = Str\trim($rev);
     if (Str\trim($rev) === '') {
@@ -74,13 +67,13 @@ class ShipItRepoGIT
     return $this->getChangesetFromID($rev);
   }
 
-  public function findLastSourceCommit(
-    ImmSet<string> $roots,
-  ): ?string {
+  public function findLastSourceCommit(ImmSet<string> $roots): ?string {
     $log = $this->gitCommand(
-      'log', '-1', '--grep',
+      'log',
+      '-1',
+      '--grep',
       '^\\(fb\\)\\?shipit-source-id: \\?[a-z0-9]\\+\\s*$',
-      ...$roots,
+      ...$roots
     );
     $log = Str\trim($log);
     $matches = null;
@@ -119,7 +112,7 @@ class ShipItRepoGIT
       '--ancestry-path',
       '--no-merges',
       '--oneline',
-      ...$roots,
+      ...$roots
     );
 
     $log = Str\trim($log);
@@ -151,10 +144,10 @@ class ShipItRepoGIT
 
     $changeset = (new ShipItChangeset())->withMessage($message);
 
-    $envelope = Str\replace_every($envelope, dict["\n\t" => ' ',"\n " => ' ']);
+    $envelope = Str\replace_every($envelope, dict["\n\t" => ' ', "\n " => ' ']);
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    foreach(\explode("\n", $envelope) as $line) {
+    foreach (\explode("\n", $envelope) as $line) {
       $colon = Str\search($line, ':');
       if ($colon === null) {
         continue;
@@ -163,7 +156,7 @@ class ShipItRepoGIT
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       list($key, $value) = \explode(':', $line, 2);
       $value = Str\trim($value);
-      switch(Str\lowercase(Str\trim($key))) {
+      switch (Str\lowercase(Str\trim($key))) {
         case 'from':
           $changeset = $changeset->withAuthor($value);
           break;
@@ -193,7 +186,7 @@ class ShipItRepoGIT
       '--no-renames',
       '--no-stat',
       '--stdout',
-       // use full SHAs to avoid inconsistent SHAs between calls
+      // use full SHAs to avoid inconsistent SHAs between calls
       '--full-index',
       '--format=', // Contain nothing but the code changes
       '-1',
@@ -229,15 +222,12 @@ class ShipItRepoGIT
     if ($index !== null) {
       return Str\slice($full_patch, 0, $index);
     }
-    throw new ShipItRepoGITException(
-      $this,
-      'Could not extract patch header.',
-    );
+    throw new ShipItRepoGITException($this, 'Could not extract patch header.');
   }
 
   public function getChangesetFromID(string $revision): ShipItChangeset {
     $patch = $this->getNativePatchFromID($revision);
-    $header =  $this->getNativeHeaderFromIDWithPatch($revision, $patch);
+    $header = $this->getNativeHeaderFromIDWithPatch($revision, $patch);
     $changeset = self::getChangesetFromExportedPatch($header, $patch);
     $changeset = $changeset->withID($revision);
     return $changeset;
@@ -248,7 +238,7 @@ class ShipItRepoGIT
     string $patch,
   ): ImmVector<ShipItDiff> {
     $diffs = Vector {};
-    foreach(ShipItUtil::parsePatch($patch) as $hunk) {
+    foreach (ShipItUtil::parsePatch($patch) as $hunk) {
       $diff = self::parseDiffHunk($hunk);
       if ($diff !== null) {
         $diffs[] = $diff;
@@ -289,13 +279,15 @@ class ShipItRepoGIT
     // Mon Sep 17 is a magic date used by format-patch to distinguish from real
     // mailboxes. cf. https://git-scm.com/docs/git-format-patch
     $ret = "From {$patch->getID()} Mon Sep 17 00:00:00 2001\n".
-            "From: {$patch->getAuthor()}\n".
-            /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      "From: {$patch->getAuthor()}\n".
+      "Date: ".
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
             /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-            "Date: " . \date('r', $patch->getTimestamp()) . "\n".
-            "Subject: [PATCH] {$patch->getSubject()}\n\n".
-            "{$message}\n---\n\n";
-    foreach($patch->getDiffs() as $diff) {
+      \date('r', $patch->getTimestamp()).
+      "\n".
+      "Subject: [PATCH] {$patch->getSubject()}\n\n".
+      "{$message}\n---\n\n";
+    foreach ($patch->getDiffs() as $diff) {
       $path = $diff['path'];
       $body = $diff['body'];
 
@@ -314,9 +306,12 @@ class ShipItRepoGIT
       $this->gitCommand(
         'commit',
         '--allow-empty',
-        '--author', $patch->getAuthor(),
-        '--date', (string) $patch->getTimestamp(),
-        '-m', self::getCommitMessage($patch),
+        '--author',
+        $patch->getAuthor(),
+        '--date',
+        (string)$patch->getTimestamp(),
+        '-m',
+        self::getCommitMessage($patch),
       );
       return $this->getHEADSha();
     }
@@ -337,17 +332,15 @@ class ShipItRepoGIT
     }
 
     $submodules = $this->getSubmodules();
-    foreach($submodules as $submodule) {
+    foreach ($submodules as $submodule) {
       // If a submodule has changed, then we need to actually update to the
       // new version. + before commit hash represents changed submdoule. Make
       // sure there is no leading whitespace that comes back when we get the
       // status since the first character will tell us whether submodule
       // changed.
-      $sm_status = Str\trim_left($this->gitCommand(
-        'submodule',
-        'status',
-        $submodule['path'],
-      ));
+      $sm_status = Str\trim_left(
+        $this->gitCommand('submodule', 'status', $submodule['path']),
+      );
       if ($sm_status === '') {
         // If the path exists, we know we are adding a submodule.
         $full_path = $this->getPath().'/'.$submodule['path'];
@@ -360,16 +353,12 @@ class ShipItRepoGIT
           'submodule',
           'add',
           '-f',
-          '--name', $submodule['name'],
+          '--name',
+          $submodule['name'],
           $submodule['url'],
           $submodule['path'],
         );
-        (new ShipItShellCommand(
-          $full_path,
-          'git',
-          'checkout',
-          $sha,
-        ))
+        (new ShipItShellCommand($full_path, 'git', 'checkout', $sha))
           ->runSynchronously();
         $this->gitCommand('add', $submodule['path']);
         // Preserve any whitespace in the .gitmodules file.
@@ -394,10 +383,7 @@ class ShipItRepoGIT
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (!\file_exists("{$this->path}/.git")) {
-      throw new ShipItRepoGITException(
-        $this,
-        $this->path." is not a GIT repo",
-      );
+      throw new ShipItRepoGITException($this, $this->path." is not a GIT repo");
     }
 
     $command = (new ShipItShellCommand($this->path, 'git', ...$args))
@@ -418,10 +404,7 @@ class ShipItRepoGIT
     return $this->gitPipeCommand(null, ...$args);
   }
 
-  public static function cloneRepo(
-    string $origin,
-    string $path,
-  ): void {
+  public static function cloneRepo(string $origin, string $path): void {
     invariant(
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
@@ -445,10 +428,9 @@ class ShipItRepoGIT
       ShipItLogger::err("** Cloning %s to %s\n", $origin, $path);
     }
 
-    (new ShipItShellCommand(
-      $parent_path,
-      'git', 'clone', $origin, $path,
-    ))->runSynchronously();
+    (
+      new ShipItShellCommand($parent_path, 'git', 'clone', $origin, $path)
+    )->runSynchronously();
   }
 
   <<__Override>>
@@ -522,11 +504,8 @@ class ShipItRepoGIT
     $tar = $this->gitCommand(...$command);
 
     $dest = new ShipItTempDir('git-export');
-    (new ShipItShellCommand(
-      $dest->getPath(),
-      'tar',
-      'x',
-    ))->setStdIn($tar)->runSynchronously();
+    (new ShipItShellCommand($dest->getPath(), 'tar', 'x'))->setStdIn($tar)
+      ->runSynchronously();
 
     // If we have any submodules, we'll need to set them up manually.
     foreach ($this->getSubmodules($roots) as $submodule) {
@@ -586,11 +565,13 @@ class ShipItRepoGIT
       ->map($key ==> Str\slice($key, 10, Str\length($key) - 10 - 4))
       ->toImmSet();
     return $names->values()
-      ->map($name ==> shape(
+      ->map(
+        $name ==> shape(
           'name' => $name,
           'path' => $configs['submodule.'.$name.'.path'],
           'url' => $configs['submodule.'.$name.'.url'],
-      ))
+        ),
+      )
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       ->filter($config ==> \file_exists($this->getPath().'/'.$config['path']))

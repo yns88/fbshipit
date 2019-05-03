@@ -27,7 +27,7 @@ final class FBShipItGenerateStubsCLI {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         \dirname(__DIR__), // @oss-enable
          // @oss-disable: \dirname(\dirname(\dirname(__DIR__))).
-         // @oss-disable: '/flib/intern/opensource/shipit',
+        // @oss-disable: '/flib/intern/opensource/shipit',
         'shipit',
         'shipit',
         ImmSet {},

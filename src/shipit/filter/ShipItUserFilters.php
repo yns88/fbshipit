@@ -28,14 +28,10 @@ final class ShipItUserFilters {
     if (
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_match(
-        $pattern,
-        $changeset->getAuthor(),
-        &$matches,
-      )
+      \preg_match($pattern, $changeset->getAuthor(), &$matches) &&
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      && \array_key_exists('user', $matches)
+      \array_key_exists('user', $matches)
     ) {
       // @oss-disable: $author = \Asio::awaitSynchronously(
         $author = \HH\Asio\join( // @oss-enable
