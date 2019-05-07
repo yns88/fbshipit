@@ -46,22 +46,34 @@ final class ShipItGitHubInitPhase extends ShipItPhase {
       shape(
         'long_name' => $this->side.'-github-org::',
         'description' => 'GitHub Organization ['.$this->organization.']',
-        'write' => $v ==> $this->organization = $v,
+        'write' => $v ==> {
+          $this->organization = $v;
+          return $this->organization;
+        },
       ),
       shape(
         'long_name' => $this->side.'-github-project::',
         'description' => 'GitHub Project ['.$this->project.']',
-        'write' => $v ==> $this->project = $v,
+        'write' => $v ==> {
+          $this->project = $v;
+          return $this->project;
+        },
       ),
       shape(
         'long_name' => $this->side.'-use-ssh',
         'description' => 'Use ssh to talk to GitHub',
-        'write' => $_ ==> $this->transport = ShipItTransport::SSH,
+        'write' => $_ ==> {
+          $this->transport = ShipItTransport::SSH;
+          return $this->transport;
+        },
       ),
       shape(
         'long_name' => $this->side.'-use-authenticated-https',
         'description' => 'Use HTTPS to talk to GitHub',
-        'write' => $_ ==> $this->transport = ShipItTransport::HTTPS,
+        'write' => $_ ==> {
+          $this->transport = ShipItTransport::HTTPS;
+          return $this->transport;
+        },
       ),
       shape(
         'long_name' => $this->side.'-use-anonymous-https',

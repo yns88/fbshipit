@@ -42,7 +42,12 @@ final class ShipItSyncConfig {
 
   public function withFirstCommit(?string $commit): this {
     invariant($commit !== '', 'Pass null instead of empty string');
-    return $this->modified($ret ==> $ret->firstCommit = $commit);
+    return $this->modified(
+      $ret ==> {
+        $ret->firstCommit = $commit;
+        return $ret->firstCommit;
+      },
+    );
   }
 
   public function getSkippedSourceCommits(): ImmSet<string> {
@@ -50,7 +55,12 @@ final class ShipItSyncConfig {
   }
 
   public function withSkippedSourceCommits(ImmSet<string> $commits): this {
-    return $this->modified($ret ==> $ret->skippedSourceCommits = $commits);
+    return $this->modified(
+      $ret ==> {
+        $ret->skippedSourceCommits = $commits;
+        return $ret->skippedSourceCommits;
+      },
+    );
   }
 
   public function getPatchesDirectory(): ?string {
@@ -59,7 +69,12 @@ final class ShipItSyncConfig {
 
   public function withPatchesDirectory(?string $dir): this {
     invariant($dir !== '', 'Pass null instead of empty string');
-    return $this->modified($ret ==> $ret->patchesDirectory = $dir);
+    return $this->modified(
+      $ret ==> {
+        $ret->patchesDirectory = $dir;
+        return $ret->patchesDirectory;
+      },
+    );
   }
 
   public function getDestinationRoots(): ImmSet<string> {
@@ -67,7 +82,12 @@ final class ShipItSyncConfig {
   }
 
   public function withDestinationRoots(ImmSet<string> $roots): this {
-    return $this->modified($ret ==> $ret->destinationRoots = $roots);
+    return $this->modified(
+      $ret ==> {
+        $ret->destinationRoots = $roots;
+        return $ret->destinationRoots;
+      },
+    );
   }
 
   public function getSourceRoots(): ImmSet<string> {
@@ -96,12 +116,20 @@ final class ShipItSyncConfig {
 
   public function withStatsFilename(?string $filename): this {
     invariant($filename !== '', 'Pass null instead of empty string');
-    return $this->modified($ret ==> $ret->statsFilename = $filename);
+    return $this->modified(
+      $ret ==> {
+        $ret->statsFilename = $filename;
+        return $ret->statsFilename;
+      },
+    );
   }
 
   public function withAllowEmptyCommits(?bool $allow_empty_commit): this {
     return $this->modified(
-      $ret ==> $ret->allowEmptyCommit = $allow_empty_commit,
+      $ret ==> {
+        $ret->allowEmptyCommit = $allow_empty_commit;
+        return $ret->allowEmptyCommit;
+      },
     );
   }
   public function getAllowEmptyCommits(): bool {

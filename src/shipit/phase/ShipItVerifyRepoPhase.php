@@ -57,13 +57,19 @@ final class ShipItVerifyRepoPhase extends ShipItPhase {
       shape(
         'long_name' => 'verify-source-commit::',
         'description' => 'Hash of first commit that needs to be synced',
-        'write' => $x ==> $this->verifySourceCommit = $x,
+        'write' => $x ==> {
+          $this->verifySourceCommit = $x;
+          return $this->verifySourceCommit;
+        },
       ),
       shape(
         'long_name' => 'use-latest-source-commit',
         'description' =>
           'Find the latest synced source commit to use as a base for verify',
-        'write' => $_ ==> $this->useLatestSourceCommit = true,
+        'write' => $_ ==> {
+          $this->useLatestSourceCommit = true;
+          return $this->useLatestSourceCommit;
+        },
       ),
     };
   }

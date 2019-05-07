@@ -57,7 +57,10 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
         'description' =>
           'When using --create-new-repo or --create-new-repo-from-commit, '.
           'create the new repository in this directory',
-        'write' => $path ==> $this->outputPath = $path,
+        'write' => $path ==> {
+          $this->outputPath = $path;
+          return $this->outputPath;
+        },
       ),
       shape( // deprecated, renamed for consistency with verify
         'long_name' => 'special-create-new-repo',

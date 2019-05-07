@@ -37,50 +37,74 @@ class ShipItPhaseRunner {
       shape(
         'long_name' => 'base-dir::',
         'description' => 'Path to store repositories',
-        'write' => $x ==> $this->config = $this->config
-          ->withBaseDirectory(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withBaseDirectory(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'temp-dir::',
         'replacement' => 'base-dir',
-        'write' => $x ==> $this->config = $this->config
-          ->withBaseDirectory(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withBaseDirectory(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'source-repo-dir::',
         'description' => 'path to fetch source from',
-        'write' => $x ==> $this->config = $this->config
-          ->withSourcePath(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withSourcePath(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'destination-repo-dir::',
         'description' => 'path to push filtered changes to',
-        'write' => $x ==> $this->config = $this->config
-          ->withDestinationPath(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withDestinationPath(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'source-branch::',
         'description' => "Branch to sync from",
-        'write' => $x ==> $this->config = $this->config
-          ->withSourceBranch(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withSourceBranch(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'src-branch::',
         'replacement' => 'source-branch',
-        'write' => $x ==> $this->config = $this->config
-          ->withSourceBranch(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withSourceBranch(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'destination-branch::',
         'description' => 'Branch to sync to',
-        'write' => $x ==> $this->config = $this->config
-          ->withDestinationBranch(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withDestinationBranch(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'dest-branch::',
         'replacement' => 'destination-branch',
-        'write' => $x ==> $this->config = $this->config
-          ->withDestinationBranch(Str\trim($x)),
+        'write' => $x ==> {
+          $this->config = $this->config
+            ->withDestinationBranch(Str\trim($x));
+          return $this->config;
+        },
       ),
       shape(
         'long_name' => 'debug',
@@ -89,14 +113,20 @@ class ShipItPhaseRunner {
       shape(
         'long_name' => 'skip-project-specific',
         'description' => 'Skip anything project-specific',
-        'write' => $_ ==> $this->config = $this->config
-          ->withProjectSpecificPhasesDisabled(),
+        'write' => $_ ==> {
+          $this->config = $this->config
+            ->withProjectSpecificPhasesDisabled();
+          return $this->config;
+        },
       ),
       shape(
         'short_name' => 'v',
         'long_name' => 'verbose',
         'description' => 'Give more verbose output',
-        'write' => $_ ==> $this->config = $this->config->withVerboseEnabled(),
+        'write' => $_ ==> {
+          $this->config = $this->config->withVerboseEnabled();
+          return $this->config;
+        },
       ),
     };
   }

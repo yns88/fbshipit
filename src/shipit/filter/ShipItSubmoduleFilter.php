@@ -91,7 +91,8 @@ index %s..0000000
         continue;
       }
 
-      $old_rev = $new_rev = null;
+      $new_rev = null;
+      $old_rev = null;
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       foreach (\explode("\n", $body) as $line) {

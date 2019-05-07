@@ -49,13 +49,19 @@ final class ShipItSyncPhase extends ShipItPhase {
       shape(
         'long_name' => 'first-commit::',
         'description' => 'Hash of first commit that needs to be synced',
-        'write' => $x ==> $this->firstCommit = $x,
+        'write' => $x ==> {
+          $this->firstCommit = $x;
+          return $this->firstCommit;
+        },
       ),
       shape(
         'long_name' => 'save-patches-to::',
         'description' =>
           'Directory to copy created patches to. Useful for '.'debugging',
-        'write' => $x ==> $this->patchesDirectory = $x,
+        'write' => $x ==> {
+          $this->patchesDirectory = $x;
+          return $this->patchesDirectory;
+        },
       ),
       shape(
         'long_name' => 'skip-source-commits::',
@@ -83,13 +89,19 @@ final class ShipItSyncPhase extends ShipItPhase {
         'description' => 'The filename to log a JSON-encoded file with stats '.
           'about the sync, or a directory name to log a file '.
           'for each configured branch.',
-        'write' => $x ==> $this->statsFilename = $x,
+        'write' => $x ==> {
+          $this->statsFilename = $x;
+          return $this->statsFilename;
+        },
       ),
       shape(
         'long_name' => 'skip-post-filter-changesets',
         'description' =>
           'Skip any custom definitions for processing changesets after syncing',
-        'write' => $_ ==> $this->postFilterChangesets = null,
+        'write' => $_ ==> {
+          $this->postFilterChangesets = null;
+          return $this->postFilterChangesets;
+        },
       ),
     };
   }

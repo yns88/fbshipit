@@ -46,12 +46,18 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
       shape(
         'long_name' => 'external-branch::',
         'description' => 'Only run the config for one external branch',
-        'write' => $x ==> $this->externalBranch = $x,
+        'write' => $x ==> {
+          $this->externalBranch = $x;
+          return $this->externalBranch;
+        },
       ),
       shape(
         'long_name' => 'save-repo-metadata-to::',
         'description' => "List metadata for the repository, and exit.",
-        'write' => $x ==> $this->repoMetadataFile = $x,
+        'write' => $x ==> {
+          $this->repoMetadataFile = $x;
+          return $this->repoMetadataFile;
+        },
       ),
     };
   }

@@ -48,31 +48,46 @@ final class ImportItSyncPhase extends \Facebook\ShipIt\ShipItPhase {
       shape(
         'long_name' => 'expected-head-revision::',
         'description' => 'The expected revision at the HEAD of the PR',
-        'write' => $x ==> $this->expectedHeadRev = $x,
+        'write' => $x ==> {
+          $this->expectedHeadRev = $x;
+          return $this->expectedHeadRev;
+        },
       ),
       shape(
         'long_name' => 'pull-request-number::',
         'description' => 'The number of the Pull Request to import',
-        'write' => $x ==> $this->pullRequestNumber = $x,
+        'write' => $x ==> {
+          $this->pullRequestNumber = $x;
+          return $this->pullRequestNumber;
+        },
       ),
       shape(
         'long_name' => 'save-patches-to::',
         'description' =>
           'Directory to copy created patches to. Useful for '.'debugging',
-        'write' => $x ==> $this->patchesDirectory = $x,
+        'write' => $x ==> {
+          $this->patchesDirectory = $x;
+          return $this->patchesDirectory;
+        },
       ),
       shape(
         'long_name' => 'skip-pull-request',
         'description' => 'Dont fetch a PR, instead just use the local '.
           'expected-head-revision',
-        'write' => $_ ==> $this->skipPullRequest = true,
+        'write' => $_ ==> {
+          $this->skipPullRequest = true;
+          return $this->skipPullRequest;
+        },
       ),
       shape(
         'long_name' => 'apply-to-latest',
         'description' => 'Apply the PR patch to the latest internal revision, '.
           'instead of on the internal commit that matches the '.
           'PR base.',
-        'write' => $_ ==> $this->applyToLatest = true,
+        'write' => $_ ==> {
+          $this->applyToLatest = true;
+          return $this->applyToLatest;
+        },
       ),
     };
   }

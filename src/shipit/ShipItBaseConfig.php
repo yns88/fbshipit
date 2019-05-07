@@ -25,7 +25,12 @@ final class ShipItBaseConfig {
   }
 
   public function withBaseDirectory(string $v): this {
-    return $this->modified($ret ==> $ret->baseDirectoryPath = $v);
+    return $this->modified(
+      $ret ==> {
+        $ret->baseDirectoryPath = $v;
+        return $ret->baseDirectoryPath;
+      },
+    );
   }
 
   private ?string $sourcePath;
@@ -36,7 +41,12 @@ final class ShipItBaseConfig {
   }
 
   public function withSourcePath(string $v): this {
-    return $this->modified($ret ==> $ret->sourcePath = $v);
+    return $this->modified(
+      $ret ==> {
+        $ret->sourcePath = $v;
+        return $ret->sourcePath;
+      },
+    );
   }
 
   private ?string $destinationPath;
@@ -46,7 +56,12 @@ final class ShipItBaseConfig {
   }
 
   public function withDestinationPath(string $v): this {
-    return $this->modified($ret ==> $ret->destinationPath = $v);
+    return $this->modified(
+      $ret ==> {
+        $ret->destinationPath = $v;
+        return $ret->destinationPath;
+      },
+    );
   }
 
   private bool $verbose = false;
@@ -55,7 +70,12 @@ final class ShipItBaseConfig {
   }
 
   public function withVerboseEnabled(): this {
-    return $this->modified($ret ==> $ret->verbose = true);
+    return $this->modified(
+      $ret ==> {
+        $ret->verbose = true;
+        return $ret->verbose;
+      },
+    );
   }
 
   private bool $projectSpecificPhases = true;
@@ -64,7 +84,12 @@ final class ShipItBaseConfig {
   }
 
   public function withProjectSpecificPhasesDisabled(): this {
-    return $this->modified($ret ==> $ret->projectSpecificPhases = false);
+    return $this->modified(
+      $ret ==> {
+        $ret->projectSpecificPhases = false;
+        return $ret->projectSpecificPhases;
+      },
+    );
   }
 
   private string $sourceBranch = 'master';
@@ -73,7 +98,12 @@ final class ShipItBaseConfig {
   }
 
   public function withSourceBranch(string $branch): this {
-    return $this->modified($ret ==> $ret->sourceBranch = $branch);
+    return $this->modified(
+      $ret ==> {
+        $ret->sourceBranch = $branch;
+        return $ret->sourceBranch;
+      },
+    );
   }
 
   public function getSourceRoots(): ImmSet<string> {
@@ -81,7 +111,12 @@ final class ShipItBaseConfig {
   }
 
   public function withSourceRoots(ImmSet<string> $roots): this {
-    return $this->modified($ret ==> $ret->sourceRoots = $roots);
+    return $this->modified(
+      $ret ==> {
+        $ret->sourceRoots = $roots;
+        return $ret->sourceRoots;
+      },
+    );
   }
 
   private string $destinationBranch = 'master';
@@ -90,7 +125,12 @@ final class ShipItBaseConfig {
   }
 
   public function withDestinationBranch(string $branch): this {
-    return $this->modified($ret ==> $ret->destinationBranch = $branch);
+    return $this->modified(
+      $ret ==> {
+        $ret->destinationBranch = $branch;
+        return $ret->destinationBranch;
+      },
+    );
   }
 
   private function modified<Tignored>(

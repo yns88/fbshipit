@@ -37,18 +37,26 @@ final class ShipItGenerateConfigStubsPhase extends ShipItPhase {
       shape(
         'long_name' => 'github-org:',
         'description' => 'The name of the GitHub org to generate files for',
-        'write' => $v ==> $this->gitHubOrg = $v,
+        'write' => $v ==> {
+          $this->gitHubOrg = $v;
+          return $this->gitHubOrg;
+        },
       ),
       shape(
         'long_name' => 'github-project:',
         'description' => 'The name of the GitHub project to generate files for',
-        'write' => $v ==> $this->gitHubProject = $v,
+        'write' => $v ==> {
+          $this->gitHubProject = $v;
+          return $this->gitHubProject;
+        },
       ),
       shape(
         'long_name' => 'public:',
         'description' => 'Whether the GitHub repo is public',
-        'write' => $v ==>
-          $this->isPublic = $truthy_values->contains(Str\lowercase($v)),
+        'write' => $v ==> {
+          $this->isPublic = $truthy_values->contains(Str\lowercase($v));
+          return $this->isPublic;
+        },
       ),
     };
   }
