@@ -130,7 +130,7 @@ abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
 
   final protected static function getShipItClass(
   ): classname<ISupportsFBImportIt> {
-    // UNSAFE_EXPR
+    /* HH_FIXME[4110] Previously hidden by unsafe */
     return self::invoke_static_bypass_visibility(
       static::getImportItClass(),
       'getShipItClass',

@@ -58,7 +58,7 @@ final class FBGitHubUtilsTest extends BaseTest {
     string $organization,
     string $project,
   ): ShipItGitHubCredentials {
-    // UNSAFE_EXPR
+    /* HH_FIXME[4110] Previously hidden by unsafe */
     return self::invoke_static_bypass_visibility(
       FBGitHubUtils::class,
       'getCredentialsForProjectFrom',
