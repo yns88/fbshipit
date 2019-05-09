@@ -33,6 +33,8 @@ final class PytorchFairseq extends FBShipItConfig {
       '@^'.self::ROOT.'.flake8@',
       '@^'.self::ROOT.'.python3@',
       '@^'.self::ROOT.'.*/fb_@',
+      '@^'.self::ROOT.'fb_.*/.*@',
+      '@^'.self::ROOT.'.*/fb_.*/.*@',
     };
   }
 
