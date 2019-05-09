@@ -25,6 +25,18 @@ final class FacebookFacebookRubyBusinessSdk extends FBShipItConfig {
   }
 
   <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      '@^'.self::ROOT.'docs@',
+      '@^'.self::ROOT.'opensource@',
+      '@^'.self::ROOT.'bin@',
+      '@^'.self::ROOT.'tasks@',
+      '@^'.self::ROOT.'tests@',
+      '@^'.self::ROOT.'.rspec@',
+    };
+  }
+
+  <<__Override>>
   public static function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => 'business-sdk',

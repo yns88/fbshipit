@@ -25,6 +25,15 @@ final class FacebookFacebookJavaBusinessSdk extends FBShipItConfig {
   }
 
   <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      '@^'.self::ROOT.'docs@',
+      '@^'.self::ROOT.'opensource@',
+      '@^'.self::ROOT.'arcanist@',
+    };
+  }
+
+  <<__Override>>
   public static function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => 'business-sdk',

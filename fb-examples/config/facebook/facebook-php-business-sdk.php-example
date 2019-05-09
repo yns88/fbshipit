@@ -25,6 +25,18 @@ final class FacebookFacebookPhpBusinessSdk extends FBShipItConfig {
   }
 
   <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      '@^'.self::ROOT.'docs@',
+      '@^'.self::ROOT.'opensource@',
+      '@^'.self::ROOT.'arcanist@',
+      '@^'.self::ROOT.'docsmith@',
+      '@^'.self::ROOT.'.arcconfig@',
+      '@^'.self::ROOT.'doc_runner.sh@',
+    };
+  }
+
+  <<__Override>>
   public static function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => 'business-sdk',
