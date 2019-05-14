@@ -146,4 +146,21 @@ final class UnusualContentTest extends BaseTest {
     \expect($changeset->getMessage())->toContainSubstring('--- a/');
     \expect($changeset->getMessage())->toContainSubstring('+++ b/');
   }
+
+  public function testPoundSignInSummaryAndMessage(): void {
+    $header = \file_get_contents(
+      __DIR__.'/hg-diffs/has-pound-sign-in-subject-and-message.header',
+    );
+    $patch = \file_get_contents(
+      __DIR__.'/hg-diffs/has-pound-sign-in-subject-and-message.patch',
+    );
+    $changeset = ShipItRepoHG::getChangesetFromExportedPatch(
+      $header,
+      $patch,
+    );
+    \expect($changeset->getSubject())->toEqual('# Testing pound signs');
+    \expect($changeset->getMessage())->toEqual(
+      "```\n# This is a code comment\n```",
+    );
+  }
 }

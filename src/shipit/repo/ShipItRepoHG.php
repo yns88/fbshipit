@@ -23,6 +23,7 @@ class ShipItRepoHG
   extends ShipItRepo
   implements ShipItDestinationRepo, ShipItSourceRepo {
   private ?string $branch;
+  const string COMMIT_SEPARATOR = '-~-~-~';
 
   public function __construct(string $path, string $branch): void {
     parent::__construct($path, $branch);
@@ -240,14 +241,19 @@ class ShipItRepoHG
 
     $subject = null;
     $message = '';
+    $past_separator = false;
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     foreach (\explode("\n", $header) as $line) {
+      if (!$past_separator && $line === self::COMMIT_SEPARATOR) {
+        $past_separator = true;
+        continue;
+      }
       if (Str\length($line) === 0) {
         $message .= "\n";
         continue;
       }
-      if ($line[0] === '#') {
+      if ($line[0] === '#' && !$past_separator) {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         if (!\strncasecmp($line, '# User ', 7)) {
@@ -299,6 +305,7 @@ class ShipItRepoHG
       '# User {author}
 # Date {date}
 # Node ID {node}
+'.self::COMMIT_SEPARATOR.'
 {desc}',
     );
   }
