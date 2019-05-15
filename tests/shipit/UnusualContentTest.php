@@ -158,8 +158,8 @@ final class UnusualContentTest extends BaseTest {
       $header,
       $patch,
     );
-    \expect($changeset->getSubject())->toEqual('# Testing pound signs');
-    \expect($changeset->getMessage())->toEqual(
+    \expect($changeset->getSubject())->toBePHPEqual('# Testing pound signs');
+    \expect($changeset->getMessage())->toBePHPEqual(
       "```\n# This is a code comment\n```",
     );
   }
