@@ -55,6 +55,13 @@ final class FacebookexperimentalMononoke extends FBShipItConfig {
   }
 
   <<__Override>>
+  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      '@^fbcode/scm/mononoke/mononoke.project.toml$@',
+    };
+  }
+
+  <<__Override>>
   public static function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => 'fbsource',
