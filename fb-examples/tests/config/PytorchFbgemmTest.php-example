@@ -23,6 +23,8 @@ final class PytorchFbgemmTest extends FBConfigBaseTest {
       self::ROOT.'TARGETS' => null,
       self::ROOT.'src' => 'src',
       self::ROOT.'test/query.txt' => null,
+      // submodules
+      self::ROOT.'submodules/asmjit.txt' => 'third_party/asmjit',
     };
   }
 }

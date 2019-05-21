@@ -16,17 +16,53 @@ use namespace HH\Lib\Str;
 use type Facebook\ShipIt\{ShipItChangeset};
 
 final class ImportItSubmoduleFilter {
+
+  /**
+   * Like ShipItSubmoduleFilter, but produces a plain file instead of a
+   * real submodule.
+   */
   <<\TestsBypassVisibility>>
   private static function makeSubmoduleDiff(
     string $path,
-    string $old_rev,
-    string $new_rev,
+    ?string $old_rev,
+    ?string $new_rev,
   ): string {
-    return "--- a/{$path}\n".
-      "+++ b/{$path}\n".
-      "@@ -1 +1 @@\n".
-      "-Subproject commit {$old_rev}\n".
-      "+Subproject commit {$new_rev}\n";
+    if ($old_rev === null && $new_rev !== null) {
+      return Str\format(
+        'new file mode 100644
+--- /dev/null
++++ b/%s
+@@ -0,0 +1 @@
++Subproject commit %s
+',
+        $path,
+        $new_rev,
+      );
+    } else if ($new_rev === null && $old_rev !== null) {
+      return Str\format(
+        'deleted file mode 100644
+--- a/%s
++++ /dev/null
+@@ -1 +0,0 @@
+-Subproject commit %s
+',
+        $path,
+        $old_rev,
+      );
+    } else {
+      return Str\format(
+        '--- a/%s
++++ b/%s
+@@ -1 +1 @@
+-Subproject commit %s
++Subproject commit %s
+',
+        $path,
+        $path,
+        $old_rev ?? '',
+        $new_rev ?? '',
+      );
+    }
   }
 
   /**
@@ -67,27 +103,13 @@ final class ImportItSubmoduleFilter {
         }
       }
 
-      if ($old_rev === null || $new_rev === null) {
-        // Do nothing - this will lead to a 'patch does not apply' error for
-        // human debugging, which seems like a reasonable error to give :)
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \printf(
-          "  Skipping change to '%s' (-> %s); this will certainly fail.\n",
-          $submodule_path,
-          $text_file_with_rev,
-        );
-        $diffs[] = $diff;
-        continue;
-      }
-
       $changeset = $changeset
         ->withDebugMessage(
           'Updating submodule at %s (external path %s) to %s (from %s)',
           $text_file_with_rev,
           $submodule_path,
-          $new_rev,
-          $old_rev,
+          $new_rev ?? 'null',
+          $old_rev ?? 'null',
         );
 
       $diffs[] = shape(
