@@ -196,9 +196,6 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   final protected static function filterSubmodules(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    if (static::getSubmoduleMappings()->isEmpty()) {
-      return $changeset;
-    }
     foreach (static::getSubmoduleMappings() as $source => $dest) {
       $changeset = ShipItSubmoduleFilter::useSubmoduleCommitFromTextFile(
         $changeset,
@@ -206,6 +203,19 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
         $dest,
       );
     }
+    if (!\killswitch_intern(\KS::OPENSOURCE_SHIPIT_SUBMODULES)) {
+      // Find other submodules outside the explicitly defined mappings.
+      foreach ($changeset->getDiffs() as $diff) {
+        if (ShipItSubmoduleFilter::isSubmoduleTXTDiff($diff)) {
+          $changeset = ShipItSubmoduleFilter::useSubmoduleCommitFromTextFile(
+            $changeset,
+            $diff['path'],
+            Str\split($diff['path'], '.submodule.txt')[0],
+          );
+        }
+      }
+    }
+
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $interfaces = new Set(\class_implements(static::class));
@@ -355,6 +365,22 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
         $source,
         $dest,
       );
+    }
+    // If syncing to an hg monorepo, find other submodules outside the
+    // explicitly defined mappings.
+    if (
+      !\killswitch_intern(\KS::OPENSOURCE_SHIPIT_SUBMODULES) &&
+      FBRepoInitPhase::isMonorepo(static::getStaticConfig()['internalRepo'])
+    ) {
+      foreach ($changeset->getDiffs() as $diff) {
+        if (ShipItSubmoduleFilter::isSubmoduleDiff($diff)) {
+          $changeset = ImportItSubmoduleFilter::moveSubmoduleCommitToTextFile(
+            $changeset,
+            $diff['path'],
+            $diff['path'].'.submodule.txt',
+          );
+        }
+      }
     }
     return $changeset;
   }

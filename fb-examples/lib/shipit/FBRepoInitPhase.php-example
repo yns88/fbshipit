@@ -276,4 +276,8 @@ final class FBRepoInitPhase extends ShipItPhase {
       __FUNCTION__,
     );
   }
+
+  public static function isMonorepo(string $name): bool {
+    return C\contains(keyset['fbsource', 'www', 'ovrsource'], $name);
+  }
 }

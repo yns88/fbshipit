@@ -115,4 +115,65 @@ index %s..0000000
 
     return $changeset->withDiffs($diffs->toImmVector());
   }
+
+  /**
+   * Is this a diff on a submodule file?
+   * Pattern:
+   * new file mode 160000
+   * index 0000000..6a3dcef
+   * --- /dev/null
+   * +++ b/third_party/project
+   * @@ -0,0 +1 @@
+   * +Subproject commit deadbeef123
+   */
+  public static function isSubmoduleDiff(ShipItDiff $diff): bool {
+    $subproject_line = '[-+]Subproject commit [0-9a-fA-F]+';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    return (bool) \preg_match(
+      '@'.
+      // Submodule file mode
+      '(new file mode 160\d+ *\n)?'.
+      '(deleted file mode 160\d+ *\n)?'.
+      // Header lines
+      'index \w+..\w+ *\n'.
+      '[^\n]+\n[^\n]+\n[^\n]+\n'.
+      // One or two submodule lines
+      Str\format('%s( *\n%s)?', $subproject_line, $subproject_line).
+      // Nothing else
+      '\s*$@',
+      $diff['body'],
+    );
+  }
+
+  /**
+   * Is this a diff on a .submodule.txt file?
+   * Pattern:
+   * new file mode 100644
+   * --- /dev/null
+   * +++ b/path/to/file.submodule.txt
+   * @@ -0,0 +1,1 @@
+   * +Subproject commit deadbeef123
+   */
+  public static function isSubmoduleTXTDiff(ShipItDiff $diff): bool {
+    if (!Str\ends_with($diff['path'], '.submodule.txt')) {
+      return false;
+    }
+    $subproject_line = '[-+]Subproject commit [0-9a-fA-F]+';
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    return (bool) \preg_match(
+      '@'.
+      // Regular file mode
+      '(new file mode 100\d+ *\n)?'.
+      '(deleted file mode 100\d+ *\n)?'.
+      // Header lines
+      '[^\n]+\n[^\n]+\n[^\n]+\n'.
+      // One or two submodule lines
+      Str\format('%s( *\n%s)?', $subproject_line, $subproject_line).
+      // Nothing else
+      '\s*$@',
+      $diff['body'],
+    );
+  }
 }
