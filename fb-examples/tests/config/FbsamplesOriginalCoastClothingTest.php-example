@@ -1,0 +1,25 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+<<\Oncalls('open_source')>>
+final class FbsamplesOriginalCoastClothingTest extends FBConfigBaseTest {
+  const string ROOT = 'fbcode/messenger/samples/original-coast-clothing/';
+
+  <<__Override>>
+  public static function getExamplePathMappings(): ImmMap<string, ?string> {
+    return ImmMap {
+      self::ROOT.'README' => 'README',
+      self::ROOT.'.gitignore' => '.gitignore',
+      self::ROOT.'package.json' => 'package.json',
+      self::ROOT.'app.js' => 'app.js',
+      self::ROOT.'locales/en_US.json' => 'locales/en_US.json',
+      self::ROOT.'services/response.js' => 'services/response.js'
+    };
+  }
+}
