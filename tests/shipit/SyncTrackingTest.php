@@ -50,6 +50,11 @@ final class SyncTrackingTest extends BaseTest {
     $this->tempDir?->remove();
   }
 
+  private function getBaseConfig(): ShipItBaseConfig {
+    return (new ShipItBaseConfig('/var/tmp/fbshipit', '', '', ImmSet {}))
+      ->withCommitMarkerPrefix(true);
+  }
+
   private function getGITRepoWithCommit(string $message): ShipItRepoGIT {
     // Add a tracked commit
     $path = \expect($this->tempDir?->getPath())->toNotBeNull();
@@ -72,8 +77,10 @@ final class SyncTrackingTest extends BaseTest {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fake_commit_id = \bin2hex(\random_bytes(16));
     $message = ShipItSync::addTrackingData(
+      $this->getBaseConfig(),
       (new ShipItChangeset())->withID($fake_commit_id),
     )->getMessage();
+    \expect($message)->toContainSubstring('fbshipit');
     $repo = $this->getGITRepoWithCommit($message);
     \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
   }
@@ -91,6 +98,7 @@ final class SyncTrackingTest extends BaseTest {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fake_commit_id = \bin2hex(\random_bytes(16));
     $message = ShipItSync::addTrackingData(
+      $this->getBaseConfig(),
       (new ShipItChangeset())->withID($fake_commit_id),
     )->getMessage();
     (new ShipItShellCommand($path, 'touch', 'testfile'))->runSynchronously();
@@ -110,9 +118,11 @@ final class SyncTrackingTest extends BaseTest {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fake_commit_id_2 = \bin2hex(\random_bytes(16));
     $message_1 = ShipItSync::addTrackingData(
+      $this->getBaseConfig(),
       (new ShipItChangeset())->withID($fake_commit_id_1),
     )->getMessage();
     $message_2 = ShipItSync::addTrackingData(
+      $this->getBaseConfig(),
       (new ShipItChangeset())->withID($fake_commit_id_2),
     )->getMessage();
     $repo = $this->getGITRepoWithCommit($message_1."\n\n".$message_2);
@@ -126,6 +136,7 @@ final class SyncTrackingTest extends BaseTest {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fake_commit_id = \bin2hex(\random_bytes(16));
     $message = ShipItSync::addTrackingData(
+      $this->getBaseConfig(),
       (new ShipItChangeset())->withID($fake_commit_id),
     )->getMessage();
     $repo = $this->getGITRepoWithCommit($message." ");
@@ -137,6 +148,19 @@ final class SyncTrackingTest extends BaseTest {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $fake_commit_id = \bin2hex(\random_bytes(16));
     $message = "fbshipit-source-id:".$fake_commit_id;
+    $repo = $this->getGITRepoWithCommit($message);
+    \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
+  }
+
+  public function testLastSourceCommitWithoutPrefix(): void {
+    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+    $fake_commit_id = \bin2hex(\random_bytes(16));
+    $message = ShipItSync::addTrackingData(
+      $this->getBaseConfig()->withCommitMarkerPrefix(false),
+      (new ShipItChangeset())->withID($fake_commit_id),
+    )->getMessage();
+    \expect($message)->toNotContainSubstring('fbshipit');
     $repo = $this->getGITRepoWithCommit($message);
     \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
   }

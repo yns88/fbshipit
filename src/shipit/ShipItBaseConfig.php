@@ -13,11 +13,13 @@
 namespace Facebook\ShipIt;
 
 final class ShipItBaseConfig {
+
   public function __construct(
     private string $baseDirectoryPath,
     private string $defaultSourceDirectoryName,
     private string $defaultDestinationDirectoryName,
     private ImmSet<string> $sourceRoots,
+    private bool $commitMarkerPrefix = false,
   ) {}
 
   public function getBaseDirectory(): string {
@@ -131,6 +133,17 @@ final class ShipItBaseConfig {
         return $ret->destinationBranch;
       },
     );
+  }
+
+  public function getCommitMarkerPrefix(): bool {
+    return $this->commitMarkerPrefix;
+  }
+
+  public function withCommitMarkerPrefix(bool $bool): this {
+    return $this->modified($ret ==> {
+      $ret->commitMarkerPrefix = $bool;
+      return $ret->commitMarkerPrefix;
+    });
   }
 
   private function modified<Tignored>(

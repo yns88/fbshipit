@@ -87,7 +87,7 @@ final class ShipItSync {
           'SKIPPED COMMIT: no matching files',
         );
       } else {
-        $changesets[] = self::addTrackingData($changeset);
+        $changesets[] = self::addTrackingData($base_config, $changeset);
       }
     }
     return $changesets->toImmVector();
@@ -320,13 +320,19 @@ final class ShipItSync {
   }
 
   public static function addTrackingData(
+    ShipItBaseConfig $config,
     ShipItChangeset $changeset,
     ?string $rev = null,
   ): ShipItChangeset {
     if ($rev === null) {
       $rev = $changeset->getID();
     }
-    $new_message = $changeset->getMessage()."\n\n".'fbshipit-source-id: '.$rev;
+    $new_message = Str\format(
+      "%s\n\n%sshipit-source-id: %s",
+      $changeset->getMessage(),
+      $config->getCommitMarkerPrefix() ? 'fb' : '',
+      $rev,
+    );
     return $changeset->withMessage(Str\trim($new_message));
   }
 }

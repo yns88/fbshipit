@@ -208,7 +208,7 @@ final class ShipItCreateNewRepoPhase extends ShipItPhase {
     invariant($changeset !== null, 'got a null changeset :/');
     $changeset = $changeset->withID($rev);
     $changeset = $filter($changeset)->withSubject('Initial commit');
-    $changeset = ShipItSync::addTrackingData($changeset, $rev);
+    $changeset = ShipItSync::addTrackingData($config, $changeset, $rev);
 
     if ($config->isVerboseEnabled()) {
       $changeset->dumpDebugMessages();
