@@ -18,7 +18,7 @@ type FBShipItCLIStaticConfig = shape(
   'githubProject' => string,
   ?'destDirName' => string, // defaults to githubProject
   ?'gitLfs' => bool,
-  ?'allow-empty-commit' => bool, // whether allow empty commit sync to git
+  ?'allow-empty-commit' => bool, // whether to allow empty commit sync to git
 );
 
 interface IHasFBShipItCLIStaticConfig {
