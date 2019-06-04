@@ -40,6 +40,7 @@ final class ShipItChangeset {
   private ImmVector<ShipItDiff> $diffs = ImmVector {};
   private ImmVector<string> $debugMessages = ImmVector {};
   private bool $isTaggedEmptyCommit = false;
+  private string $coAuthorLines = "";
 
   public function isValid(): bool {
     return !$this->isEmptyChange();
@@ -149,6 +150,17 @@ final class ShipItChangeset {
   ): ShipItChangeset {
     $out = clone $this;
     $out->isTaggedEmptyCommit = $is_tagged_empty_commit;
+    return $out;
+  }
+
+  public function getCoAuthorLines(): string {
+    return $this->coAuthorLines;
+  }
+
+  public function withCoAuthorLines(string $co_author_lines): ShipItChangeset {
+    /* HH_IGNORE_ERROR[5562] */
+    $out = clone $this;
+    $out->coAuthorLines = $co_author_lines;
     return $out;
   }
 

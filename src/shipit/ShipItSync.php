@@ -333,6 +333,11 @@ final class ShipItSync {
       $config->getCommitMarkerPrefix() ? 'fb' : '',
       $rev,
     );
+    // Co-authored-by must be the absolute last thing in the message
+    $co_author_lines = $changeset->getCoAuthorLines();
+    if (Str\length($co_author_lines) > 0) {
+      $new_message .= "\n\n".$co_author_lines;
+    }
     return $changeset->withMessage(Str\trim($new_message));
   }
 }

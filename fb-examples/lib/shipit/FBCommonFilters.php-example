@@ -49,7 +49,8 @@ final class FBCommonFilters {
       )
       |> self::rewriteMentions($$)
       |> self::rewriteReviewers($$)
-      |> self::rewriteAuthor($$);
+      |> self::rewriteAuthor($$)
+      |> self::stripCoAuthoredByLines($$);
   }
 
   public static function stripSummariesByDefault(
@@ -458,5 +459,21 @@ final class FBCommonFilters {
     return $changeset->withMessage(
       ShipItMessageSections::buildMessage($sections->toImmMap()),
     );
+  }
+
+  public static function stripCoAuthoredByLines(
+    ShipItChangeset $changeset,
+  ): ShipItChangeset {
+    $out_message = vec[];
+    $co_author_lines = "";
+    foreach (Str\split($changeset->getMessage(), "\n") as $line) {
+      if (Str\starts_with($line, "Co-authored-by:")) {
+        $co_author_lines .= $line."\n";
+      } else {
+        $out_message[] = $line;
+      }
+    }
+    return $changeset->withMessage(Str\join($out_message, "\n"))
+      ->withCoAuthorLines($co_author_lines);
   }
 }

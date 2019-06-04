@@ -310,4 +310,13 @@ Name2';
     $changeset_2 = FBCommonFilters::applyAll($changeset_2);
     \expect($changeset_2->getMessage())->toBePHPEqual('');
   }
+
+  public function testStrippingCoAuthoredBy(): void {
+    $in = (new ShipItChangeset())
+      ->withMessage(
+        "Blah blah summary here\nCo-authored-by: Jon Janzen <jonjanzen@fb.com>",
+      );
+    $out = FBCommonFilters::applyAll($in);
+    \expect($out->getMessage())->toNotContain("Co-authored-by");
+  }
 }

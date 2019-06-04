@@ -164,4 +164,17 @@ final class SyncTrackingTest extends BaseTest {
     $repo = $this->getGITRepoWithCommit($message);
     \expect($repo->findLastSourceCommit(ImmSet {}))->toBeSame($fake_commit_id);
   }
+
+  public function testCoAuthorLines(): void {
+    $in = (new ShipItChangeset())
+      ->withCoAuthorLines("Co-authored-by: Jon Janzen <jonjanzen@fb.com>");
+    $out = ShipItSync::addTrackingData(
+      $this->getBaseConfig()->withCommitMarkerPrefix(true),
+      $in,
+      "TEST",
+    );
+    \expect($out->getMessage())->toBePHPEqual(
+      "fbshipit-source-id: TEST\n\nCo-authored-by: Jon Janzen <jonjanzen@fb.com>",
+    );
+  }
 }
