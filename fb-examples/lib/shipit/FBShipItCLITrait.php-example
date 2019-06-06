@@ -58,7 +58,7 @@ trait FBShipItCLITrait {
     print('--- Starting ShipIt: '.$config_class."\n");
     $runner = new FBShipItProjectRunner(
       FBShipItCLIAction::SHIP_IT,
-      $config_class,
+      self::nullOrConfigObject($config_class),
     );
     self::executeRunner($runner);
   }
@@ -71,7 +71,7 @@ trait FBShipItCLITrait {
     print('--- Starting ImportIt: '.$config_class."\n");
     $runner = new FBShipItProjectRunner(
       FBShipItCLIAction::IMPORT_IT,
-      $config_class,
+      self::nullOrConfigObject($config_class),
       $external_branch,
     );
     self::executeRunner($runner);
@@ -123,5 +123,14 @@ trait FBShipItCLITrait {
       }
       throw $e;
     }
+  }
+
+  private static function nullOrConfigObject(
+    ?classname<FBShipItConfig> $config_class,
+  ): ?FBShipItConfig {
+    if ($config_class === null) {
+      return null;
+    }
+    return $config_class::getInstance();
   }
 }

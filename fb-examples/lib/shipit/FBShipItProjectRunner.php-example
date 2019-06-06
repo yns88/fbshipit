@@ -25,16 +25,16 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
 
   public function __construct(
     private FBShipItCLIAction $action,
-    private ?classname<FBShipItConfig> $configClass = null,
+    private ?FBShipItConfig $configObject = null,
     private ?string $externalBranch = null,
   ) {
     $config = /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       new ShipItBaseConfig(\dirname(__DIR__), 'shipit', 'shipit', ImmSet {});
-    if ($configClass !== null) {
+    if ($configObject !== null) {
       parent::__construct(
         $config,
-        self::getPhases($action, $configClass, $externalBranch),
+        self::getPhases($action, $configObject, $externalBranch),
       );
     } else {
       parent::__construct($config, ImmVector {});
@@ -65,7 +65,8 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
           "--project=project --help.",
         'write' => $x ==> {
           $config_class = self::lookupConfigClass($x);
-          $static_config = $config_class::getStaticConfig();
+          $config_object = $config_class::getInstance();
+          $static_config = $config_object::getStaticConfig();
           print(
             '--- Running for '.
             $static_config['githubOrg'].
@@ -73,10 +74,10 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
             $static_config['githubProject'].
             "\n"
           );
-          $this->configClass = $config_class;
+          $this->configObject = $config_object;
           $this->phases = self::getPhases(
             $this->action,
-            $config_class,
+            $config_object,
             $this->externalBranch,
           );
           return true;
@@ -88,17 +89,17 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
   <<\TestsBypassVisibility>>
   private static function getPhases(
     FBShipItCLIAction $action,
-    classname<FBShipItConfig> $config_class,
+    FBShipItConfig $config_object,
     ?string $external_branch,
   ): ImmVector<ShipItPhase> {
     switch ($action) {
       case FBShipItCLIAction::SHIP_IT:
         return ImmVector {
-          new FBShipItBranchResolutionPhase($config_class, $external_branch),
+          new FBShipItBranchResolutionPhase($config_object, $external_branch),
         };
       case FBShipItCLIAction::IMPORT_IT:
         return ImmVector {
-          new FBImportItBranchResolutionPhase($config_class, $external_branch),
+          new FBImportItBranchResolutionPhase($config_object, $external_branch),
         };
     }
   }
@@ -173,13 +174,13 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     ) {
       // hacky coupling with FBShipItBranchResolutionPhase
       // render the project's help message
-      if ($this->configClass !== null) {
+      if ($this->configObject !== null) {
         foreach ($this->phases as $phase) {
           if ($phase is FBShipItBranchResolutionPhase) {
-            $config_class = $phase->getConfigClass();
+            $config_object = $phase->getConfigObject();
             $project_runner = $phase::getRunner(
-              $config_class,
-              $config_class::getBranchConfigs()[0],
+              $config_object,
+              $config_object::getBranchConfigs()[0],
             );
             self::printHelp($project_runner->getCLIArguments());
             exit(0);

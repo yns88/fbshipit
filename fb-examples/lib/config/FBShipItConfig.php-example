@@ -36,11 +36,18 @@ type FBSourceBranchConfig = shape(
  * If you need more flexibility than this provides, use the classes
  * directly (eg shipit_hhvm.php and shipit_buck.php)
  */
+<<__ConsistentConstruct>>
 abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   // Do not update submodules twice in a row in a 24-hour period.
   const int UPDATE_SUBMODULE_FREQUENCY = 60 * 60 * 24;
   const string UPDATE_SUBMODULE_AUTHOR = 'svcscm <svcscm@fb.com>';
   const string UPDATE_SUBMODULE_SUBJECT = 'Updating submodules';
+
+  private function __construct() {}
+
+  public static function getInstance(): this {
+    return new static();
+  }
 
   public abstract static function getDefaultPathMappings(
   ): ImmMap<string, string>;

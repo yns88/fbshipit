@@ -33,12 +33,12 @@ final class FBImportItBranchResolutionPhase
 
   <<__Override>>
   public static function getRunner(
-    classname<FBShipItConfig> $config_class,
+    FBShipItConfig $config_object,
     FBSourceBranchConfig $branch_config,
   ): ShipItPhaseRunner {
     return new ShipItPhaseRunner(
-      $config_class::getImportBaseConfig($branch_config),
-      $config_class::getImportPhases($branch_config),
+      $config_object::getImportBaseConfig($branch_config),
+      $config_object::getImportPhases($branch_config),
     );
   }
 

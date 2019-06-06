@@ -25,7 +25,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
   );
 
   public function __construct(
-    private classname<FBShipItConfig> $configClass,
+    private FBShipItConfig $configObject,
     protected ?string $externalBranch = null,
     private ?string $repoMetadataFile = null,
   ) {}
@@ -62,23 +62,23 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
     };
   }
 
-  public function getConfigClass(): classname<FBShipItConfig> {
-    return $this->configClass;
+  public function getConfigObject(): FBShipItConfig {
+    return $this->configObject;
   }
 
   public static function getRunner(
-    classname<FBShipItConfig> $config_class,
+    FBShipItConfig $config_object,
     FBSourceBranchConfig $branch_config,
   ): ShipItPhaseRunner {
     return new ShipItPhaseRunner(
-      $config_class::getBaseConfig($branch_config),
-      $config_class::getPhases($branch_config),
+      $config_object::getBaseConfig($branch_config),
+      $config_object::getPhases($branch_config),
     );
   }
 
   public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
-    $config_class = $this->configClass;
-    $branch_configs = $config_class::getBranchConfigs();
+    $config_object = $this->configObject;
+    $branch_configs = $config_object::getBranchConfigs();
     if ($this->externalBranch !== null) {
       $branch_configs = $branch_configs->filter(
         $branch_config ==> $branch_config['external'] === $this->externalBranch,
@@ -98,9 +98,9 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
   }
 
   public function getRepoMetadata(): self::TRepoMetadata {
-    $config_class = $this->configClass;
+    $config_object = $this->configObject;
     $branch_configs = $this->getBranchConfigs();
-    $internal_repo = $config_class::getStaticConfig()['internalRepo'];
+    $internal_repo = $config_object::getStaticConfig()['internalRepo'];
     if (
       RepoArcanistProject::getNotInArcanistExceptions()
         ->contains($internal_repo)
@@ -112,7 +112,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
       );
     }
     return shape(
-      'land_branch' => $config_class::getLandBranch(),
+      'land_branch' => $config_object::getLandBranch(),
       'branches' =>
         $branch_configs->map($branch_config ==> $branch_config['external']),
       'internal_repo' => $internal_repo,
@@ -122,7 +122,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
 
   <<__Override>>
   public function runImpl(ShipItBaseConfig $_config): void {
-    $config_class = $this->configClass;
+    $config_object = $this->configObject;
     $branch_configs = $this->getBranchConfigs();
     if ($this->repoMetadataFile !== null) {
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
@@ -141,7 +141,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
         $branch_config['internal'],
         $branch_config['external'],
       );
-      $runner = static::getRunner($config_class, $branch_config);
+      $runner = static::getRunner($config_object, $branch_config);
       $runner->run();
     }
   }

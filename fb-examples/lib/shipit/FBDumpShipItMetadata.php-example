@@ -41,12 +41,13 @@ final class FBDumpShipItMetadata {
     $metadatas = vec[];
     $config_classes = FBShipItConfigClasses::getClasses();
     foreach ($config_classes as $config_class) {
-      $branch_resolver = new FBShipItBranchResolutionPhase($config_class);
+      $config_object = $config_class::getInstance();
+      $branch_resolver = new FBShipItBranchResolutionPhase($config_object);
       $repo_metadata = $branch_resolver->getRepoMetadata();
       $branch_configs = $branch_resolver->getBranchConfigs();
-      $static_config = $config_class::getStaticConfig();
+      $static_config = $config_object::getStaticConfig();
       foreach ($branch_configs as $branch_config) {
-        $base_config = $config_class::getBaseConfig($branch_config);
+        $base_config = $config_object::getBaseConfig($branch_config);
         $save_config_phase = new ShipItSaveConfigPhase(
           $static_config['githubOrg'],
           $static_config['githubProject'],

@@ -21,7 +21,7 @@ final class FBShipItProjectRunnerTest extends BaseTest {
 
   private static function getPhases(
     FBShipItCLIAction $action,
-    classname<FBShipItConfig> $config_class,
+    FBShipItConfig $config_object,
     ?string $external_branch = null,
   ): ImmVector<ShipItPhase> {
     /* HH_FIXME[4110] Previously hidden by unsafe */
@@ -29,7 +29,7 @@ final class FBShipItProjectRunnerTest extends BaseTest {
       FBShipItProjectRunner::class,
       'getPhases',
       $action,
-      $config_class,
+      $config_object,
       $external_branch,
     );
   }
@@ -37,7 +37,7 @@ final class FBShipItProjectRunnerTest extends BaseTest {
   public function testGetPhasesNoBranch(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::SHIP_IT,
-      FacebookPhabtest1Git::class,
+      FacebookPhabtest1Git::getInstance(),
     )[0];
     invariant(
       $phase is FBShipItBranchResolutionPhase,
@@ -52,7 +52,7 @@ final class FBShipItProjectRunnerTest extends BaseTest {
   public function testGetPhasesWithBranch(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::SHIP_IT,
-      FacebookPhabtest1Git::class,
+      FacebookPhabtest1Git::getInstance(),
       'side_branch',
     )[0];
     invariant(
@@ -69,7 +69,7 @@ final class FBShipItProjectRunnerTest extends BaseTest {
   public function testGetPhasesImportIt(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::IMPORT_IT,
-      FacebookPhabtest1Git::class,
+      FacebookPhabtest1Git::getInstance(),
       'master',
     )[0];
     invariant(
@@ -86,7 +86,7 @@ final class FBShipItProjectRunnerTest extends BaseTest {
   public function testGetPhasesImportItRequiresBranch(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::IMPORT_IT,
-      FacebookPhabtest1Git::class,
+      FacebookPhabtest1Git::getInstance(),
     )[0];
     invariant(
       $phase is FBImportItBranchResolutionPhase,
