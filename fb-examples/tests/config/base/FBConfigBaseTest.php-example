@@ -38,8 +38,8 @@ abstract class FBConfigBaseTest
   }
 
   protected static function getDefaultBranchConfig(): FBSourceBranchConfig {
-    $config_class = static::getConfigClass();
-    $branch_configs = $config_class::getBranchConfigs();
+    $config_object = static::getConfigObject();
+    $branch_configs = $config_object::getBranchConfigs();
     return $branch_configs[0];
   }
 
@@ -47,9 +47,9 @@ abstract class FBConfigBaseTest
   final protected static function map(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    $config_class = static::getConfigClass();
+    $config_object = static::getConfigObject();
     $branch_config = static::getDefaultBranchConfig();
-    return $config_class::filterChangeset($changeset, $branch_config);
+    return $config_object::filterChangeset($changeset, $branch_config);
   }
 
   <<__Override>>
@@ -58,25 +58,25 @@ abstract class FBConfigBaseTest
   }
 
   final public function testFileNameMatchesRepo(): void {
-    $config_class = self::getConfigClass();
-    $config = $config_class::getStaticConfig();
-    $reflector = new \ReflectionClass($config_class);
+    $config_object = self::getConfigObject();
+    $config = $config_object::getStaticConfig();
+    $reflector = new \ReflectionClass($config_object);
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \expect(\basename(\dirname($reflector->getFileName())))->toBePHPEqual(
       $config['githubOrg'],
-      'Config parent directory must match GitHub Org: '.$config_class,
+      'Config parent directory must match GitHub Org: '.
+      \get_class($config_object),
     );
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \expect(\basename($reflector->getFileName()))->toBePHPEqual(
       $config['githubProject'].'.php',
-      'Config filename must match GitHub Repo: '.$config_class,
+      'Config filename must match GitHub Repo: '.\get_class($config_object),
     );
   }
 
-  final protected static function getConfigClass(
-  ): classname<this::TConfigClassBase> {
+  final protected static function getConfigObject(): this::TConfigClassBase {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $config_class = \preg_replace(
@@ -97,12 +97,13 @@ abstract class FBConfigBaseTest
       '`meerkat`.',
       $config_class,
     );
-    return $config_class;
+    /* HH_IGNORE_ERROR[4026] */
+    return $config_class::getInstance();
   }
 
   final public function testUniqueExternalBranchConfigs(): void {
-    $config_class = static::getConfigClass();
-    $branch_configs = $config_class::getBranchConfigs();
+    $config_object = static::getConfigObject();
+    $branch_configs = $config_object::getBranchConfigs();
     $external_branches = $branch_configs->map(
       $branch_config ==> $branch_config['external'],
     );
@@ -126,9 +127,9 @@ abstract class FBConfigBaseTest
 
   <<__Override>>
   final public function testPathMappingsHaveExamples(): void {
-    $config_class = static::getConfigClass();
+    $config_object = static::getConfigObject();
     $examples = static::getExamplePathMappings()->keys();
-    foreach ($config_class::getDefaultPathMappings()->keys() as $source_path) {
+    foreach ($config_object::getDefaultPathMappings()->keys() as $source_path) {
       $found = false;
       foreach ($examples as $example) {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
@@ -148,8 +149,8 @@ abstract class FBConfigBaseTest
 
   <<__Override>>
   public function testRepositoryNameCollision(): void {
-    $config_class = static::getConfigClass();
-    $config = $config_class::getBaseConfig(static::getDefaultBranchConfig());
+    $config_object = static::getConfigObject();
+    $config = $config_object::getBaseConfig(static::getDefaultBranchConfig());
     \expect($config->getDestinationPath())->toNotBePHPEqual(
       $config->getSourcePath(),
       'Repo names match and `getStaticConfig` has not set `destDirName` to '.
@@ -159,8 +160,8 @@ abstract class FBConfigBaseTest
 
   <<__Override>>
   public function testSourceRootsAreDirectories(): void {
-    $config_class = static::getConfigClass();
-    $config = $config_class::getBaseConfig(static::getDefaultBranchConfig());
+    $config_object = static::getConfigObject();
+    $config = $config_object::getBaseConfig(static::getDefaultBranchConfig());
     $roots = $config->getSourceRoots();
     foreach ($roots as $root) {
       \expect(Str\slice($root, -1) === '/')->toBeTrue(
@@ -173,8 +174,8 @@ abstract class FBConfigBaseTest
   }
 
   final public function testSubmodulesAreFilteredCorrectly(): void {
-    $config_class = static::getConfigClass();
-    foreach ($config_class::getSubmoduleMappings() as $rev_file => $dest) {
+    $config_object = static::getConfigObject();
+    foreach ($config_object::getSubmoduleMappings() as $rev_file => $dest) {
       $changeset = (new ShipItChangeset())
         ->withDiffs(ImmVector {
           shape(
@@ -193,8 +194,8 @@ abstract class FBConfigBaseTest
   }
 
   final public function testBranchConfigs(): void {
-    $config_class = static::getConfigClass();
-    $branch_configs = $config_class::getBranchConfigs();
+    $config_object = static::getConfigObject();
+    $branch_configs = $config_object::getBranchConfigs();
     $external_branches = $branch_configs->map(
       $branch_config ==> $branch_config['external'],
     );
@@ -208,7 +209,7 @@ abstract class FBConfigBaseTest
       'getExampleBranchMappings does not match %s::getBranchConfigs. '.
       'If you have multiple branches configured, you must define '.
       '%s::getExampleBranchMappings',
-      $config_class,
+      $config_object,
       static::class,
     );
     $branch_config_map = ImmMap::fromItems(
@@ -219,7 +220,7 @@ abstract class FBConfigBaseTest
         $diffs = ImmVector {shape('path' => $path_in, 'body' => 'junk')};
         $changeset = (new ShipItChangeset())->withDiffs($diffs);
         $branch_config = $branch_config_map[$external_branch];
-        $mapped = $config_class::filterChangeset($changeset, $branch_config);
+        $mapped = $config_object::filterChangeset($changeset, $branch_config);
         $this->pathMappingCheck($mapped, $path_in, $path_expected, true);
       }
     }
@@ -257,8 +258,8 @@ abstract class FBConfigBaseTest
   protected static function mapImport(
     \Facebook\ShipIt\ShipItChangeset $changeset,
   ): \Facebook\ShipIt\ShipItChangeset {
-    $config_class = static::getConfigClass();
-    return $config_class::importChangeset(
+    $config_object = static::getConfigObject();
+    return $config_object::importChangeset(
       $changeset,
       static::getDefaultBranchConfig(),
     );
@@ -317,11 +318,11 @@ abstract class FBConfigBaseTest
   }
 
   final public function testImportBranches(): void {
-    $config_class = static::getConfigClass();
-    $importit_base_config = $config_class::getImportBaseConfig(
+    $config_object = static::getConfigObject();
+    $importit_base_config = $config_object::getImportBaseConfig(
       static::getDefaultBranchConfig(),
     );
-    $shipit_base_config = $config_class::getBaseConfig(
+    $shipit_base_config = $config_object::getBaseConfig(
       static::getDefaultBranchConfig(),
     );
     \expect($importit_base_config->getDestinationBranch())->toBePHPEqual(
@@ -335,8 +336,8 @@ abstract class FBConfigBaseTest
   }
 
   final public function testImportRepositoryNameCollision(): void {
-    $config_class = static::getConfigClass();
-    $config = $config_class::getImportBaseConfig(
+    $config_object = static::getConfigObject();
+    $config = $config_object::getImportBaseConfig(
       static::getDefaultBranchConfig(),
     );
     \expect($config->getDestinationPath())->toNotBePHPEqual(
@@ -347,8 +348,8 @@ abstract class FBConfigBaseTest
   }
 
   final public function testSubmodulesAreImportedCorrectly(): void {
-    $config_class = static::getConfigClass();
-    foreach ($config_class::getSubmoduleMappings() as $rev_file => $dest) {
+    $config_object = static::getConfigObject();
+    foreach ($config_object::getSubmoduleMappings() as $rev_file => $dest) {
       $changeset = (new ShipItChangeset())
         ->withDiffs(ImmVector {
           shape(
@@ -367,10 +368,10 @@ abstract class FBConfigBaseTest
   }
 
   final public function testGetLandBranch(): void {
-    $config_class = static::getConfigClass();
-    $land_branch = $config_class::getLandBranch();
+    $config_object = static::getConfigObject();
+    $land_branch = $config_object::getLandBranch();
     if ($land_branch !== null) {
-      \expect($config_class::getBranchConfigs()->map($bc ==> $bc['internal']))
+      \expect($config_object::getBranchConfigs()->map($bc ==> $bc['internal']))
         ->toContain(
           $land_branch,
           'Arc land branch '.$land_branch.' not found in branch configs!',

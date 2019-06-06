@@ -92,11 +92,11 @@ abstract class FBWWWConfigBaseTest extends FBConfigBaseTest {
       'forward translation (shipit)',
     );
 
-    $config = static::getConfigClass();
+    $config_object = static::getConfigObject();
 
     $changeset = (new ShipItChangeset())
       ->withDiffs(ImmVector {$diff})
-      |> $config::renameAsyncToGen($$);
+      |> $config_object::renameAsyncToGen($$);
     $diff = $changeset->getDiffs()->at(0);
     \expect($diff['body'])->toBeSame($body, 'reverse translation (importit)');
   }
