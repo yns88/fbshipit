@@ -150,7 +150,7 @@ abstract class FBConfigBaseTest
   <<__Override>>
   public function testRepositoryNameCollision(): void {
     $config_object = static::getConfigObject();
-    $config = $config_object::getBaseConfig(static::getDefaultBranchConfig());
+    $config = $config_object->getBaseConfig(static::getDefaultBranchConfig());
     \expect($config->getDestinationPath())->toNotBePHPEqual(
       $config->getSourcePath(),
       'Repo names match and `getStaticConfig` has not set `destDirName` to '.
@@ -161,7 +161,7 @@ abstract class FBConfigBaseTest
   <<__Override>>
   public function testSourceRootsAreDirectories(): void {
     $config_object = static::getConfigObject();
-    $config = $config_object::getBaseConfig(static::getDefaultBranchConfig());
+    $config = $config_object->getBaseConfig(static::getDefaultBranchConfig());
     $roots = $config->getSourceRoots();
     foreach ($roots as $root) {
       \expect(Str\slice($root, -1) === '/')->toBeTrue(
@@ -322,7 +322,7 @@ abstract class FBConfigBaseTest
     $importit_base_config = $config_object->getImportBaseConfig(
       static::getDefaultBranchConfig(),
     );
-    $shipit_base_config = $config_object::getBaseConfig(
+    $shipit_base_config = $config_object->getBaseConfig(
       static::getDefaultBranchConfig(),
     );
     \expect($importit_base_config->getDestinationBranch())->toBePHPEqual(

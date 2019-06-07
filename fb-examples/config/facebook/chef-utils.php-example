@@ -91,7 +91,7 @@ final class FacebookChefUtils extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getBaseConfig(
+  public function getBaseConfig(
     FBSourceBranchConfig $branch_config,
   ): ShipItBaseConfig {
     return parent::getBaseConfig($branch_config)

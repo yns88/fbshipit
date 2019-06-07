@@ -174,7 +174,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return $roots->toImmSet();
   }
 
-  public static function getBaseConfig(
+  public function getBaseConfig(
     FBSourceBranchConfig $branch_config,
   ): ShipItBaseConfig {
     $static_config = static::getStaticConfig();
@@ -199,7 +199,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
-    $roots = static::getBaseConfig($branch_config)->getSourceRoots()
+    $roots = $this->getBaseConfig($branch_config)->getSourceRoots()
       ->filter($root ==> $root !== '');
     if (C\is_empty($roots)) {
       return $changeset;
@@ -354,7 +354,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     FBSourceBranchConfig $branch_config,
   ): ShipItBaseConfig {
     $static_config = static::getStaticConfig();
-    $shipit_base_config = static::getBaseConfig($branch_config);
+    $shipit_base_config = $this->getBaseConfig($branch_config);
     return (
       new ShipItBaseConfig(
         /* base_dir = */ '/var/tmp/fbimportit',
