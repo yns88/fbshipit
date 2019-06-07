@@ -38,7 +38,7 @@ final class FBImportItBranchResolutionPhase
   ): ShipItPhaseRunner {
     return new ShipItPhaseRunner(
       $config_object->getImportBaseConfig($branch_config),
-      $config_object::getImportPhases($branch_config),
+      $config_object->getImportPhases($branch_config),
     );
   }
 
