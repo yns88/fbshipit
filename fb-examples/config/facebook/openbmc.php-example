@@ -179,7 +179,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function projectImportChangeset(
+  protected function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $_branch_config,
   ): ShipItChangeset {

@@ -32,7 +32,7 @@ abstract class HhvmHslBase extends FBWWWBase {
   }
 
   <<__Override>>
-  final protected static function projectImportChangeset(
+  final protected function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {

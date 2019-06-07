@@ -136,7 +136,7 @@ abstract class FBWWWBase extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function projectImportChangeset(
+  protected function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {

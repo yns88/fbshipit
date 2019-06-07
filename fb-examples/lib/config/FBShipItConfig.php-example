@@ -326,7 +326,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * By default, ImportIt will just update paths.  If a project wants to do
    * something more complicated, they can override this method.
    */
-  protected static function projectImportChangeset(
+  protected function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
@@ -347,7 +347,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
     return $changeset
-      |> static::projectImportChangeset($$, $branch_config);
+      |> $this->projectImportChangeset($$, $branch_config);
   }
 
   final public function getImportBaseConfig(
