@@ -44,7 +44,7 @@ final class FacebookRelay extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       // Don't include the README in the top directory.
       '@^'.self::RELAY_OSS.'README.md@',

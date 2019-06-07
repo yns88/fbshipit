@@ -32,7 +32,7 @@ final class FacebookFacebookAndroidSdk extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'\.DS_Store$@',
       '@^'.self::ROOT.'\.gradle@',

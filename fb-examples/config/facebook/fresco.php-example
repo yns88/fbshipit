@@ -41,7 +41,7 @@ final class FacebookFresco extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@/whitelist_for_modules$@',
       '@/local.properties$@',

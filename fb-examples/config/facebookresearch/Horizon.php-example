@@ -24,7 +24,7 @@ use type Facebook\ShipIt\{
 
 final class FacebookresearchHorizon extends FBShipItConfig {
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/fb-pom.xml@',
       '@^fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/sandcastle.ini@',

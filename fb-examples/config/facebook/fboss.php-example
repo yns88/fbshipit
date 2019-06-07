@@ -17,7 +17,7 @@ use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 final class FacebookFboss extends FBShipItConfig {
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@.*facebook.*@',
       '@fbcode/fboss/agent/hw/bf.*@',

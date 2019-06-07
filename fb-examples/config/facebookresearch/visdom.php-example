@@ -18,7 +18,7 @@ final class FacebookresearchVisdom extends FBShipItConfig {
   const string ROOT = 'fbcode/visdom/';
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^fbcode/visdom/fbbuild/@',
       '@^fbcode/visdom/cli/@',

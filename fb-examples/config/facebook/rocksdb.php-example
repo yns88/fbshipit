@@ -34,7 +34,7 @@ final class FacebookRocksdb extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       // Ignore file containing sandcastle token
       '@^'.self::ROOT.'.sandcastle$@',

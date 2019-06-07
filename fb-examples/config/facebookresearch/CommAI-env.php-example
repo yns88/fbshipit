@@ -25,7 +25,7 @@ final class FacebookresearchCommaiEnv extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       "@^(?!fbcode/experimental/commai/env/)@",
       '@^fbcode/experimental/commai/env/src/experimental/@',

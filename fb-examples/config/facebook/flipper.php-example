@@ -24,7 +24,7 @@ final class FacebookFlipper extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@xplat/sonar/iOS/FlipperKit/FBCxxUtils[/|$]@',
       '@xplat/sonar/iOS/Plugins/Facebook[/|$]@',

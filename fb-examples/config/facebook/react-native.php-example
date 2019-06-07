@@ -62,7 +62,7 @@ final class FacebookReactNative extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'BUCK$@',
       '@(^|/)node_modules/@',

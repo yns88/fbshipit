@@ -13,7 +13,7 @@ final class FbsamplesAccountKitSamplesForIos extends FBShipItConfig {
   const string ROOT = 'fbobjc/ios-sdk/AccountKit/samples/';
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'AccountKitSample/BUCK$@',
       '@^'.self::ROOT.'AccountKitSample/build-buck.sh$@',

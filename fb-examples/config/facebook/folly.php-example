@@ -45,7 +45,7 @@ final class FacebookFolly extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^fbcode/folly/folly-config\\.h$@',
     };

@@ -30,7 +30,7 @@ final class FacebookFbthrift extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^fbcode/thrift/thrift-config\\.h$@', // Made by autoconf.
       // These 2 aren't usable in OSS at present. Future: release these?

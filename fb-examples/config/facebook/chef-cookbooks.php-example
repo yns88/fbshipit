@@ -100,7 +100,7 @@ final class FacebookChefCookbooks extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       # filter all tests not marked as public because most of our
       # test require our crazy hacked up chefspec... but allow

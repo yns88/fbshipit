@@ -66,7 +66,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       )
       |> ShipItPathFilters::stripPaths(
         $$,
-        static::getDefaultStrippedFiles(),
+        $this->getDefaultStrippedFiles(),
         $this->getDefaultStrippedFileExceptions(),
       )
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings());
@@ -87,7 +87,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * Blacklist of regular expression strings that match project files which
    * should be stripped out of published commits.
    */
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {};
   }
 

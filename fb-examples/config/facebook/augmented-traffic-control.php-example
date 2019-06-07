@@ -22,7 +22,7 @@ final class FacebookAugmentedTrafficControl extends FBShipItConfig {
   const string ROOT = 'fbcode/pe_dev_infra/atc/';
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@_facebook.go@', // custom facebook code
       '@^chef@', // ignore upstream/downstream chef files

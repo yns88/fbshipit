@@ -61,7 +61,7 @@ final class FacebookWatchman extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       // exclude the source code from the eden bits; we just want the
       // thrift and cmake info.  We include shipit_test_file.txt in here

@@ -56,7 +56,7 @@ final class FacebookFbshipit extends FBWWWBase {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@/fb-private/@',
       '@(^|/)fb_.+\.sh$@',

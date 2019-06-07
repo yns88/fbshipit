@@ -52,7 +52,7 @@ final class FacebookChefUtils extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     # Unlike most shipit plugins we effectively whitelist because we can't
     # easily move chefctl.rb (yet)
     #

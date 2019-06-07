@@ -18,7 +18,7 @@ final class FacebookTransform360 extends FBShipItConfig {
   const string ROOT = 'fbcode/vrapps/video/Transform360/';
 
   <<__Override>>
-  protected static function getDefaultStrippedFiles(): ImmVector<string> {
+  protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.
       self::ROOT.
