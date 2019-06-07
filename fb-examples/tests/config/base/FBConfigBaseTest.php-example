@@ -49,7 +49,7 @@ abstract class FBConfigBaseTest
   ): ShipItChangeset {
     $config_object = static::getConfigObject();
     $branch_config = static::getDefaultBranchConfig();
-    return $config_object::filterChangeset($changeset, $branch_config);
+    return $config_object->filterChangeset($changeset, $branch_config);
   }
 
   <<__Override>>
@@ -220,7 +220,7 @@ abstract class FBConfigBaseTest
         $diffs = ImmVector {shape('path' => $path_in, 'body' => 'junk')};
         $changeset = (new ShipItChangeset())->withDiffs($diffs);
         $branch_config = $branch_config_map[$external_branch];
-        $mapped = $config_object::filterChangeset($changeset, $branch_config);
+        $mapped = $config_object->filterChangeset($changeset, $branch_config);
         $this->pathMappingCheck($mapped, $path_in, $path_expected, true);
       }
     }

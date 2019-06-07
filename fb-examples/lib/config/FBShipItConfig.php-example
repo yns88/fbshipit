@@ -109,7 +109,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   }
 
   // Public so that you can add a unit test
-  final public static function filterChangeset(
+  final public function filterChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
     bool $use_confidential_filter = true,
@@ -256,7 +256,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     $static_config = static::getStaticConfig();
     return ImmVector {
       new ShipItFilterSanityCheckPhase(
-        $changeset ==> self::filterChangeset($changeset, $branch_config),
+        $changeset ==> $this->filterChangeset($changeset, $branch_config),
       ),
       new ShipItSaveConfigPhase(
         $static_config['githubOrg'],
@@ -273,7 +273,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       new ShipItCleanPhase(ShipItRepoSide::SOURCE),
       new ShipItPullPhase(ShipItRepoSide::SOURCE),
       new ShipItCreateNewRepoPhase(
-        $changeset ==> self::filterChangeset($changeset, $branch_config),
+        $changeset ==> $this->filterChangeset($changeset, $branch_config),
         shape(
           'name' => 'facebook-github-bot',
           'email' => 'facebook-github-bot@users.noreply.github.com',
@@ -292,14 +292,14 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       new ShipItPullPhase(ShipItRepoSide::DESTINATION),
       new ShipItSyncPhase(
         ($_config, $changeset) ==>
-          self::filterChangeset($changeset, $branch_config),
+          $this->filterChangeset($changeset, $branch_config),
         ImmSet {},
         ($changesets, $dest) ==>
           $this->postFilterChangesets($changesets, $dest),
         Shapes::idx($static_config, 'allow-empty-commit', false),
       ),
       new ShipItVerifyRepoPhase(
-        $changeset ==> self::filterChangeset(
+        $changeset ==> $this->filterChangeset(
           $changeset,
           $branch_config,
           /* skip confidential filter b/c commits are not published */ false,
@@ -594,9 +594,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return false;
   }
 
-  private function isUpdatingSubmodules(
-    ShipItChangeset $changeset,
-  ): bool {
+  private function isUpdatingSubmodules(ShipItChangeset $changeset): bool {
     return (
       $changeset->getAuthor() === self::UPDATE_SUBMODULE_AUTHOR &&
       $changeset->getSubject() === self::UPDATE_SUBMODULE_SUBJECT
