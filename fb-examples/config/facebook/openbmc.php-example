@@ -86,7 +86,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       # Provide an overlay to keep patches locally for various
       # minor tweaks to the github tree.

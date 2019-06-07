@@ -18,7 +18,7 @@ final class FacebookincubatorFacebookPixelForWordpress extends FBShipItConfig {
   const string ROOT = 'facebook_pixel_framework/facebook_pixel_for_wordpress/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

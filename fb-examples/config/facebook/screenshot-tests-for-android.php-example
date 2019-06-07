@@ -18,7 +18,7 @@ final class FacebookScreenshotTestsForAndroid extends FBShipItConfig {
   const string ROOT = 'fbandroid/libraries/screenshot-tests-for-android/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

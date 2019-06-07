@@ -73,7 +73,7 @@ final class FacebookChefUtils extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       # order is important - most specific first
       'chef-utils-github/' => '',

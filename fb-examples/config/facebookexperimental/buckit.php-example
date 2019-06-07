@@ -126,7 +126,7 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       'fbcode/experimental/pjameson/buckit/buckit/LICENSE' => 'LICENSE',
       'fbcode/experimental/pjameson/buckit/buckit/PATENTS' => 'PATENTS',

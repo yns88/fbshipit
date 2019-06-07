@@ -13,7 +13,7 @@ final class FbsamplesOriginalCoastClothing extends FBShipItConfig {
   const string ROOT = 'fbcode/messenger/samples/original-coast-clothing/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

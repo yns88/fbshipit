@@ -43,7 +43,7 @@ final class FacebookresearchWav2letter extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     // fb/ and TARGETS are already ignored. See https://fburl.com/1ux6jmnz.
     return ImmMap {
       self::ROOT => '',

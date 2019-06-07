@@ -19,7 +19,7 @@ final class FacebookFbpush extends FBShipItConfig {
   const string ROOT = 'fbcode/nettools/push/oss/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

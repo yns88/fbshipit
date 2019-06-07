@@ -18,7 +18,7 @@ final class FacebookincubatorFacebookForMagento extends FBShipItConfig {
   const string ROOT = 'facebook_ads_toolbox/magento_v1.x/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

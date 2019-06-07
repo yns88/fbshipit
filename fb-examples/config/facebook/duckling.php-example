@@ -50,7 +50,7 @@ final class FacebookDuckling extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT.'github/Duckling/Engine/Regex.hs' =>
         'Duckling/Engine/Regex.hs',

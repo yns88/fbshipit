@@ -21,7 +21,7 @@ use type Facebook\ShipIt\{
 final class FacebookRedex extends FBShipItConfig {
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return self::getMasterPathMappings();
   }
 

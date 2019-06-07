@@ -18,7 +18,7 @@ final class FacebookRemodel extends FBShipItConfig {
   const string ROOT = 'fbobjc/Tools/remodel/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

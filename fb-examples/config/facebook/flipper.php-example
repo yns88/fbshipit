@@ -16,7 +16,7 @@ use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 
 final class FacebookFlipper extends FBShipItConfig {
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       'xplat/sonar/' => '',
       'fbobjc/Libraries/FBCxxUtils/FBCxxUtils/' => 'iOS/FlipperKit/FBCxxUtils/',

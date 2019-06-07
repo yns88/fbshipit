@@ -68,7 +68,7 @@ final class FacebookFbshipit extends FBWWWBase {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       'flib/intern/opensource/shipit/public_tld/' => '',
       'scripts/opensource/shipit/' => 'fb-examples/bin/',

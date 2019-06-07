@@ -25,7 +25,7 @@ final class HhvmHacktest extends FBWWWBase {
   const string ROOT = 'flib/intern/testinfra/hacktest/opensource/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       static::ROOT.'__github__/tests/' => 'tests/',
       static::ROOT.'__github__/src/HackTestCLI_dot_php' =>

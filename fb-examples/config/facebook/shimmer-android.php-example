@@ -18,7 +18,7 @@ final class FacebookShimmerAndroid extends FBShipItConfig {
   const string ROOT = 'fbandroid/libraries/shimmer-android/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

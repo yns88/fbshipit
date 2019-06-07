@@ -18,7 +18,7 @@ final class FacebookSoloader extends FBShipItConfig {
   const string ROOT = 'fbandroid/libraries/soloader/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

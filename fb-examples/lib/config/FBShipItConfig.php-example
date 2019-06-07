@@ -49,7 +49,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return new static();
   }
 
-  public abstract static function getDefaultPathMappings(
+  public abstract function getDefaultPathMappings(
   ): ImmMap<string, string>;
 
   protected function defaultProjectFilterChangeset(
@@ -475,7 +475,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return Shapes::idx(
       $branch_config,
       'getPathMappings',
-      () ==> static::getDefaultPathMappings(),
+      () ==> $this->getDefaultPathMappings(),
     );
   }
 

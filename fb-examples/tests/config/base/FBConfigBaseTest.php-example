@@ -129,7 +129,7 @@ abstract class FBConfigBaseTest
   final public function testPathMappingsHaveExamples(): void {
     $config_object = static::getConfigObject();
     $examples = static::getExamplePathMappings()->keys();
-    foreach ($config_object::getDefaultPathMappings()->keys() as $source_path) {
+    foreach ($config_object->getDefaultPathMappings()->keys() as $source_path) {
       $found = false;
       foreach ($examples as $example) {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */

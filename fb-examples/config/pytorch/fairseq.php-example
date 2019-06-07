@@ -18,7 +18,7 @@ final class PytorchFairseq extends FBShipItConfig {
   const string ROOT = 'fbcode/deeplearning/projects/fairseq-py/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

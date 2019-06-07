@@ -18,7 +18,7 @@ final class TorchnetTorchnet extends FBShipItConfig {
   const string ROOT = 'fbcode/torch/oss/torchnet/torchnet/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

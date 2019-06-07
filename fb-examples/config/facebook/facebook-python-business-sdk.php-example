@@ -18,7 +18,7 @@ final class FacebookFacebookPythonBusinessSdk extends FBShipItConfig {
   const string ROOT = 'sdk/servers/python/release/';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

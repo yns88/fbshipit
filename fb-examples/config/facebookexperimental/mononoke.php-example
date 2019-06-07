@@ -39,7 +39,7 @@ final class FacebookexperimentalMononoke extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     // The order here is important -- ImportIt matches paths in reverse order.
     return ImmMap {
       'fbcode/scm/mononoke/' => '',

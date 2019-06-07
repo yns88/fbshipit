@@ -52,7 +52,7 @@ final class FacebookRelay extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       // Modules
       self::GITHUB_ROOT => '',

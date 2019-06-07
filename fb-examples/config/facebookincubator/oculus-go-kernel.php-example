@@ -23,7 +23,7 @@ final class FacebookincubatorOculusGoKernel extends FBShipItConfig {
   const string SOURCE_BRANCH = 'shipit-sync-release';
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
     };

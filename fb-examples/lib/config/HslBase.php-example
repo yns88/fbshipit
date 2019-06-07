@@ -23,7 +23,7 @@ abstract class HhvmHslBase extends FBWWWBase {
   abstract const string ROOT;
 
   <<__Override>>
-  public static function getDefaultPathMappings(): ImmMap<string, string> {
+  public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       static::ROOT.'__github__/dot_' => '.',
       static::ROOT.'__github__/' => '',
