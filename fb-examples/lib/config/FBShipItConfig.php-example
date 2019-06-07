@@ -119,7 +119,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       |> $this->filterSubmodules($$)
       |> (
         $this->getProjectFilterChangesetFn($branch_config)
-      )($$, self::getPathMappingsFn($branch_config));
+      )($$, $this->getPathMappingsFn($branch_config));
     if ($use_confidential_filter) {
       $changeset = FBConfidentialFilter::applyAll($changeset);
     }
@@ -134,7 +134,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     FBSourceBranchConfig $branch_config,
   ): ImmSet<string> {
     $config = static::getStaticConfig();
-    $paths = (self::getPathMappingsFn($branch_config))()
+    $paths = ($this->getPathMappingsFn($branch_config))()
       ->keys()
       ->toSet();
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
@@ -334,7 +334,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       |> $this->filterImportSubmodules($$)
       |> ImportItPathFilters::moveDirectories(
         $$,
-        (self::getPathMappingsFn($branch_config))(),
+        ($this->getPathMappingsFn($branch_config))(),
         $this->getSubmoduleMappings()
           ->keys()
           ->map($path ==> '@^'.$path.'$@'),
@@ -469,7 +469,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   /**
    * Uses default function implementation if no override is provided.
    */
-  protected static function getPathMappingsFn(
+  protected function getPathMappingsFn(
     FBSourceBranchConfig $branch_config,
   ): GetPathMappingsFn {
     return Shapes::idx(

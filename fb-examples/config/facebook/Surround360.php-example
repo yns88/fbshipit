@@ -48,7 +48,7 @@ final class FacebookSurround360 extends FBShipItConfig {
       )
       |> ImportItPathFilters::moveDirectories(
         $$,
-        (self::getPathMappingsFn($branch_config))(),
+        ($this->getPathMappingsFn($branch_config))(),
       );
   }
 

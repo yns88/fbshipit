@@ -31,7 +31,7 @@ final class FacebookexperimentalMononoke extends FBShipItConfig {
       |> $this->filterImportSubmodules($$)
       |> ImportItRustPathFilters::moveDirectories(
         $$,
-        (self::getPathMappingsFn($branch_config))(),
+        ($this->getPathMappingsFn($branch_config))(),
         $this->getSubmoduleMappings()
           ->keys()
           ->map($path ==> '@^'.$path.'$@'),
