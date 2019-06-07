@@ -128,7 +128,8 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
       ->withTimestamp(\time());
     $repo = new FakeShipItRepo($dest_head);
     $changesets = ImmVector {self::getSubmodulesChangeset()};
-    \expect(FBShipItConfig::shouldSkipUpdateSubmodules($changesets, $repo))
+    $config_object = static::getConfigObject();
+    \expect($config_object->shouldSkipUpdateSubmodules($changesets, $repo))
       ->toBeTrue();
   }
 
@@ -143,7 +144,8 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
       self::getSubmodulesChangeset(),
       self::getSubmodulesChangeset()->withAuthor(''),
     };
-    \expect(FBShipItConfig::shouldSkipUpdateSubmodules($changesets, $repo))
+    $config_object = static::getConfigObject();
+    \expect($config_object->shouldSkipUpdateSubmodules($changesets, $repo))
       ->toBeFalse();
   }
 
@@ -156,7 +158,8 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
       ->withAuthor('');
     $repo = new FakeShipItRepo($dest_head);
     $changesets = ImmVector {self::getSubmodulesChangeset()};
-    \expect(FBShipItConfig::shouldSkipUpdateSubmodules($changesets, $repo))
+    $config_object = static::getConfigObject();
+    \expect($config_object->shouldSkipUpdateSubmodules($changesets, $repo))
       ->toBeFalse();
   }
 
@@ -168,7 +171,8 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
       ->withTimestamp(\time() - (60 * 60 * 24 * 7));
     $repo = new FakeShipItRepo($dest_head);
     $changesets = ImmVector {self::getSubmodulesChangeset()};
-    \expect(FBShipItConfig::shouldSkipUpdateSubmodules($changesets, $repo))
+    $config_object = static::getConfigObject();
+    \expect($config_object->shouldSkipUpdateSubmodules($changesets, $repo))
       ->toBeFalse();
   }
 
