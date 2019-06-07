@@ -104,7 +104,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   /**
    * Whether to use fb prefix in commit markers.
    */
-  protected static function hasCommitMarkerPrefix(): bool {
+  protected function hasCommitMarkerPrefix(): bool {
     return true;
   }
 
