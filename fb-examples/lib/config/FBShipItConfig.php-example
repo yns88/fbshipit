@@ -130,7 +130,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return ImmMap {};
   }
 
-  private static function getSourceRoots(
+  private function getSourceRoots(
     FBSourceBranchConfig $branch_config,
   ): ImmSet<string> {
     $config = static::getStaticConfig();
@@ -187,7 +187,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
           'destDirName',
           $static_config['githubProject'],
         ),
-        self::getSourceRoots($branch_config),
+        $this->getSourceRoots($branch_config),
       )
     )
       ->withSourceBranch($branch_config['internal'])
