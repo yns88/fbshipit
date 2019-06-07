@@ -210,7 +210,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getLandBranch(): ?string {
+  public function getLandBranch(): ?string {
     // ShipIt will assume that diffs will land onto the 'helium' branch.
     return 'helium';
   }

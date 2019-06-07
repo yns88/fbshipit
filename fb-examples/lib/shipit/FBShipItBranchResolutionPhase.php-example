@@ -112,7 +112,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
       );
     }
     return shape(
-      'land_branch' => $config_object::getLandBranch(),
+      'land_branch' => $config_object->getLandBranch(),
       'branches' =>
         $branch_configs->map($branch_config ==> $branch_config['external']),
       'internal_repo' => $internal_repo,

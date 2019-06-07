@@ -99,7 +99,7 @@ final class PytorchPytorch extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getLandBranch(): ?string {
+  public function getLandBranch(): ?string {
     return static::SOURCE_BRANCH;
   }
 }

@@ -486,7 +486,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * If your project does not ship from the branch that diffs 'arc land'
    * onto, then override this method to return null.
    */
-  public static function getLandBranch(): ?string {
+  public function getLandBranch(): ?string {
     $internal_branches = static::getBranchConfigs()
       ->map($branch_config ==> $branch_config['internal'])
       ->toSet();

@@ -369,7 +369,7 @@ abstract class FBConfigBaseTest
 
   final public function testGetLandBranch(): void {
     $config_object = static::getConfigObject();
-    $land_branch = $config_object::getLandBranch();
+    $land_branch = $config_object->getLandBranch();
     if ($land_branch !== null) {
       \expect($config_object::getBranchConfigs()->map($bc ==> $bc['internal']))
         ->toContain(
