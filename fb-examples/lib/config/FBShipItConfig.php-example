@@ -250,7 +250,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       );
   }
 
-  public static function getPhases(
+  public function getPhases(
     FBSourceBranchConfig $branch_config,
   ): ImmVector<ShipItPhase> {
     $static_config = static::getStaticConfig();

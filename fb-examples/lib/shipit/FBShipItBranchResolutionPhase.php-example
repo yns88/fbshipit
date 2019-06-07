@@ -72,7 +72,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
   ): ShipItPhaseRunner {
     return new ShipItPhaseRunner(
       $config_object::getBaseConfig($branch_config),
-      $config_object::getPhases($branch_config),
+      $config_object->getPhases($branch_config),
     );
   }
 
