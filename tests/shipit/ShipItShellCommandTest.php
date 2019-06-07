@@ -15,7 +15,7 @@ namespace Facebook\ShipIt;
 use namespace HH\Lib\Str;
 
 <<\Oncalls('open_source')>>
-final class ShipItShellCommandTest extends BaseTest {
+final class ShipItShellCommandTest extends ShellTest {
   public function testExitCodeZero(): void {
     $result = (new ShipItShellCommand('/', 'true'))->runSynchronously();
     \expect($result->getExitCode())->toBeSame(0);

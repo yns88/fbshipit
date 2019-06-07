@@ -24,7 +24,7 @@ use type Facebook\ShipIt\{
 };
 
 <<\Oncalls('open_source')>>
-final class SubmoduleTest extends \Facebook\ShipIt\BaseTest {
+final class SubmoduleTest extends \Facebook\ShipIt\ShellTest {
   public function testSubmoduleCommitFile(): void {
     $changeset = ShipItRepoGIT::getChangesetFromExportedPatch(
       \file_get_contents(

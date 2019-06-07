@@ -15,7 +15,7 @@ namespace Facebook\ShipIt;
 use namespace HH\Lib\Str;
 
 <<\Oncalls('open_source')>>
-final class NewlinesTest extends BaseTest {
+final class NewlinesTest extends ShellTest {
   const UNIX_TXT = "foo\nbar\nbaz\n";
   const WINDOWS_TXT = "foo\r\nbar\r\nbaz\r\n";
 

@@ -15,7 +15,7 @@ namespace Facebook\ShipIt;
 use namespace HH\Lib\Str;
 
 <<\Oncalls('open_source')>>
-final class UnicodeTest extends BaseTest {
+final class UnicodeTest extends ShellTest {
   const string CONTENT_SHA256 =
     '7b61b2a5bc81a5ef79267f11b5464a006824cb07b47da8773c8c5230c5c803e9';
   const string CONTENT_FILE = __DIR__.'/files/unicode.txt';

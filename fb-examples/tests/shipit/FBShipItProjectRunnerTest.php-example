@@ -17,7 +17,7 @@ use type Facebook\ImportIt\FBImportItBranchResolutionPhase;
 use type Facebook\ShipIt\Config\FacebookPhabtest1Git;
 
 <<\Oncalls('open_source')>>
-final class FBShipItProjectRunnerTest extends BaseTest {
+final class FBShipItProjectRunnerTest extends FBBaseTest {
 
   private static function getPhases(
     FBShipItCLIAction $action,

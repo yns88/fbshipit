@@ -16,7 +16,7 @@ use namespace HH\Lib\Str;
 
 
 <<\Oncalls('open_source')>>
-final class SubmoduleTest extends BaseTest {
+final class SubmoduleTest extends ShellTest {
   public function testSubmoduleCommitFile(): void {
     $changeset = ShipItRepoHG::getChangesetFromExportedPatch(
       \file_get_contents(__DIR__.'/hg-diffs/submodule-hhvm-third-party.header'),

@@ -173,41 +173,4 @@ Options:
       \basename(__FILE__, ""),
     );
   }
-
-  final public function shipItPreview(resource $in_stream): void {
-    $in_data = '';
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $line = \fgets($in_stream);
-    while ($line !== false) {
-      if (Str\trim($line) === self::OBJECT_TERMINATOR) {
-        $parsed = self::decodeInput($in_data);
-        $result = $this->handleChangeset(
-          $parsed['arcanistProject'],
-          $parsed['internalBranch'],
-          ShipItChangeset::fromData($parsed['changeset']),
-          Shapes::idx($parsed, 'patch'),
-        );
-        print(self::encodeOutput($result));
-        $in_data = '';
-      } else {
-        $in_data = $in_data.$line;
-      }
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      $line = \fgets($in_stream);
-    }
-  }
-
-  final public static function cliMain(): void {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $opts = dict(\getopt('i::', vec['help']));
-    if (idx($opts, 'help') !== null) {
-      self::printHelp();
-      return;
-    }
-    $in_stream = self::getInStream(idx($opts, 'i'));
-    (new FBShipItPreview())->shipItPreview($in_stream);
-  }
 }

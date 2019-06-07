@@ -16,21 +16,7 @@ use namespace HH\Lib\C;
 
 
 <<\Oncalls('open_source')>>
-final class FBShipItPreviewTest extends BaseTest {
-
-  // Make a string act like a file or stdin.
-  private static function streamify(string $string): resource {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $stream = \fopen('php://memory', 'r+');
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \fwrite($stream, $string);
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \rewind($stream);
-    return $stream;
-  }
+final class FBShipItPreviewTest extends FBBaseTest {
 
   private static function makeChangeset(): ShipItChangeset {
     return (new ShipItChangeset())
@@ -49,82 +35,6 @@ final class FBShipItPreviewTest extends BaseTest {
           'body' => 'Testing events from GitHub author date\n',
         ),
       });
-  }
-
-  /**
-   * Close to an end-to-end test -- send input in a stream,
-   * then decode the stdout stream back into an object.
-   */
-  public function testShipItPreview(): void {
-    $data = '{
-      "arcanistProject": "phabtest1_git",
-      "changeset": {
-        "id": "deadbeef",
-        "timestamp": 12345,
-        "author": "yrahbar",
-        "subject": "Test Commit",
-        "message": "Summary:\nStuff",
-        "diffs": [
-          {"path": "public/example.php", "body": ""},
-          {"path": "facebook/filtered.txt", "body": ""}
-        ]
-      },
-      "internalBranch": "master"
-    }
-    ===END===';
-    // Capture stdout
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \ob_start();
-    (new FBShipItPreview())->shipItPreview(self::streamify($data));
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $stdout = \ob_get_contents();
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \ob_end_clean();
-    \expect(
-      varray[
-        shape(
-          'changeset' => shape(
-            'id' => 'deadbeef',
-            'timestamp' => 12345,
-            'author' => 'yrahbar',
-            'subject' => 'Test Commit',
-            'message' => 'Summary: Stuff',
-            'diffs' => varray[
-              shape('path' => 'public/example.php', 'body' => ''),
-            ],
-          ),
-          'githubOrg' => 'facebook',
-          'githubProject' => 'phabtest1_git',
-          'commitMessage' => "Test Commit\n\nSummary: Stuff",
-          'externalBranch' => 'master',
-          'patch' => null,
-          'error' => null,
-        ),
-        shape(
-          'changeset' => shape(
-            'id' => 'deadbeef',
-            'timestamp' => 12345,
-            'author' => 'yrahbar',
-            'subject' => 'Test Commit',
-            'message' => 'Summary: Stuff',
-            'diffs' => varray[
-              shape('path' => 'subdirectory/public/example.php', 'body' => ''),
-            ],
-          ),
-          'githubOrg' => 'facebook',
-          'githubProject' => 'phabtest1_git',
-          'commitMessage' => "Test Commit\n\nSummary: Stuff",
-          'externalBranch' => 'transformed_branch',
-          'patch' => null,
-          'error' => null,
-        ),
-      ],
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    )->toBePHPEqual(\json_decode($stdout, true));
   }
 
   public function testHandleChangeset(): void {

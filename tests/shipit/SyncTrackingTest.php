@@ -14,7 +14,7 @@ namespace Facebook\ShipIt;
 
 
 <<\Oncalls('open_source')>>
-final class SyncTrackingTest extends BaseTest {
+final class SyncTrackingTest extends ShellTest {
 
   private ?ShipItTempDir $tempDir;
 

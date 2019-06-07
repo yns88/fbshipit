@@ -12,11 +12,11 @@
  */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\BaseTest;
+use type Facebook\ShipIt\FBBaseTest;
 
 
 <<\Oncalls('open_source')>>
-final class FBShipItConfigRegistryTest extends BaseTest {
+final class FBShipItConfigRegistryTest extends FBBaseTest {
 
   public function testGetClassName(): void {
     \expect(

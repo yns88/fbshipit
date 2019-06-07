@@ -15,7 +15,7 @@ namespace Facebook\ShipIt;
 
 <<\Oncalls('open_source')>>
 final class PathFiltersTest extends BaseTest {
-  public function stripPathsTestData(
+  public static function stripPathsTestData(
   ): dict<string, (
     ImmVector<string>, // $patterns,
     ImmVector<string>, // $exceptions,
@@ -91,7 +91,7 @@ final class PathFiltersTest extends BaseTest {
       ->toBePHPEqual($expected_files);
   }
 
-  public function examplesForMoveDirectories(
+  public static function examplesForMoveDirectories(
   ): dict<
     string,
     (
@@ -163,7 +163,7 @@ final class PathFiltersTest extends BaseTest {
       ->toBePHPEqual(vec($expected));
   }
 
-  public function examplesForStripExceptDirectories(
+  public static function examplesForStripExceptDirectories(
   ): vec<(ImmSet<string>, ImmVector<string>, ImmVector<string>)> {
     return vec[
       tuple(

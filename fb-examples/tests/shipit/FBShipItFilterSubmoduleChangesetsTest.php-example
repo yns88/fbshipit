@@ -14,7 +14,7 @@ namespace Facebook\ShipIt;
 
 
 <<\Oncalls('open_source')>>
-final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
+final class FBShipItFilterSubmoduleChangesetsTest extends ShellTest {
 
   private static function getSubmodulesChangeset(
     ?ImmVector<ShipItDiff> $diffs = null,

@@ -18,7 +18,7 @@ use namespace HH\Lib\Str;
 use type Facebook\ShipIt\{ShipItChangeset};
 
 // TODO(T22473111) delete this class after Buck is migrated
-abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
+abstract class FBProjectBaseTest extends \Facebook\ShipIt\FBBaseTest {
   abstract const type TImportIt as FBImportItCLI;
   abstract const type TShipItTest as \Facebook\ShipIt\FBProjectBaseTest;
 
@@ -131,10 +131,8 @@ abstract class FBProjectBaseTest extends \Facebook\ShipIt\BaseTest {
   final protected static function getShipItClass(
   ): classname<ISupportsFBImportIt> {
     /* HH_FIXME[4110] Previously hidden by unsafe */
-    return self::invoke_static_bypass_visibility(
-      static::getImportItClass(),
-      'getShipItClass',
-    );
+    $importit_class = self::getImportItClass();
+    return $importit_class::getShipItClass();
   }
 
   final protected static function getShipItTestClass(

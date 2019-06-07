@@ -14,7 +14,7 @@ namespace Facebook\ShipIt;
 
 
 <<\Oncalls('open_source')>>
-final class PathsWithSpacesTest extends BaseTest {
+final class PathsWithSpacesTest extends ShellTest {
   const FILE_NAME = 'foo bar/herp derp.txt';
 
   public function exampleRepos(

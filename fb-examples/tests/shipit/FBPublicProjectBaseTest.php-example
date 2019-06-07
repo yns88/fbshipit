@@ -40,7 +40,7 @@ abstract class FBPublicProjectBaseTest extends FBProjectBaseTest {
     \expect($out->getMessage())->toBeSame($expected);
   }
 
-  public function examplesForSectionHandling(): vec<(string, string)> {
+  public static function examplesForSectionHandling(): vec<(string, string)> {
     return vec[
       tuple('Summary: foo', 'Summary: foo'),
       tuple("Summary: foo\nExample: bar", "Summary:\nfoo\nExample: bar"),

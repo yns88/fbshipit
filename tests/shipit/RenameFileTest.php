@@ -14,7 +14,7 @@ namespace Facebook\ShipIt;
 
 
 <<\Oncalls('open_source')>>
-final class RenameFileTest extends BaseTest {
+final class RenameFileTest extends ShellTest {
   /**
    * We need separate 'delete file', 'create file' diffs for renames, in case
    * one side is filtered out - eg:

@@ -15,7 +15,7 @@ namespace Facebook\ShipIt;
 use namespace HH\Lib\Str;
 
 
-abstract class FBProjectBaseTest extends BaseTest {
+abstract class FBProjectBaseTest extends FBBaseTest {
   /**
    * Whether or not the filter removes summaries that don't include "@public".
    *

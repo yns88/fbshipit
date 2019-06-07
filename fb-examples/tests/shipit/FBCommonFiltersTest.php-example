@@ -16,7 +16,7 @@ use namespace HH\Lib\Str;
 
 
 <<\Oncalls('open_source')>>
-final class FBCommonFiltersTest extends BaseTest {
+final class FBCommonFiltersTest extends FBBaseTest {
   public function testFBAuthorWithoutGitHubAuthor(): void {
     $in = (new ShipItChangeset())
       ->withAuthor('Joel Marcey <joelm@fb.com>');

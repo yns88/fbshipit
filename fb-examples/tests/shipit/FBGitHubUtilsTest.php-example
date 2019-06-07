@@ -15,7 +15,7 @@ namespace Facebook\ShipIt;
 use namespace HH\Lib\Str;
 
 <<\Oncalls('open_source')>>
-final class FBGitHubUtilsTest extends BaseTest {
+final class FBGitHubUtilsTest extends FBBaseTest {
   public static function exampleProjectCredentials(
   ): vec<(FBGitHubUtils::TAllCredentials, string, string, string, string)> {
     return vec[

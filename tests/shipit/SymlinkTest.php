@@ -21,8 +21,8 @@ enum SymlinkTestOperation: string {
 }
 
 <<\Oncalls('open_source')>>
-final class SymlinkTest extends BaseTest {
-  public function getFileToFromSymlinkExamples(
+final class SymlinkTest extends ShellTest {
+  public static function getFileToFromSymlinkExamples(
   ): dict<string, (
     classname<ShipItSourceRepo>,
     ImmVector<ImmVector<string>>,

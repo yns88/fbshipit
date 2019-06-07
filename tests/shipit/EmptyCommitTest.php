@@ -16,7 +16,7 @@ use namespace HH\Lib\Str;
 
 
 <<\Oncalls('open_source')>>
-final class EmptyCommitTest extends BaseTest {
+final class EmptyCommitTest extends ShellTest {
   public function testSourceGitDestGit(): void {
     list($source_dir, $rev) = $this->getSourceGitRepoAndRev();
     $source_repo = ShipItRepo::typedOpen(
