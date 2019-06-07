@@ -56,7 +56,7 @@ final class FacebookHhvm extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getDefaultStrippedFileExceptions(
+  protected function getDefaultStrippedFileExceptions(
   ): ImmVector<string> {
     // Do not strip any submodules that have already been written out.
     return self::getSubmoduleMappings()

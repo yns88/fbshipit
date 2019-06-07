@@ -67,7 +67,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       |> ShipItPathFilters::stripPaths(
         $$,
         static::getDefaultStrippedFiles(),
-        static::getDefaultStrippedFileExceptions(),
+        $this->getDefaultStrippedFileExceptions(),
       )
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings());
   }
@@ -96,7 +96,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * should not be stripped, even if they match the above project-specific
    * blacklist.
    */
-  protected static function getDefaultStrippedFileExceptions(
+  protected function getDefaultStrippedFileExceptions(
   ): ImmVector<string> {
     return ImmVector {};
   }
