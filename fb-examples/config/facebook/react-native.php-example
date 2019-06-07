@@ -50,7 +50,7 @@ final class FacebookReactNative extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getStripCommonFilesExceptions(): ImmVector<string> {
+  protected function getStripCommonFilesExceptions(): ImmVector<string> {
     // FBCommonFilters defines a common set of files to ignore
     // across all fb projects, such as BUCK files and others.
     // We want to export *all* of the react-native-github folder

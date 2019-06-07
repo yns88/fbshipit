@@ -61,7 +61,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
         $$,
         shape(
           'stripCommonFiles/exceptions' =>
-            static::getStripCommonFilesExceptions(),
+            $this->getStripCommonFilesExceptions(),
         ),
       )
       |> ShipItPathFilters::stripPaths(
@@ -79,7 +79,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * Example: '@^facebook[/|$]@' to whitelist files inside facebook/
    * directories.
    */
-  protected static function getStripCommonFilesExceptions(): ImmVector<string> {
+  protected function getStripCommonFilesExceptions(): ImmVector<string> {
     return ImmVector {};
   }
 

@@ -25,7 +25,7 @@ final class FacebookSoloader extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getStripCommonFilesExceptions(): ImmVector<string> {
+  protected function getStripCommonFilesExceptions(): ImmVector<string> {
     return ImmVector {
       // We want to keep BUCK files
       '@BUCK@',

@@ -25,7 +25,7 @@ final class FacebookRocksdb extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getStripCommonFilesExceptions(): ImmVector<string> {
+  protected function getStripCommonFilesExceptions(): ImmVector<string> {
     return ImmVector {
       '@\.mk$@',
       '@TARGETS$@',

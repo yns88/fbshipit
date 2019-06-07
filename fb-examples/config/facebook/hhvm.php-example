@@ -36,7 +36,7 @@ final class FacebookHhvm extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getStripCommonFilesExceptions(): ImmVector<string> {
+  protected function getStripCommonFilesExceptions(): ImmVector<string> {
     return ImmVector {
       // HHVM has an extension named "fb" which is public
       '@^fbcode/hphp/runtime/ext/fb/@',

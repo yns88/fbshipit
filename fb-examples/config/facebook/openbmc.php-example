@@ -41,7 +41,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
         shape(
           // skip all the default strips.
           'stripCommonFiles/exceptions' =>
-            self::getStripCommonFilesExceptions(),
+            $this->getStripCommonFilesExceptions(),
           'filterMessageSections/keepFields' => ImmSet {
             'summary',
             'pulled by',
@@ -53,7 +53,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function getStripCommonFilesExceptions(): ImmVector<string> {
+  protected function getStripCommonFilesExceptions(): ImmVector<string> {
     // skip all the default strips.
     return ImmVector {
       '/.*/',
