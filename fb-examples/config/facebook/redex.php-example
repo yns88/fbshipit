@@ -59,7 +59,7 @@ final class FacebookRedex extends FBShipItConfig {
    * fbsource/fbandroid/native/redex-stable syncs with github `stable` branch
    */
   <<__Override>>
-  public static function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
+  public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
     return ImmVector {
       shape(
         'internal' => 'master',

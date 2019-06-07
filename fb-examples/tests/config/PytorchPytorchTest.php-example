@@ -35,7 +35,9 @@ final class PytorchPytorchTest extends FBConfigBaseTest {
   ): ImmMap<string, ImmMap<string, ?string>> {
     $branch_mappings = Map {};
     // All branches have the same mapping logic.
-    foreach (PytorchPytorch::getBranchConfigs() as $branch_config) {
+    foreach (
+      PytorchPytorch::getInstance()->getBranchConfigs() as $branch_config
+    ) {
       $branch_mappings[$branch_config['external']] =
         static::getExamplePathMappings();
     }

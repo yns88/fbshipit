@@ -78,7 +78,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
 
   public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
     $config_object = $this->configObject;
-    $branch_configs = $config_object::getBranchConfigs();
+    $branch_configs = $config_object->getBranchConfigs();
     if ($this->externalBranch !== null) {
       $branch_configs = $branch_configs->filter(
         $branch_config ==> $branch_config['external'] === $this->externalBranch,

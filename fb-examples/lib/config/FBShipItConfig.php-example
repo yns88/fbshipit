@@ -443,7 +443,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * If you need to override shipit logic for certain branches,
    * pass override functions into the shape.
    */
-  public static function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
+  public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
     return ImmVector {
       shape(
         'internal' => 'master',
@@ -488,7 +488,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * onto, then override this method to return null.
    */
   public function getLandBranch(): ?string {
-    $internal_branches = static::getBranchConfigs()
+    $internal_branches = $this->getBranchConfigs()
       ->map($branch_config ==> $branch_config['internal'])
       ->toSet();
     invariant(

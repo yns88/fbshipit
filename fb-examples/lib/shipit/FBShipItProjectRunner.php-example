@@ -178,7 +178,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
             $config_object = $phase->getConfigObject();
             $project_runner = $phase::getRunner(
               $config_object,
-              $config_object::getBranchConfigs()[0],
+              $config_object->getBranchConfigs()[0],
             );
             self::printHelp($project_runner->getCLIArguments());
             exit(0);

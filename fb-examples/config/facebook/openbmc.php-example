@@ -141,7 +141,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
+  public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
     return ImmVector {
       shape(
         'internal' => 'fido',

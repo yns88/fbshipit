@@ -39,7 +39,7 @@ abstract class FBConfigBaseTest
 
   protected static function getDefaultBranchConfig(): FBSourceBranchConfig {
     $config_object = static::getConfigObject();
-    $branch_configs = $config_object::getBranchConfigs();
+    $branch_configs = $config_object->getBranchConfigs();
     return $branch_configs[0];
   }
 
@@ -103,7 +103,7 @@ abstract class FBConfigBaseTest
 
   final public function testUniqueExternalBranchConfigs(): void {
     $config_object = static::getConfigObject();
-    $branch_configs = $config_object::getBranchConfigs();
+    $branch_configs = $config_object->getBranchConfigs();
     $external_branches = $branch_configs->map(
       $branch_config ==> $branch_config['external'],
     );
@@ -195,7 +195,7 @@ abstract class FBConfigBaseTest
 
   final public function testBranchConfigs(): void {
     $config_object = static::getConfigObject();
-    $branch_configs = $config_object::getBranchConfigs();
+    $branch_configs = $config_object->getBranchConfigs();
     $external_branches = $branch_configs->map(
       $branch_config ==> $branch_config['external'],
     );
@@ -371,7 +371,7 @@ abstract class FBConfigBaseTest
     $config_object = static::getConfigObject();
     $land_branch = $config_object->getLandBranch();
     if ($land_branch !== null) {
-      \expect($config_object::getBranchConfigs()->map($bc ==> $bc['internal']))
+      \expect($config_object->getBranchConfigs()->map($bc ==> $bc['internal']))
         ->toContain(
           $land_branch,
           'Arc land branch '.$land_branch.' not found in branch configs!',

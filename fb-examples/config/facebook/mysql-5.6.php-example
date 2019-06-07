@@ -74,7 +74,7 @@ final class FacebookMysql56 extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
+  public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
     return ImmVector {
       shape(
         'internal' => self::SOURCE_BRANCH,
