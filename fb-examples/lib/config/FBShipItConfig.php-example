@@ -519,7 +519,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     $new_changesets = Vector {};
     $submodules_changeset = null;
     foreach ($changesets as $changeset) {
-      if (self::isUpdatingSubmodules($changeset)) {
+      if ($this->isUpdatingSubmodules($changeset)) {
         if ($submodules_changeset === null) {
           $submodules_changeset = $changeset;
         } else {
@@ -571,12 +571,12 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   ): bool {
     $changesets = $changesets->filter($changeset ==> $changeset->isValid());
     if (
-      $changesets->count() === 1 && self::isUpdatingSubmodules($changesets[0])
+      $changesets->count() === 1 && $this->isUpdatingSubmodules($changesets[0])
     ) {
       // If that's all there is, skip the whole operation unless enough
       // time has passed or a non-submodule commit has been made.
       $dest_head = $dest->getHeadChangeset();
-      if ($dest_head !== null && self::isUpdatingSubmodules($dest_head)) {
+      if ($dest_head !== null && $this->isUpdatingSubmodules($dest_head)) {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $time_elapsed = \time() - $dest_head->getTimestamp();
@@ -594,7 +594,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return false;
   }
 
-  private static function isUpdatingSubmodules(
+  private function isUpdatingSubmodules(
     ShipItChangeset $changeset,
   ): bool {
     return (
