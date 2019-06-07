@@ -15,7 +15,7 @@ namespace Facebook\ShipIt;
 
 <<\Oncalls('open_source')>>
 final class MessageSectionsTest extends BaseTest {
-  public function examplesForGetSections(
+  public static function examplesForGetSections(
   ): vec<(string, ?ImmSet<string>, ImmMap<string, string>)> {
     return vec[
       tuple(
@@ -51,7 +51,7 @@ final class MessageSectionsTest extends BaseTest {
     \expect($out->toImmMap())->toBePHPEqual($expected);
   }
 
-  public function examplesForBuildMessage(
+  public static function examplesForBuildMessage(
   ): vec<(ImmMap<string, string>, string)> {
     return vec[
       tuple(ImmMap {'foo' => 'bar'}, 'Foo: bar'),
@@ -76,7 +76,7 @@ final class MessageSectionsTest extends BaseTest {
     );
   }
 
-  public function getExamplesForWhitespaceEndToEnd(): vec<(string, string)> {
+  public static function getExamplesForWhitespaceEndToEnd(): vec<(string, string)> {
     return vec[
       tuple("Summary: foo", 'Summary: foo'),
       tuple("Summary:\nfoo", 'Summary: foo'),

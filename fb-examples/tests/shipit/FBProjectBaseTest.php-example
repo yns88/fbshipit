@@ -39,7 +39,8 @@ abstract class FBProjectBaseTest extends BaseTest {
     ShipItChangeset $changeset,
   ): ShipItChangeset;
 
-  public function exampleMessagesWithDifferentialURLs(): vec<(string, string)> {
+  public static function exampleMessagesWithDifferentialURLs(
+  ): vec<(string, string)> {
     return vec[
       tuple('foo', 'foo'),
       tuple('https://phabricator.fb.com/D12345', 'D12345'),
@@ -63,7 +64,7 @@ abstract class FBProjectBaseTest extends BaseTest {
     ];
   }
 
-  public function examplesForStripSubjectTags(): vec<(string, string)> {
+  public static function examplesForStripSubjectTags(): vec<(string, string)> {
     return vec[
       tuple('foo bar', 'foo bar'),
       tuple('[secret] foo', 'foo'),
@@ -190,7 +191,7 @@ abstract class FBProjectBaseTest extends BaseTest {
       ->withMessage('herp derp')
       ->withDiffs(
         ImmVector {
-          shape('path' => $this->getExamplePublicPath(), 'body' => 'herp'),
+          shape('path' => static::getExamplePublicPath(), 'body' => 'herp'),
         },
       );
     $out = static::map($in);
@@ -202,7 +203,7 @@ abstract class FBProjectBaseTest extends BaseTest {
       ->withMessage('herp derp @already-on-github')
       ->withDiffs(
         ImmVector {
-          shape('path' => $this->getExamplePublicPath(), 'body' => 'herp'),
+          shape('path' => static::getExamplePublicPath(), 'body' => 'herp'),
         },
       );
     $out = static::map($in);
@@ -210,7 +211,7 @@ abstract class FBProjectBaseTest extends BaseTest {
     \expect($out->isValid())->toBeFalse();
   }
 
-  public function exampleBadwordChangesets(
+  public static function exampleBadwordChangesets(
   ): dict<string, vec<ShipItChangeset>> {
     $bw = FBConfidentialFilter::EXAMPLE_BAD_WORD;
     $out = Map {
@@ -228,21 +229,21 @@ abstract class FBProjectBaseTest extends BaseTest {
       'code' => (new ShipItChangeset())
         ->withDiffs(ImmVector {
           shape(
-            'path' => $this->getExamplePublicPath(),
+            'path' => static::getExamplePublicPath(),
             'body' => $bw.'_SOME_CONST',
           ),
         }),
       'path' => (new ShipItChangeset())
         ->withDiffs(ImmVector {
           shape(
-            'path' => $this->getExamplePublicPath().'/'.$bw.'/',
+            'path' => static::getExamplePublicPath().'/'.$bw.'/',
             'body' => 'junk',
           ),
         }),
       'the badwords list itself' => (new ShipItChangeset())
         ->withDiffs(ImmVector {
           shape(
-            'path' => $this->getExamplePublicPath().
+            'path' => static::getExamplePublicPath().
               '/FBConfiden'.
               'tialFilter.php', // split to avoid triggering filter
             'body' => 'junk',
@@ -253,7 +254,7 @@ abstract class FBProjectBaseTest extends BaseTest {
       if (!$v->isValid()) {
         $out[$k] = $v->withDiffs(ImmVector {
           shape(
-            'path' => $this->getExamplePublicPath(),
+            'path' => static::getExamplePublicPath(),
             'body' => 'junk',
           ),
         });
@@ -272,7 +273,7 @@ abstract class FBProjectBaseTest extends BaseTest {
   }
 
   public function testBadwordsBinaryFile(): void {
-    $changeset = $this->exampleBadwordChangesets()['code'][0];
+    $changeset = static::exampleBadwordChangesets()['code'][0];
     $binary_file_body = "index 2dc..bc4 123\n".
       "GIT binary patch\n".
       $changeset->getDiffs()[0]['body'];
@@ -288,7 +289,7 @@ abstract class FBProjectBaseTest extends BaseTest {
     // no expected exception
   }
 
-  final public function examplePathMappings(): dict<string, (string, ?string)> {
+  final public static function examplePathMappings(): dict<string, (string, ?string)> {
     return static::getExamplePathMappings()
       ->mapWithKey(($k, $v) ==> tuple($k, $v))
       |> dict($$);
@@ -358,7 +359,7 @@ abstract class FBProjectBaseTest extends BaseTest {
     }
   }
 
-  final protected function getExamplePublicPath(): string {
+  final protected static function getExamplePublicPath(): string {
     foreach (static::getExamplePathMappings() as $source => $dest) {
       if ($dest !== null) {
         return $source;

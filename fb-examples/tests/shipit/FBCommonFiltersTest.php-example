@@ -33,7 +33,7 @@ final class FBCommonFiltersTest extends BaseTest {
     \expect($out->getMessage())->toBeSame("Pulled By: JoelMarcey");
   }
 
-  public function examplesForAuthorEmailCorrection(): vec<(string, string)> {
+  public static function examplesForAuthorEmailCorrection(): vec<(string, string)> {
     return vec[
       tuple('Email change <fredemmott@fb.com>', 'Fred Emmott <fe@fb.com>'),
       tuple(
@@ -68,7 +68,7 @@ final class FBCommonFiltersTest extends BaseTest {
     \expect($out->getAuthor())->toBeSame('Fred Emmott <fe@fb.com>');
   }
 
-  public function exampleFacebookDirectories(): vec<(string, bool)> {
+  public static function exampleFacebookDirectories(): vec<(string, bool)> {
     return vec[
       /* tuple(string $path, bool $private) */
       tuple('facebook', true),

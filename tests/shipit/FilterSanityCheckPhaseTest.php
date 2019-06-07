@@ -28,7 +28,8 @@ final class FilterSanityCheckPhaseTest extends BaseTest {
     // no exception thrown :)
   }
 
-  public function exampleEmptyRoots(): dict<string, vec<ImmSet<string>>> {
+  public static function exampleEmptyRoots(
+  ): dict<string, vec<ImmSet<string>>> {
     return dict[
       'empty set' => vec[ImmSet {}],
       'empty string' => vec[ImmSet {''}],

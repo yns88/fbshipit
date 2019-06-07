@@ -16,7 +16,7 @@ use namespace HH\Lib\Str;
 
 <<\Oncalls('open_source')>>
 final class FBGitHubUtilsTest extends BaseTest {
-  public function exampleProjectCredentials(
+  public static function exampleProjectCredentials(
   ): vec<(FBGitHubUtils::TAllCredentials, string, string, string, string)> {
     return vec[
       tuple(
@@ -58,10 +58,7 @@ final class FBGitHubUtilsTest extends BaseTest {
     string $organization,
     string $project,
   ): ShipItGitHubCredentials {
-    /* HH_FIXME[4110] Previously hidden by unsafe */
-    return self::invoke_static_bypass_visibility(
-      FBGitHubUtils::class,
-      'getCredentialsForProjectFrom',
+    return FBGitHubUtils::getCredentialsForProjectFrom(
       $credentials,
       $organization,
       $project,

@@ -16,7 +16,7 @@ use namespace HH\Lib\{Str, C};
 
 <<\Oncalls('open_source')>>
 final class UnusualContentTest extends BaseTest {
-  public function examplesForRemovingFile(
+  public static function examplesForRemovingFile(
   ): vec<(string, string, string, string, string)> {
     return vec[
       tuple(

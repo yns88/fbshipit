@@ -15,8 +15,7 @@ namespace Facebook\ShipIt;
 use namespace HH\Lib\Str;
 
 final class ShipItSubmoduleFilter {
-  <<\TestsBypassVisibility>>
-  private static function makeSubmoduleDiff(
+  public static function makeSubmoduleDiff(
     string $path,
     ?string $old_rev,
     ?string $new_rev,

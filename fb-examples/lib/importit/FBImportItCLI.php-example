@@ -139,8 +139,7 @@ abstract class FBImportItCLI
     };
   }
 
-  <<\TestsBypassVisibility>>
-  final protected static function getShipItClass(
+  final public static function getShipItClass(
   ): classname<ISupportsFBImportIt> {
     $ts = type_structure(static::class, 'TShipIt');
     invariant($ts['kind'] === TypeStructureKind::OF_CLASS, 'unexpected type');

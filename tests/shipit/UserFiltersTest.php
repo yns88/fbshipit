@@ -33,7 +33,7 @@ final class UserInfoTestImplementation extends ShipItUserInfo {
 
 <<\Oncalls('open_source')>>
 final class UserFiltersTest extends BaseTest {
-  public function examplesForGetMentions(): vec<(string, ImmSet<string>)> {
+  public static function examplesForGetMentions(): vec<(string, ImmSet<string>)> {
     return vec[
       tuple('@foo', ImmSet {'@foo'}),
       tuple('@foo @bar', ImmSet {'@foo', '@bar'}),
@@ -51,7 +51,7 @@ final class UserFiltersTest extends BaseTest {
     \expect(ShipItMentions::getMentions($changeset))->toBePHPEqual($expected);
   }
 
-  public function rewriteMentionsExamples(
+  public static function rewriteMentionsExamples(
   ): vec<(string, (function(string): string), string)> {
     return vec[
       tuple(
@@ -96,7 +96,7 @@ final class UserFiltersTest extends BaseTest {
     \expect(ShipItMentions::containsMention($changeset, '@baz'))->toBeFalse();
   }
 
-  public function examplesForSVNUserMapping(): vec<(string, string)> {
+  public static function examplesForSVNUserMapping(): vec<(string, string)> {
     $fake_uuid = Str\repeat('a', 36);
     return vec[
       tuple('Foo <foo@example.com>', 'Foo <foo@example.com>'),

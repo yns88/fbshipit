@@ -51,7 +51,7 @@ final class UnicodeTest extends BaseTest {
     return $content;
   }
 
-  public function getSourceRepoImplementations(
+  public static function getSourceRepoImplementations(
   ): vec<(classname<ShipItSourceRepo>, string, string)> {
     return vec[
       tuple(

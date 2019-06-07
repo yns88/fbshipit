@@ -20,7 +20,7 @@ final class FacebookInferTest extends FBConfigBaseTest {
   }
 
   <<__Override>>
-  public function examplesForStripSubjectTags(): vec<(string, string)> {
+  public static function examplesForStripSubjectTags(): vec<(string, string)> {
     return vec[
       tuple('foo bar', 'foo bar'),
       tuple('[secret] foo', '[secret] foo'),

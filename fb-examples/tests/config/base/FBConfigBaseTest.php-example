@@ -180,9 +180,7 @@ abstract class FBConfigBaseTest
         ->withDiffs(ImmVector {
           shape(
             'path' => $rev_file,
-            'body' => (string)self::invoke_static_bypass_visibility(
-              ShipItSubmoduleFilter::class,
-              'makeSubmoduleDiff',
+            'body' => ShipItSubmoduleFilter::makeSubmoduleDiff(
               $rev_file,
               'deadbeef1',
               'deadbeef2',
@@ -265,7 +263,7 @@ abstract class FBConfigBaseTest
     );
   }
 
-  final public function exampleImportPathMappings(
+  final public static function exampleImportPathMappings(
   ): dict<string, (string, ?string)> {
     return static::getExampleImportPathMappings()
       ->mapWithKey(($k, $v) ==> tuple($k, $v))
@@ -354,9 +352,7 @@ abstract class FBConfigBaseTest
         ->withDiffs(ImmVector {
           shape(
             'path' => $rev_file,
-            'body' => (string)self::invoke_static_bypass_visibility(
-              ImportItSubmoduleFilter::class,
-              'makeSubmoduleDiff',
+            'body' => ImportItSubmoduleFilter::makeSubmoduleDiff(
               $rev_file,
               'deadbeef1',
               'deadbeef2',

@@ -59,7 +59,7 @@ final class ConditionalLinesFilterTest extends BaseTest {
     \expect($diff)->toNotMatchRegex(re"/ @x-oss-disable \*\/$/");
   }
 
-  public function testFilesProvider(): vec<(string, string, ?string)> {
+  public static function testFilesProvider(): vec<(string, string, ?string)> {
     return vec[
       tuple(self::COMMENT_LINES_NO_COMMENT_END, '//', null),
       tuple(self::COMMENT_LINES_COMMENT_END, '/*', '*/'),

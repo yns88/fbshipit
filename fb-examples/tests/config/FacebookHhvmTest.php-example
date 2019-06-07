@@ -21,7 +21,7 @@ use type Facebook\ShipIt\{
 
 <<\Oncalls('open_source')>>
 final class FacebookHhvmTest extends FBConfigBaseTest {
-  public function examplesForFilteredSections(
+  public static function examplesForFilteredSections(
   ): vec<(ImmMap<string, string>, ImmMap<string, string>)> {
     return vec[
       tuple(

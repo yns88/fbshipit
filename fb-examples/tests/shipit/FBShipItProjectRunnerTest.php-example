@@ -24,10 +24,7 @@ final class FBShipItProjectRunnerTest extends BaseTest {
     FBShipItConfig $config_object,
     ?string $external_branch = null,
   ): ImmVector<ShipItPhase> {
-    /* HH_FIXME[4110] Previously hidden by unsafe */
-    return self::invoke_static_bypass_visibility(
-      FBShipItProjectRunner::class,
-      'getPhases',
+    return FBShipItProjectRunner::getPhases(
       $action,
       $config_object,
       $external_branch,

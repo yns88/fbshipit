@@ -15,7 +15,7 @@ namespace Facebook\ImportIt;
 
 <<\Oncalls('open_source')>>
 final class PathFiltersTest extends \Facebook\ShipIt\BaseTest {
-  public function examplesForMoveDirectories(
+  public static function examplesForMoveDirectories(
   ): dict<
     string,
     (ImmMap<string, string>, ImmVector<string>, ImmVector<string>),
