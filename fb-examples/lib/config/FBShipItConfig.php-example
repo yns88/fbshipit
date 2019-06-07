@@ -527,7 +527,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
             $submodules_changeset = $submodules_changeset
               ->withID($changeset->getID())
               ->withDiffs(
-                self::mergeSubmoduleDiffs($submodules_changeset, $changeset),
+                $this->mergeSubmoduleDiffs($submodules_changeset, $changeset),
               )
               ->withTimestamp($changeset->getTimestamp())
               ->withAuthor($changeset->getAuthor())
@@ -608,7 +608,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
    * XXX this might break on HG, but that's okay, because this is only
    * relevant to git submodules.
    */
-  private static function mergeSubmoduleDiffs(
+  private function mergeSubmoduleDiffs(
     ShipItChangeset $old_changeset,
     ShipItChangeset $new_changeset,
   ): ImmVector<ShipItDiff> {
