@@ -108,9 +108,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     string $name,
   ): classname<FBShipItConfig> {
     // owner/reponame
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $split = \explode('/', $name);
+    $split = Str\split($name, '/');
     if (C\count($split) === 2) {
       return FBShipItConfigRegistry::getRepoShipItConfig($split[0], $split[1]);
     }
