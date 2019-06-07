@@ -319,7 +319,7 @@ abstract class FBConfigBaseTest
 
   final public function testImportBranches(): void {
     $config_object = static::getConfigObject();
-    $importit_base_config = $config_object::getImportBaseConfig(
+    $importit_base_config = $config_object->getImportBaseConfig(
       static::getDefaultBranchConfig(),
     );
     $shipit_base_config = $config_object::getBaseConfig(
@@ -337,7 +337,7 @@ abstract class FBConfigBaseTest
 
   final public function testImportRepositoryNameCollision(): void {
     $config_object = static::getConfigObject();
-    $config = $config_object::getImportBaseConfig(
+    $config = $config_object->getImportBaseConfig(
       static::getDefaultBranchConfig(),
     );
     \expect($config->getDestinationPath())->toNotBePHPEqual(

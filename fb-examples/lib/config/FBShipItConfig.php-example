@@ -349,7 +349,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       |> static::projectImportChangeset($$, $branch_config);
   }
 
-  final public static function getImportBaseConfig(
+  final public function getImportBaseConfig(
     FBSourceBranchConfig $branch_config,
   ): ShipItBaseConfig {
     $static_config = static::getStaticConfig();
