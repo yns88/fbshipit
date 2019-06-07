@@ -294,7 +294,8 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
         ($_config, $changeset) ==>
           self::filterChangeset($changeset, $branch_config),
         ImmSet {},
-        ($changesets, $dest) ==> self::postFilterChangesets($changesets, $dest),
+        ($changesets, $dest) ==>
+          $this->postFilterChangesets($changesets, $dest),
         Shapes::idx($static_config, 'allow-empty-commit', false),
       ),
       new ShipItVerifyRepoPhase(
@@ -500,7 +501,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return 'master';
   }
 
-  final public static function postFilterChangesets(
+  final public function postFilterChangesets(
     ImmVector<ShipItChangeset> $changesets,
     ShipItRepo $dest,
   ): ImmVector<ShipItChangeset> {

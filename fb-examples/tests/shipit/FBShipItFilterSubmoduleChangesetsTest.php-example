@@ -177,7 +177,9 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
       ->withTimestamp(\time());
     $repo = new FakeShipItRepo($dest_head);
     $changesets = ImmVector {self::getSubmodulesChangeset()};
-    \expect(FBShipItConfig::postFilterChangesets($changesets, $repo))
+    $config_object =
+      \Facebook\ShipIt\Config\FacebookPhabtest1Git::getInstance();
+    \expect($config_object->postFilterChangesets($changesets, $repo))
       ->toBePHPEqual(ImmVector {});
   }
 }
