@@ -342,7 +342,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   }
 
   // Public so that you can add a unit test
-  final public static function importChangeset(
+  final public function importChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
@@ -429,7 +429,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       new ShipItCleanPhase(ShipItRepoSide::DESTINATION),
       new ShipItPullPhase(ShipItRepoSide::DESTINATION),
       new ImportItSyncPhase(
-        $changeset ==> self::importChangeset($changeset, $branch_config),
+        $changeset ==> $this->importChangeset($changeset, $branch_config),
       ),
     };
   }

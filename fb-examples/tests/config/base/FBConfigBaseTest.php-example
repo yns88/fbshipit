@@ -259,7 +259,7 @@ abstract class FBConfigBaseTest
     \Facebook\ShipIt\ShipItChangeset $changeset,
   ): \Facebook\ShipIt\ShipItChangeset {
     $config_object = static::getConfigObject();
-    return $config_object::importChangeset(
+    return $config_object->importChangeset(
       $changeset,
       static::getDefaultBranchConfig(),
     );
