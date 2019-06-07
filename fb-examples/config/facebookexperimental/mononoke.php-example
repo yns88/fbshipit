@@ -28,7 +28,7 @@ final class FacebookexperimentalMononoke extends FBShipItConfig {
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
     return $changeset
-      |> self::filterImportSubmodules($$)
+      |> $this->filterImportSubmodules($$)
       |> ImportItRustPathFilters::moveDirectories(
         $$,
         (self::getPathMappingsFn($branch_config))(),

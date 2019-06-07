@@ -331,7 +331,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
     return $changeset
-      |> self::filterImportSubmodules($$)
+      |> $this->filterImportSubmodules($$)
       |> ImportItPathFilters::moveDirectories(
         $$,
         (self::getPathMappingsFn($branch_config))(),
@@ -373,7 +373,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       ->withCommitMarkerPrefix(true);
   }
 
-  final protected static function filterImportSubmodules(
+  final protected function filterImportSubmodules(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     foreach (static::getSubmoduleMappings() as $dest => $source) {
