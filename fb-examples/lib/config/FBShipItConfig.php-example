@@ -118,7 +118,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       |> $this->stripExceptSourceRoots($$, $branch_config)
       |> $this->filterSubmodules($$)
       |> (
-        self::getProjectFilterChangesetFn($branch_config)
+        $this->getProjectFilterChangesetFn($branch_config)
       )($$, self::getPathMappingsFn($branch_config));
     if ($use_confidential_filter) {
       $changeset = FBConfidentialFilter::applyAll($changeset);
@@ -455,7 +455,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   /**
    * Uses default function implementation if no override is provided.
    */
-  private static function getProjectFilterChangesetFn(
+  private function getProjectFilterChangesetFn(
     FBSourceBranchConfig $branch_config,
   ): (function(ShipItChangeset, GetPathMappingsFn): ShipItChangeset) {
     return Shapes::idx(
