@@ -116,7 +116,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   ): ShipItChangeset {
     $changeset = $changeset
       |> $this->stripExceptSourceRoots($$, $branch_config)
-      |> self::filterSubmodules($$)
+      |> $this->filterSubmodules($$)
       |> (
         self::getProjectFilterChangesetFn($branch_config)
       )($$, self::getPathMappingsFn($branch_config));
@@ -208,7 +208,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return ShipItPathFilters::stripExceptDirectories($changeset, $roots);
   }
 
-  final protected static function filterSubmodules(
+  final protected function filterSubmodules(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     foreach (static::getSubmoduleMappings() as $source => $dest) {
