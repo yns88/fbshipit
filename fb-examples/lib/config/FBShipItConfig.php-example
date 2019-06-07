@@ -115,7 +115,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     bool $use_confidential_filter = true,
   ): ShipItChangeset {
     $changeset = $changeset
-      |> self::stripExceptSourceRoots($$, $branch_config)
+      |> $this->stripExceptSourceRoots($$, $branch_config)
       |> self::filterSubmodules($$)
       |> (
         self::getProjectFilterChangesetFn($branch_config)
@@ -195,7 +195,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       ->withCommitMarkerPrefix(true);
   }
 
-  final protected static function stripExceptSourceRoots(
+  final protected function stripExceptSourceRoots(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
