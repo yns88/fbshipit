@@ -25,7 +25,7 @@ final class FacebookincubatorFacebookForWoocommerce extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       // TODO(kellydu): Update the internal repository if fbsource is not right
       'internalRepo' => 'pse-demos',

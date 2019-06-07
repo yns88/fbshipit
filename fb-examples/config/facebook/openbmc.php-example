@@ -132,7 +132,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => 'meta-openbmc',
       'githubOrg' => 'facebook',

@@ -105,7 +105,7 @@ final class $project_class_name extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       // TODO($user): Update the internal repository if fbsource is not right
       'internalRepo' => 'fbsource',

@@ -59,7 +59,7 @@ abstract class FBConfigBaseTest
 
   final public function testFileNameMatchesRepo(): void {
     $config_object = self::getConfigObject();
-    $config = $config_object::getStaticConfig();
+    $config = $config_object->getStaticConfig();
     $reflector = new \ReflectionClass($config_object);
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */

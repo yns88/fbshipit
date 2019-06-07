@@ -89,7 +89,7 @@ final class HhvmHacktest extends FBWWWBase {
   }
 
   <<__Override>>
-  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => 'www',
       'githubOrg' => 'hhvm',

@@ -100,7 +100,7 @@ class FBShipItBranchResolutionPhase extends ShipItPhase {
   public function getRepoMetadata(): self::TRepoMetadata {
     $config_object = $this->configObject;
     $branch_configs = $this->getBranchConfigs();
-    $internal_repo = $config_object::getStaticConfig()['internalRepo'];
+    $internal_repo = $config_object->getStaticConfig()['internalRepo'];
     if (
       RepoArcanistProject::getNotInArcanistExceptions()
         ->contains($internal_repo)

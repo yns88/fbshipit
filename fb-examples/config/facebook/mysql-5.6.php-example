@@ -65,7 +65,7 @@ final class FacebookMysql56 extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => self::INTERNAL_REPO_NAME,
       'githubOrg' => 'facebook',

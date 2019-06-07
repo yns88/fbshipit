@@ -64,9 +64,8 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
         'description' => "The project to run. For project-specific help, use ".
           "--project=project --help.",
         'write' => $x ==> {
-          $config_class = self::lookupConfigClass($x);
-          $config_object = $config_class::getInstance();
-          $static_config = $config_object::getStaticConfig();
+          $config_object = self::lookupConfigClass($x);
+          $static_config = $config_object->getStaticConfig();
           print(
             '--- Running for '.
             $static_config['githubOrg'].
@@ -104,13 +103,15 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     }
   }
 
-  private static function lookupConfigClass(
-    string $name,
-  ): classname<FBShipItConfig> {
+  private static function lookupConfigClass(string $name): FBShipItConfig {
     // owner/reponame
     $split = Str\split($name, '/');
     if (C\count($split) === 2) {
-      return FBShipItConfigRegistry::getRepoShipItConfig($split[0], $split[1]);
+      $config_class = FBShipItConfigRegistry::getRepoShipItConfig(
+        $split[0],
+        $split[1],
+      );
+      return $config_class::getInstance();
     }
     // reponame OR FacebookReponame
     // Search for a unique match in repo name or class name
@@ -118,9 +119,10 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     $match = null;
     foreach ($config_classes as $config_class) {
       if ($config_class === $name) {
-        return $config_class;
+        return $config_class::getInstance();
       }
-      if ($config_class::getStaticConfig()['githubProject'] === $name) {
+      $config_object = $config_class::getInstance();
+      if ($config_object->getStaticConfig()['githubProject'] === $name) {
         invariant(
           $match === null,
           'Multiple projects found with the same repository name! '.
@@ -135,7 +137,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
       "  If you have created a new file, please run `meerkat`.\n",
       $name,
     );
-    return $match;
+    return $match::getInstance();
   }
 
   private static function getRawOpts(

@@ -37,7 +37,7 @@ type FBSourceBranchConfig = shape(
  * directly (eg shipit_hhvm.php and shipit_buck.php)
  */
 <<__ConsistentConstruct>>
-abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
+abstract class FBShipItConfig {
   // Do not update submodules twice in a row in a 24-hour period.
   const int UPDATE_SUBMODULE_FREQUENCY = 60 * 60 * 24;
   const string UPDATE_SUBMODULE_AUTHOR = 'svcscm <svcscm@fb.com>';
@@ -48,6 +48,8 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   public static function getInstance(): this {
     return new static();
   }
+
+  public abstract function getStaticConfig(): FBShipItCLIStaticConfig;
 
   public abstract function getDefaultPathMappings(
   ): ImmMap<string, string>;
@@ -133,7 +135,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   private function getSourceRoots(
     FBSourceBranchConfig $branch_config,
   ): ImmSet<string> {
-    $config = static::getStaticConfig();
+    $config = $this->getStaticConfig();
     $paths = ($this->getPathMappingsFn($branch_config))()
       ->keys()
       ->toSet();
@@ -177,7 +179,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   public function getBaseConfig(
     FBSourceBranchConfig $branch_config,
   ): ShipItBaseConfig {
-    $static_config = static::getStaticConfig();
+    $static_config = $this->getStaticConfig();
     return (
       new ShipItBaseConfig(
         '/var/tmp/fbshipit',
@@ -253,7 +255,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   public function getPhases(
     FBSourceBranchConfig $branch_config,
   ): ImmVector<ShipItPhase> {
-    $static_config = static::getStaticConfig();
+    $static_config = $this->getStaticConfig();
     return ImmVector {
       new ShipItFilterSanityCheckPhase(
         $changeset ==> $this->filterChangeset($changeset, $branch_config),
@@ -353,7 +355,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   final public function getImportBaseConfig(
     FBSourceBranchConfig $branch_config,
   ): ShipItBaseConfig {
-    $static_config = static::getStaticConfig();
+    $static_config = $this->getStaticConfig();
     $shipit_base_config = $this->getBaseConfig($branch_config);
     return (
       new ShipItBaseConfig(
@@ -387,7 +389,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     // explicitly defined mappings.
     if (
       !\killswitch_intern(\KS::OPENSOURCE_SHIPIT_SUBMODULES) &&
-      FBRepoInitPhase::isMonorepo(static::getStaticConfig()['internalRepo'])
+      FBRepoInitPhase::isMonorepo($this->getStaticConfig()['internalRepo'])
     ) {
       foreach ($changeset->getDiffs() as $diff) {
         if (ShipItSubmoduleFilter::isSubmoduleDiff($diff)) {
@@ -405,7 +407,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   public function getImportPhases(
     FBSourceBranchConfig $branch_config,
   ): ImmVector<\Facebook\ShipIt\ShipItPhase> {
-    $static_config = static::getStaticConfig();
+    $static_config = $this->getStaticConfig();
     return ImmVector {
       new ShipItDeleteCorruptedRepoPhase(ShipItRepoSide::SOURCE),
       new ShipItDeleteCorruptedRepoPhase(ShipItRepoSide::DESTINATION),

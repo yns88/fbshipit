@@ -82,7 +82,7 @@ final class FacebookChefUtils extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getStaticConfig(): FBShipItCLIStaticConfig {
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
     return shape(
       'internalRepo' => 'opsfiles',
       'githubOrg' => 'facebook',

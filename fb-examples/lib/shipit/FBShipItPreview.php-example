@@ -98,7 +98,7 @@ order to preview the full patch.';
     $result = vec[];
     foreach ($this->allConfigClasses as $config_class) {
       $config_object = $config_class::getInstance();
-      $repo_config = $config_class::getStaticConfig();
+      $repo_config = $config_object->getStaticConfig();
       // Does the repo match this open source project?
       if ($repo === $repo_config['internalRepo']) {
         $branch_configs = $config_object->getBranchConfigs()
