@@ -175,7 +175,7 @@ abstract class FBConfigBaseTest
 
   final public function testSubmodulesAreFilteredCorrectly(): void {
     $config_object = static::getConfigObject();
-    foreach ($config_object::getSubmoduleMappings() as $rev_file => $dest) {
+    foreach ($config_object->getSubmoduleMappings() as $rev_file => $dest) {
       $changeset = (new ShipItChangeset())
         ->withDiffs(ImmVector {
           shape(
@@ -349,7 +349,7 @@ abstract class FBConfigBaseTest
 
   final public function testSubmodulesAreImportedCorrectly(): void {
     $config_object = static::getConfigObject();
-    foreach ($config_object::getSubmoduleMappings() as $rev_file => $dest) {
+    foreach ($config_object->getSubmoduleMappings() as $rev_file => $dest) {
       $changeset = (new ShipItChangeset())
         ->withDiffs(ImmVector {
           shape(

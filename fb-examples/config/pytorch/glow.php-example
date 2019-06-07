@@ -20,7 +20,7 @@ final class PytorchGlow extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getSubmoduleMappings(): ImmMap<string, string> {
+  public function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT.'submodules/googletest.txt' => 'tests/googletest',
       self::ROOT.'submodules/onnx.txt' => 'thirdparty/onnx',

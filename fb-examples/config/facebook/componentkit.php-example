@@ -25,7 +25,7 @@ final class FacebookComponentkit extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getSubmoduleMappings(): ImmMap<string, string> {
+  public function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT.'submodules/ios-snapshot-test-case.txt' =>
         'Carthage/Checkouts/ios-snapshot-test-case',

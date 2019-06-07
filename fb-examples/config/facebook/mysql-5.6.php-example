@@ -56,7 +56,7 @@ final class FacebookMysql56 extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getSubmoduleMappings(): ImmMap<string, string> {
+  public function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
       'boost' => 'boost',
       'rocksdb' => 'rocksdb',

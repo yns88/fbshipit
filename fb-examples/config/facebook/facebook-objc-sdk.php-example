@@ -46,7 +46,7 @@ final class FacebookFacebookObjcSdk extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getSubmoduleMappings(): ImmMap<string, string> {
+  public function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT.'submodules/ocmock.txt' => 'Carthage/Checkouts/ocmock',
       self::ROOT.'submodules/OHHTTPStubs.txt' =>

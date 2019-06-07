@@ -32,7 +32,7 @@ final class FacebookPrepack extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getSubmoduleMappings(): ImmMap<string, string> {
+  public function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
       'xplat/prepack/facebook/test-262-rev.txt' => 'test/test262',
     };

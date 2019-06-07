@@ -25,7 +25,7 @@ final class PytorchFbgemm extends FBShipItConfig {
   }
 
   <<__Override>>
-  public static function getSubmoduleMappings(): ImmMap<string, string> {
+  public function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT.'submodules/asmjit.txt' => 'third_party/asmjit',
       self::ROOT.'submodules/cpuinfo.txt' => 'third_party/cpuinfo',

@@ -126,7 +126,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     return $changeset;
   }
 
-  public static function getSubmoduleMappings(): ImmMap<string, string> {
+  public function getSubmoduleMappings(): ImmMap<string, string> {
     return ImmMap {};
   }
 
@@ -143,7 +143,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     if (
       !$interfaces->contains(ISupportsFBCodeBuilder::class) &&
       $config['internalRepo'] === 'fbsource' &&
-      !static::getSubmoduleMappings()->isEmpty()
+      !$this->getSubmoduleMappings()->isEmpty()
     ) {
       // Add the default project hashes folder.  This is stripped after we add
       // any submodules.
@@ -211,7 +211,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   final protected function filterSubmodules(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    foreach (static::getSubmoduleMappings() as $source => $dest) {
+    foreach ($this->getSubmoduleMappings() as $source => $dest) {
       $changeset = ShipItSubmoduleFilter::useSubmoduleCommitFromTextFile(
         $changeset,
         $source,
@@ -335,7 +335,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       |> ImportItPathFilters::moveDirectories(
         $$,
         (self::getPathMappingsFn($branch_config))(),
-        static::getSubmoduleMappings()
+        $this->getSubmoduleMappings()
           ->keys()
           ->map($path ==> '@^'.$path.'$@'),
       );
@@ -376,7 +376,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   final protected function filterImportSubmodules(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    foreach (static::getSubmoduleMappings() as $dest => $source) {
+    foreach ($this->getSubmoduleMappings() as $dest => $source) {
       $changeset = ImportItSubmoduleFilter::moveSubmoduleCommitToTextFile(
         $changeset,
         $source,
