@@ -68,8 +68,9 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
         },
       ),
     };
+    $config_object = static::getConfigObject();
     // The first two commits get merged together.
-    $merged_changesets = FBShipItConfig::mergeSubmoduleChangesets($changesets);
+    $merged_changesets = $config_object->mergeSubmoduleChangesets($changesets);
     \expect($merged_changesets->count())->toBePHPEqual(4);
     \expect($merged_changesets[0]->getAuthor())->toBePHPEqual(
       FBShipItConfig::UPDATE_SUBMODULE_AUTHOR,
@@ -115,7 +116,8 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
           shape('path' => 'dep_b.txt', 'body' => '9'),
         }),
     };
-    $merged_changesets = FBShipItConfig::mergeSubmoduleChangesets($changesets);
+    $config_object = static::getConfigObject();
+    $merged_changesets = $config_object->mergeSubmoduleChangesets($changesets);
     \expect($merged_changesets)->toBePHPEqual($changesets);
   }
 
@@ -177,9 +179,12 @@ final class FBShipItFilterSubmoduleChangesetsTest extends BaseTest {
       ->withTimestamp(\time());
     $repo = new FakeShipItRepo($dest_head);
     $changesets = ImmVector {self::getSubmodulesChangeset()};
-    $config_object =
-      \Facebook\ShipIt\Config\FacebookPhabtest1Git::getInstance();
+    $config_object = static::getConfigObject();
     \expect($config_object->postFilterChangesets($changesets, $repo))
       ->toBePHPEqual(ImmVector {});
+  }
+
+  private static function getConfigObject(): FBShipItConfig {
+    return \Facebook\ShipIt\Config\FacebookPhabtest1Git::getInstance();
   }
 }

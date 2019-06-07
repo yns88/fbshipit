@@ -505,7 +505,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     ImmVector<ShipItChangeset> $changesets,
     ShipItRepo $dest,
   ): ImmVector<ShipItChangeset> {
-    $merged_changesets = self::mergeSubmoduleChangesets($changesets);
+    $merged_changesets = $this->mergeSubmoduleChangesets($changesets);
     if (self::shouldSkipUpdateSubmodules($merged_changesets, $dest)) {
       return ImmVector {};
     } else {
@@ -513,7 +513,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
     }
   }
 
-  final public static function mergeSubmoduleChangesets(
+  final public function mergeSubmoduleChangesets(
     ImmVector<ShipItChangeset> $changesets,
   ): ImmVector<ShipItChangeset> {
     $new_changesets = Vector {};
