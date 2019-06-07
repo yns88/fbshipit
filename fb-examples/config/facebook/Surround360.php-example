@@ -53,7 +53,7 @@ final class FacebookSurround360 extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected static function defaultProjectFilterChangeset(
+  protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {

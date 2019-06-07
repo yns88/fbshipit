@@ -34,7 +34,7 @@ final class FacebookRelay extends FBShipItConfig {
   const string RELAY_TEST_UTILS = self::RELAY_OSS.'relay-test-utils/';
 
   <<__Override>>
-  protected static function defaultProjectFilterChangeset(
+  protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {

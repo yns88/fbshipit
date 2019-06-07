@@ -25,7 +25,7 @@ final class FacebookReactNative extends FBShipItConfig {
   const string ROOT = 'xplat/js/react-native-github/';
 
   <<__Override>>
-  protected static function defaultProjectFilterChangeset(
+  protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {

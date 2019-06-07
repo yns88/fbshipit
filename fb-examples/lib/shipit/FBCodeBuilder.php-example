@@ -97,7 +97,7 @@ trait FBCodeBuilderTrait implements ISupportsFBCodeBuilder {
   require extends FBShipItConfig;
 
   // Implement the same as you would write a vanilla projectFilterChangeset()
-  protected static function projectFilterChangesetNonFBCodeBuilder(
+  protected function projectFilterChangesetNonFBCodeBuilder(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
@@ -137,7 +137,7 @@ trait FBCodeBuilderTrait implements ISupportsFBCodeBuilder {
   }
 
   <<__Override>>
-  final protected static function defaultProjectFilterChangeset(
+  final protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
@@ -145,7 +145,7 @@ trait FBCodeBuilderTrait implements ISupportsFBCodeBuilder {
     return $changeset
       // We are counting on this to call
       //   ShipItPathFilters::moveDirectories($$, static::getPathMappings())
-      |> static::projectFilterChangesetNonFBCodeBuilder($$, $get_path_mappings)
+      |> $this->projectFilterChangesetNonFBCodeBuilder($$, $get_path_mappings)
       // Strip all project_hashes except those of our dependencies.
       // Strip code specific to Facebook's internal continuous integration.
       |> ShipItPathFilters::stripPaths(

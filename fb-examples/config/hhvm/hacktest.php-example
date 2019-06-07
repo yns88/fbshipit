@@ -39,7 +39,7 @@ final class HhvmHacktest extends FBWWWBase {
   }
 
   <<__Override>>
-  final protected static function defaultProjectFilterChangeset(
+  final protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {

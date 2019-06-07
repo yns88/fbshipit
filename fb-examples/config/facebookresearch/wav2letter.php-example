@@ -25,7 +25,7 @@ final class FacebookresearchWav2letter extends FBShipItConfig {
   const string ROOT = 'fbcode/deeplearning/projects/wav2letter/';
 
   <<__Override>>
-  protected static function defaultProjectFilterChangeset(
+  protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {

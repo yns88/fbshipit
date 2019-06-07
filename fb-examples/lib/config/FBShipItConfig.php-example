@@ -52,7 +52,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
   public abstract static function getDefaultPathMappings(
   ): ImmMap<string, string>;
 
-  protected static function defaultProjectFilterChangeset(
+  protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
@@ -462,7 +462,7 @@ abstract class FBShipItConfig implements IHasFBShipItCLIStaticConfig {
       $branch_config,
       'projectFilterChangeset',
       ($changeset, $get_path_mappings) ==>
-        static::defaultProjectFilterChangeset($changeset, $get_path_mappings),
+        $this->defaultProjectFilterChangeset($changeset, $get_path_mappings),
     );
   }
 
