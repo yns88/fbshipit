@@ -1,0 +1,32 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+<<\Oncalls('open_source')>>
+final class FacebookFacebookSdkForUnityTest extends FBConfigBaseTest {
+  const string ROOT = 'xplat/unity-sdk/';
+
+  <<__Override>>
+  public static function getExamplePathMappings(): ImmMap<string, ?string> {
+    return ImmMap {
+      self::ROOT.'.DS_Store' => null,
+      self::ROOT.'.hgsub' => null,
+      self::ROOT.'.hgsubstate' => null,
+      self::ROOT.'BUCK' => null,
+      self::ROOT.'README.fb' => null,
+      self::ROOT.'README.fb.md' => null,
+      self::ROOT.'internal' => null,
+      self::ROOT.
+      'UnitySDK/Assets/FacebookSDK/SDK/Editor/iOS/FBUnityInterface.mm' =>
+        'UnitySDK/Assets/FacebookSDK/SDK/Editor/iOS/FBUnityInterface.mm',
+      self::ROOT.'README.md' => 'README.md',
+      self::ROOT.'bin' => null,
+      self::ROOT.'UnitySDK/Assets/PlayServicesResolver.meta' => null,
+    };
+  }
+}
