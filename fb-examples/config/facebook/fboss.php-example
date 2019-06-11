@@ -12,14 +12,35 @@
  */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
+use type Facebook\ShipIt\{
+  FBCodeBuilderTrait,
+  FBShipItCLIStaticConfig,
+  FBShipItConfig,
+};
 
 final class FacebookFboss extends FBShipItConfig {
+  use FBCodeBuilderTrait;
+
+  <<__Override>>
+  protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
+    return ImmSet {
+      'facebook/fbthrift',
+      'facebook/folly',
+      'facebook/wangle',
+    };
+  }
+
+  <<__Override>>
+  protected static function getFBCodeBuilderTravisConfig(): string {
+    // FBOSS has a pre-existing travis config that knows about more than
+    // fbcode_builder, so don't clobber it.
+    return 'fbcode/fboss/github/.travis.yml';
+  }
 
   <<__Override>>
   protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
-      '@.*facebook.*@',
+      '@fbcode/fbosss/.*facebook.*@',
       '@fbcode/fboss/agent/hw/bf.*@',
       '@fbcode/fboss/agent/platforms/bf_wedge.*@',
       '@fbcode/fboss/THIRD-PARTY-VERSIONS@',
@@ -29,7 +50,8 @@ final class FacebookFboss extends FBShipItConfig {
   }
 
   <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
+  public static function getPathMappingsNonFBCodeBuilder(
+  ): ImmMap<string, string> {
     return ImmMap {
       'fbcode/fboss/github/' => '',
       'fbcode/fboss/common/' => 'common/',

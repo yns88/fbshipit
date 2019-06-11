@@ -12,6 +12,8 @@
  */
 namespace Facebook\ShipIt\Config;
 
+use type Facebook\ShipIt\FBCodeBuilder;
+
 <<\Oncalls('open_source')>>
 final class FacebookFbossTest extends FBConfigBaseTest {
   <<__Override>>
@@ -24,8 +26,22 @@ final class FacebookFbossTest extends FBConfigBaseTest {
       'fbcode/fboss/TARGETS' => null,
       'fbcode/fboss/common/fb303/if/TARGETS' => null,
       'fbcode/fboss/facebook/secret' => null,
+      'fbcode/fboss/facebook/lego/all-job-specs.sh' => null,
+
       'fbcode/fboss/THIRD-PARTY-VERSIONS' => null,
       'fbcode/fboss/tphacks' => null,
+      'fbcode/fboss/github/.travis.yml' => '.travis.yml',
+
+      // fbcode_builder is shared between several projects, but it's easiest
+      // to just copy it into each project's Github repo.
+      FBCodeBuilder::SRC_FBCODE_BUILDER.'fbcode_builder.py' =>
+        FBCodeBuilder::DEST_FBCODE_BUILDER.'fbcode_builder.py',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/folly-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/folly-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/wangle-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/wangle-rev.txt',
+      FBCodeBuilder::SRC_GITHUB_HASHES.'facebook/fbthrift-rev.txt' =>
+        FBCodeBuilder::DEST_GITHUB_HASHES.'facebook/fbthrift-rev.txt',
     };
   }
 }
