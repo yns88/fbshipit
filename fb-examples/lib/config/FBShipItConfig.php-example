@@ -410,7 +410,7 @@ abstract class FBShipItConfig {
     return $changeset;
   }
 
-  public function getImportPhases(
+  final public function getImportPhases(
     FBSourceBranchConfig $branch_config,
   ): ImmVector<\Facebook\ShipIt\ShipItPhase> {
     $static_config = $this->getStaticConfig();
@@ -477,7 +477,7 @@ abstract class FBShipItConfig {
   /**
    * Uses default function implementation if no override is provided.
    */
-  protected function getPathMappingsFn(
+  final protected function getPathMappingsFn(
     FBSourceBranchConfig $branch_config,
   ): GetPathMappingsFn {
     return Shapes::idx(
