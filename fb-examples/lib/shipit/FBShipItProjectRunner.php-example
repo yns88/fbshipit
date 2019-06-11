@@ -106,6 +106,13 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     // owner/reponame
     $split = Str\split($name, '/');
     if (C\count($split) === 2) {
+      $configerator_config = FBShipItConfigeratorConfigClasses::getConfig(
+        $split[0],
+        $split[1],
+      );
+      if ($configerator_config !== null) {
+        return $configerator_config;
+      }
       $config_class = FBShipItConfigRegistry::getRepoShipItConfig(
         $split[0],
         $split[1],
