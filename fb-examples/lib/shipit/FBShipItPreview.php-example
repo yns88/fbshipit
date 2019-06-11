@@ -39,10 +39,10 @@ final class FBShipItPreview {
   // TODO consider using a streaming json parser
   const string OBJECT_TERMINATOR = '===END===';
 
-  private keyset<classname<FBShipItConfig>> $allConfigClasses;
+  private vec<FBShipItConfig> $allConfigClasses;
 
   public function __construct(): void {
-    $this->allConfigClasses = FBShipItConfigClasses::getClasses();
+    $this->allConfigClasses = FBShipItConfigClasses::getConfigs();
   }
 
   private static function decodeInput(string $in): ShipItPreviewInput {
@@ -96,8 +96,7 @@ order to preview the full patch.';
     }
 
     $result = vec[];
-    foreach ($this->allConfigClasses as $config_class) {
-      $config_object = $config_class::getInstance();
+    foreach ($this->allConfigClasses as $config_object) {
       $repo_config = $config_object->getStaticConfig();
       // Does the repo match this open source project?
       if ($repo === $repo_config['internalRepo']) {

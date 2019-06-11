@@ -92,7 +92,9 @@ abstract class FBConfigBaseTest
       $config_class,
     );
     invariant(
-      C\contains(FBShipItConfigClasses::getClasses(), $config_class),
+      // Raw CONFIG_CLASSES is used here to prevent any configerator configs
+      // from superceeding hack configs in FBShipItConfigClasses::getClasses()
+      C\contains(FBShipItConfigClasses::CONFIG_CLASSES, $config_class),
       '%s is not in the ShipIt class map. Regenerate it by running '.
       '`meerkat`.',
       $config_class,

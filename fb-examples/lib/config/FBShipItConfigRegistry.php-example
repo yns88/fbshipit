@@ -80,7 +80,7 @@ final class FBShipItConfigRegistry {
   public static function getRepoShipItConfig(
     string $org,
     string $repo,
-  ): classname<FBShipItConfig> {
+  ): FBShipItConfig {
     $class_name = self::getClassName(
       $org,
       $repo,
@@ -94,7 +94,7 @@ final class FBShipItConfigRegistry {
       "  If you have created a new file, please run `meerkat`.\n",
       $class_name,
     );
-    return $class_name;
+    return $class_name::getInstance();
   }
 
   private static function filterTagItClasses(
@@ -149,6 +149,7 @@ final class FBShipItConfigRegistry {
 
 namespace Facebook\ShipIt\Config;
 
+use Facebook\ShipIt\FBShipItConfigeratorConfigClasses;
 use type Facebook\ShipIt\FBShipItConfig;
 
 final abstract class FBShipItConfigClasses {
@@ -161,8 +162,24 @@ final abstract class FBShipItConfigClasses {
     $tagit_classes_str
   ];
 
-  public static function getClasses(): keyset<classname<FBShipItConfig>> {
-    return self::CONFIG_CLASSES;
+  public static function getConfigs(): vec<FBShipItConfig> {
+    \$configerator_configs = FBShipItConfigeratorConfigClasses::getAllConfigs();
+    \$hack_configs = Vec\\map(
+      self::CONFIG_CLASSES,
+      (\$class) ==> \$class::getInstance(),
+    );
+    return Vec\\map(\$hack_configs, (\$hack_config) ==> {
+      \$matches = Vec\\filter(\$configerator_configs, (\$configerator_config) ==> {
+        return \$hack_config->getStaticConfig()['githubOrg'] ==
+          \$configerator_config->getStaticConfig()['githubOrg'] &&
+          \$hack_config->getStaticConfig()['githubProject'] ==
+            \$configerator_config->getStaticConfig()['githubProject'];
+      });
+      if (C\\count(\$matches) > 0) {
+        return \$matches[0];
+      }
+      return \$hack_config;
+    });
   }
 
   public static function getTagItClasses(): keyset<classname<FBShipItConfig>> {

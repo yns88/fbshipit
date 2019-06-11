@@ -114,20 +114,19 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     }
     // reponame OR FacebookReponame
     // Search for a unique match in repo name or class name
-    $config_classes = FBShipItConfigClasses::getClasses();
+    $config_objects = FBShipItConfigClasses::getConfigs();
     $match = null;
-    foreach ($config_classes as $config_class) {
-      if ($config_class === $name) {
-        return $config_class::getInstance();
+    foreach ($config_objects as $config_object) {
+      if ($config_object->getClassName() === $name) {
+        return $config_object;
       }
-      $config_object = $config_class::getInstance();
       if ($config_object->getStaticConfig()['githubProject'] === $name) {
         invariant(
           $match === null,
           'Multiple projects found with the same repository name! '.
           'Use the fully-clarified name (e.g. facebook/reponame)',
         );
-        $match = $config_class;
+        $match = $config_object;
       }
     }
     invariant(
