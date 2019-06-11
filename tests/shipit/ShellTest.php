@@ -12,7 +12,7 @@
  */
 namespace Facebook\ShipIt;
 
-abstract class BaseTest extends \Facebook\HackTest\HackTest { // @oss-enable
+abstract class ShellTest extends \Facebook\HackTest\HackTest { // @oss-enable
 // @oss-disable: abstract class ShellTest extends \HackTest {
 
   public async function setUp(): Awaitable<void> {} // @oss-enable
