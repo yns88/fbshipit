@@ -220,7 +220,7 @@ abstract class ShipItGitHubUtils {
             \preg_match(
               '@<(?<next>https://api.github.com[^>]+)>; rel="next"@',
               $header_line,
-              &$matches,
+              inout $matches,
             )
           ) {
             $url = $matches['next'];

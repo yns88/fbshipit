@@ -37,7 +37,7 @@ final class BuckEnvironmentCheckPhase extends EnvironmentCheckPhase {
     $match = varray[];
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\preg_match('@version ([0-9\.]+)@', $ant_v, &$match)) {
+    if (!\preg_match('@version ([0-9\.]+)@', $ant_v, inout $match)) {
       ShipItLogger::err("Couldn't identify ant version: %s\n", $ant_v);
       exit(1);
     }
@@ -50,7 +50,7 @@ final class BuckEnvironmentCheckPhase extends EnvironmentCheckPhase {
     $match = varray[];
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\preg_match('@version "([0-9\.]+)@', $java_v, &$match)) {
+    if (!\preg_match('@version "([0-9\.]+)@', $java_v, inout $match)) {
       ShipItLogger::err("Couldn't identify java version: %s\n", $java_v);
       exit(1);
     }

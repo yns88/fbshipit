@@ -158,7 +158,7 @@ abstract class ShipItRepo {
     \preg_match(
       '@^diff --git [ab]/(.*?) [ab]/(.*?)$@',
       Str\trim($header),
-      &$matches,
+      inout $matches,
     );
     if (C\is_empty($matches)) {
       return null;

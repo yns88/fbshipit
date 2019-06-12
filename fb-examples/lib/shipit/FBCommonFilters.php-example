@@ -168,7 +168,7 @@ final class FBCommonFilters {
       \preg_match(
         self::CLOSES_PR_REGEX,
         $changeset->getMessage(),
-        &$matches,
+        inout $matches,
       ) !==
         1
     ) {
@@ -396,7 +396,7 @@ final class FBCommonFilters {
       \preg_match(
         '/<(?<author>[^@]*)@fb\.com>/',
         $changeset->getAuthor(),
-        &$matches,
+        inout $matches,
       ) &&
       !self::isBotUser($matches['author'])
     ) {
