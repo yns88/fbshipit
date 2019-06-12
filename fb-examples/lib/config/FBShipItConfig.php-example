@@ -57,8 +57,7 @@ abstract class FBShipItConfig {
 
   public abstract function getStaticConfig(): FBShipItCLIStaticConfig;
 
-  public abstract function getDefaultPathMappings(
-  ): ImmMap<string, string>;
+  public abstract function getDefaultPathMappings(): ImmMap<string, string>;
 
   protected function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -87,6 +86,7 @@ abstract class FBShipItConfig {
    * Example: '@^facebook[/|$]@' to whitelist files inside facebook/
    * directories.
    */
+  <<\TestsBypassVisibility>>
   protected function getStripCommonFilesExceptions(): ImmVector<string> {
     return ImmVector {};
   }
@@ -95,6 +95,7 @@ abstract class FBShipItConfig {
    * Blacklist of regular expression strings that match project files which
    * should be stripped out of published commits.
    */
+  <<\TestsBypassVisibility>>
   protected function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {};
   }
@@ -104,14 +105,15 @@ abstract class FBShipItConfig {
    * should not be stripped, even if they match the above project-specific
    * blacklist.
    */
-  protected function getDefaultStrippedFileExceptions(
-  ): ImmVector<string> {
+  <<\TestsBypassVisibility>>
+  protected function getDefaultStrippedFileExceptions(): ImmVector<string> {
     return ImmVector {};
   }
 
   /**
    * Whether to use fb prefix in commit markers.
    */
+  <<\TestsBypassVisibility>>
   protected function hasCommitMarkerPrefix(): bool {
     return true;
   }
