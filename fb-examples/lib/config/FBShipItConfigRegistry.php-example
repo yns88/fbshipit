@@ -151,6 +151,7 @@ namespace Facebook\ShipIt\Config;
 
 use Facebook\ShipIt\FBShipItConfigeratorConfigClasses;
 use type Facebook\ShipIt\FBShipItConfig;
+use Facebook\ShipIt\FBShipItConfigeratorConfig;
 
 final abstract class FBShipItConfigClasses {
 
@@ -168,18 +169,46 @@ final abstract class FBShipItConfigClasses {
       self::CONFIG_CLASSES,
       (\$class) ==> \$class::getInstance(),
     );
-    return Vec\\map(\$hack_configs, (\$hack_config) ==> {
-      \$matches = Vec\\filter(\$configerator_configs, (\$configerator_config) ==> {
-        return \$hack_config->getStaticConfig()['githubOrg'] ==
-          \$configerator_config->getStaticConfig()['githubOrg'] &&
-          \$hack_config->getStaticConfig()['githubProject'] ==
-            \$configerator_config->getStaticConfig()['githubProject'];
-      });
-      if (C\\count(\$matches) > 0) {
-        return \$matches[0];
+    \$configerator_config_dict = Dict\\from_values(
+      \$configerator_configs,
+      (\$config) ==> Str\\lowercase(\$config->getStaticConfig()['githubOrg']).
+        "/".
+        Str\\lowercase(\$config->getStaticConfig()['githubProject']),
+    );
+    \$hack_configs = Vec\\map(\$hack_configs, (\$hack_config) ==> {
+      \$match = idx(
+        \$configerator_config_dict,
+        Str\\lowercase(\$hack_config->getStaticConfig()['githubOrg']).
+        "/".
+        Str\\lowercase(\$hack_config->getStaticConfig()['githubProject']),
+      );
+      if (\$match !== null) {
+        return \$match;
       }
       return \$hack_config;
     });
+
+    \$hack_backed_configerator_configs = Keyset\\filter_nulls(
+      Vec\\map(
+        \$hack_configs,
+        \$config ==> {
+          if (!(\$config is FBShipItConfigeratorConfig)) {
+            return null;
+          }
+          return \$config->getConfigeratorName();
+        },
+      ),
+    );
+
+    return Vec\\concat(\$hack_configs, Vec\\filter(
+      \$configerator_configs,
+      \$config ==> {
+        return !C\\contains(
+          \$hack_backed_configerator_configs,
+          \$config->getConfigeratorName(),
+        );
+      },
+    ));
   }
 
   public static function getTagItClasses(): keyset<classname<FBShipItConfig>> {
