@@ -68,7 +68,7 @@ abstract class FBShipItConfig {
         $$,
         shape(
           'stripCommonFiles/exceptions' =>
-            $this->getStripCommonFilesExceptions(),
+            $this->getStripCommonFileExceptions(),
         ),
       )
       |> ShipItPathFilters::stripPaths(
@@ -86,8 +86,7 @@ abstract class FBShipItConfig {
    * Example: '@^facebook[/|$]@' to whitelist files inside facebook/
    * directories.
    */
-  <<\TestsBypassVisibility>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     return ImmVector {};
   }
 
@@ -95,8 +94,7 @@ abstract class FBShipItConfig {
    * Blacklist of regular expression strings that match project files which
    * should be stripped out of published commits.
    */
-  <<\TestsBypassVisibility>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {};
   }
 
@@ -105,16 +103,14 @@ abstract class FBShipItConfig {
    * should not be stripped, even if they match the above project-specific
    * blacklist.
    */
-  <<\TestsBypassVisibility>>
-  protected function getDefaultStrippedFileExceptions(): ImmVector<string> {
+  public function getDefaultStrippedFileExceptions(): ImmVector<string> {
     return ImmVector {};
   }
 
   /**
    * Whether to use fb prefix in commit markers.
    */
-  <<\TestsBypassVisibility>>
-  protected function hasCommitMarkerPrefix(): bool {
+  public function hasCommitMarkerPrefix(): bool {
     return true;
   }
 

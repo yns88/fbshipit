@@ -33,7 +33,7 @@ final class FacebookFresco extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     return ImmVector {
       // We want to keep .mk files for native code
       '@\.mk$@',
@@ -41,7 +41,7 @@ final class FacebookFresco extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@/whitelist_for_modules$@',
       '@/local.properties$@',

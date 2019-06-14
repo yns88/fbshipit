@@ -41,7 +41,7 @@ final class FacebookMysql56 extends FBShipItConfig {
   const string DESTINATION_BRANCH_8_0 = 'fb-mysql-8.0.13';
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     // We want to keep .mk files for native code
     return ImmVector {
       '@\.mk$@',

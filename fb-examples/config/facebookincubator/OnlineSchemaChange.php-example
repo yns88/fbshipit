@@ -18,7 +18,7 @@ final class FacebookincubatorOnlineschemachange extends FBShipItConfig {
   const string ROOT = 'fbcode/dba/osc/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@.*fb_.*@',
       '@.*flake8.*@',

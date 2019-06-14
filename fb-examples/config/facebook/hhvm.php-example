@@ -36,7 +36,7 @@ final class FacebookHhvm extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     return ImmVector {
       // HHVM has an extension named "fb" which is public
       '@^fbcode/hphp/runtime/ext/fb/@',
@@ -44,7 +44,7 @@ final class FacebookHhvm extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^(?!fbcode/hphp)@',
       '@^fbcode/hphp/(?!(hack|doc)).*Makefile$@',
@@ -56,7 +56,7 @@ final class FacebookHhvm extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFileExceptions(
+  public function getDefaultStrippedFileExceptions(
   ): ImmVector<string> {
     // Do not strip any submodules that have already been written out.
     return $this->getSubmoduleMappings()

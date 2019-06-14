@@ -25,7 +25,7 @@ final class FacebookFacebookJavaBusinessSdk extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'docs@',
       '@^'.self::ROOT.'opensource@',

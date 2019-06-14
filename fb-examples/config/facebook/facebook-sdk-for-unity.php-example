@@ -13,7 +13,7 @@ final class FacebookFacebookSdkForUnity extends FBShipItConfig {
   const string ROOT = 'xplat/unity-sdk/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'\.apk$@',
       '@^'.self::ROOT.'\.ap$@',

@@ -18,7 +18,7 @@ final class FacebookFacebookObjcSdk extends FBShipItConfig {
   const string ROOT = 'fbobjc/ios-sdk/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'\.DS_Store$@',
       '@^'.self::ROOT.'BUCK$@',

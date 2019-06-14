@@ -55,7 +55,7 @@ final class FacebookexperimentalMononoke extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^fbcode/scm/mononoke/mononoke.project.toml$@',
     };

@@ -59,7 +59,7 @@ final class FacebookexperimentalEden extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@(^|/)README\\.facebook$@',
       '@^fbcode/eden/fs/eden-config\\.h$@',

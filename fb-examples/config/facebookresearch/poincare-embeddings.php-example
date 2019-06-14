@@ -15,7 +15,7 @@ final class FacebookresearchPoincareEmbeddings extends FBShipItConfig {
   const string ROOT = 'fbcode/deeplearning/projects/hyperbolic-embeddings/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^fbcode/deeplearning/projects/hyperbolic-embeddings/exporter.py@',
       '@^fbcode/deeplearning/projects/hyperbolic-embeddings/exporter-cli.py@',

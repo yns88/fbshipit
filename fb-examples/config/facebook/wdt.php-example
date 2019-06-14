@@ -18,7 +18,7 @@ final class FacebookWdt extends FBShipItConfig {
   const string ROOT = 'fbcode/wdt/';
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     return ImmVector {
       '@^(?:(?!fbonly/)[^/]+/)*TARGETS$@',
 

@@ -24,7 +24,7 @@ final class FacebookDuckling extends FBShipItConfig {
   const string ROOT = 'duckling/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'Duckling/Engine/Regex.hs@',
       '@^'.self::ROOT.'Duckling/Custom@',

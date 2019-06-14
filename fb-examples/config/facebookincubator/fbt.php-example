@@ -58,7 +58,7 @@ final class FacebookincubatorFbt extends FBShipItConfig {
    * the top-level of the actual Github repo.  Don't pull these in.
    */
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '#__github__/runtime$#',
       '#scripts/intl/js/oss-fbt/runtime/nonfb$#',

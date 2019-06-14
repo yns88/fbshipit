@@ -18,7 +18,7 @@ final class FacebookWebdriveragent extends FBShipItConfig {
   const string ROOT = 'fbobjc/EndToEndTests/WebDriverAgent/src/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'Inspector/yarn.lock@',
     };

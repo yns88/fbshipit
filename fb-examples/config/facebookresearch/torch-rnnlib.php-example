@@ -18,7 +18,7 @@ final class FacebookresearchTorchRnnlib extends FBShipItConfig {
   const string ROOT = 'fbcode/deeplearning/torch-rnnlib/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^(fbcode/deeplearning/torch-rnnlib/scth.lua)@',
       '@^(fbcode/deeplearning/torch-rnnlib/scth-cpu.lua)@',

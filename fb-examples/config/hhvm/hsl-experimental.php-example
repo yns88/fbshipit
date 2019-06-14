@@ -18,7 +18,7 @@ final class HhvmHslExperimental extends HhvmHslBase {
   const string ROOT = 'flib/core/hack/lib/experimental/';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {};
   }
 

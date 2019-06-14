@@ -17,7 +17,7 @@ use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
 final class FacebookFatal extends FBShipItConfig {
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     return ImmVector {
       // Fallout from adding bzl files to common ShipIt filters
       '@fatal/type/benchmark/trie/defs\.bzl$@',

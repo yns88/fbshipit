@@ -24,7 +24,7 @@ final class PytorchPytorch extends FBShipItConfig {
   const string DESTINATION_BRANCH = 'master';
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@\.facebook$@',
       '@/C2_BUCK_DEFS$@', /** Caffe2 mobile buck defs **/

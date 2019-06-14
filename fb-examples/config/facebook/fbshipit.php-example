@@ -49,14 +49,14 @@ final class FacebookFbshipit extends FBWWWBase {
   }
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     return ImmVector {
       '@^flib/intern/opensource/shipit/config/.*$@',
     };
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@/fb-private/@',
       '@(^|/)fb_.+\.sh$@',

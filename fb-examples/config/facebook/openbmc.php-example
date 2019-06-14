@@ -41,7 +41,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
         shape(
           // skip all the default strips.
           'stripCommonFiles/exceptions' =>
-            $this->getStripCommonFilesExceptions(),
+            $this->getStripCommonFileExceptions(),
           'filterMessageSections/keepFields' => ImmSet {
             'summary',
             'pulled by',
@@ -53,7 +53,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     // skip all the default strips.
     return ImmVector {
       '/.*/',
@@ -61,7 +61,7 @@ final class FacebookOpenbmc extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       // Explicitly remove the recipe files which will be replaced by the
       // github directory contents.

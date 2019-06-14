@@ -34,7 +34,7 @@ final class PytorchFbgemm extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^'.self::ROOT.'TARGETS$@',
       '@^'.self::ROOT.'test/query.txt@',

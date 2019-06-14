@@ -38,7 +38,7 @@ final class FacebookFboss extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@fbcode/fbosss/.*facebook.*@',
       '@fbcode/fboss/agent/hw/bf.*@',

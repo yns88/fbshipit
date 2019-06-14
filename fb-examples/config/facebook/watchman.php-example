@@ -40,7 +40,7 @@ final class FacebookWatchman extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getStripCommonFilesExceptions(): ImmVector<string> {
+  public function getStripCommonFileExceptions(): ImmVector<string> {
     return ImmVector {
       // Watchman publishes its java client build file,
       // which is a BUCK file.
@@ -61,7 +61,7 @@ final class FacebookWatchman extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function getDefaultStrippedFiles(): ImmVector<string> {
+  public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       // exclude the source code from the eden bits; we just want the
       // thrift and cmake info.  We include shipit_test_file.txt in here
