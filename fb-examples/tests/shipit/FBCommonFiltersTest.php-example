@@ -33,7 +33,8 @@ final class FBCommonFiltersTest extends FBBaseTest {
     \expect($out->getMessage())->toBeSame("Pulled By: JoelMarcey");
   }
 
-  public static function examplesForAuthorEmailCorrection(): vec<(string, string)> {
+  public static function examplesForAuthorEmailCorrection(
+  ): vec<(string, string)> {
     return vec[
       tuple('Email change <fredemmott@fb.com>', 'Fred Emmott <fe@fb.com>'),
       tuple(
@@ -185,6 +186,33 @@ Differential Revision: D1234567',
     \expect($out->getMessage())->toBeSame("Differential Revision: D1234567");
   }
 
+  public function testTestPlanSectionStripped(): void {
+    $changeset = (new ShipItChangeset())
+      ->withMessage("Summary: One line change\nTest plan: run all code paths");
+
+    \expect(FBCommonFilters::applyAll($changeset)->getMessage())
+      ->toBePHPEqual('Summary: One line change');
+  }
+
+  public function testTestPlanSectionRetainedForImportedPRs(): void {
+    $changeset = (new ShipItChangeset())
+      ->withMessage(
+        "Summary: One line change\n".
+        "Closes https://github.com/facebook/fbshipit/pull/42\n".
+        "Github author: gh_author@fb.com\n".
+        "Test plan: run all code paths\n",
+      );
+
+    \expect(FBCommonFilters::applyAll($changeset)->getMessage())
+      ->toBePHPEqual(
+        'Summary:
+One line change
+Closes https://github.com/facebook/fbshipit/pull/42
+
+Test Plan: run all code paths',
+      );
+  }
+
   public function testFilterMessageSections(): void {
     foreach (FBCommonFilters::getSupportedMessageSectionNames() as $section) {
       $changeset = (new ShipItChangeset())
@@ -201,6 +229,64 @@ Differential Revision: D1234567',
         "Keeps section '".$section."'",
       );
     }
+  }
+
+  public function testGetKeepSectionsAddsTestPlanSection(): void {
+    $changeset = (new ShipItChangeset())
+      ->withMessage(
+        "Closes https://github.com/facebook/fbshipit/pull/42\n".
+        "Github author: gh_author@fb.com",
+      );
+
+    // use default section names
+    $keep = FBCommonFilters::getKeepSections($changeset);
+    \expect($keep->count())->toEqual(
+      1 + FBCommonFilters::getDefaultMessageSectionNames()->count(),
+    );
+    \expect($keep->contains('test plan'))->toBeTrue();
+
+    // use section names from configuration
+    $keep = FBCommonFilters::getKeepSections(
+      $changeset,
+      shape('filterMessageSections/keepFields' => ImmSet {}),
+    );
+    \expect($keep->count())->toEqual(1);
+    \expect($keep->contains('test plan'))->toBeTrue();
+
+    // duplicates ignored
+    $keep = FBCommonFilters::getKeepSections(
+      $changeset,
+      shape('filterMessageSections/keepFields' => ImmSet {'test plan'}),
+    );
+    \expect($keep->count())->toEqual(1);
+    \expect($keep->contains('test plan'))->toBeTrue();
+  }
+
+  public function testGetKeepSectionsDoesNotAddTestPlanSection(): void {
+    $changeset = (new ShipItChangeset());
+
+    // use default section names
+    $keep = FBCommonFilters::getKeepSections($changeset);
+    \expect($keep->count())->toEqual(
+      FBCommonFilters::getDefaultMessageSectionNames()->count(),
+    );
+    \expect($keep->contains('test plan'))->toBeFalse();
+
+    // use section names from configuration
+    $keep = FBCommonFilters::getKeepSections(
+      $changeset,
+      shape('filterMessageSections/keepFields' => ImmSet {'facebook'}),
+    );
+    \expect($keep->count())->toEqual(1);
+    \expect($keep->contains('facebook'))->toBeTrue();
+
+    // existing 'test plan' section not removed
+    $keep = FBCommonFilters::getKeepSections(
+      $changeset,
+      shape('filterMessageSections/keepFields' => ImmSet {'test plan'}),
+    );
+    \expect($keep->count())->toEqual(1);
+    \expect($keep->contains('test plan'))->toBeTrue();
   }
 
   public function testClosingPullRequestReferencedInSubject(): void {
@@ -318,5 +404,25 @@ Name2';
       );
     $out = FBCommonFilters::applyAll($in);
     \expect($out->getMessage())->toNotContain("Co-authored-by");
+  }
+
+  public function testImportedFromPullRequest(): void {
+    $changeset = (new ShipItChangeset())
+      ->withMessage(
+        "Closes https://github.com/facebook/fbshipit/pull/42\n".
+        "Github author: gh_author@fb.com",
+      );
+    \expect(FBCommonFilters::importedFromPullRequest($changeset))
+      ->toBeTrue();
+
+    $changeset = (new ShipItChangeset())
+      ->withMessage('Closes https://github.com/facebook/fbshipit/pull/42\n');
+    \expect(FBCommonFilters::importedFromPullRequest($changeset))
+      ->toBeFalse();
+
+    $changeset = (new ShipItChangeset())
+      ->withMessage('Github author: gh_author@fb.com');
+    \expect(FBCommonFilters::importedFromPullRequest($changeset))
+      ->toBeFalse();
   }
 }

@@ -25,6 +25,7 @@ final class FBCommonFilters {
       ?'filterMessageSections/keepFields' => ImmSet<string>,
     ) $config = shape(),
   ): ShipItChangeset {
+
     return $changeset
       |> self::allowEmptyCommit($$)
       |> self::skipIfAlreadyOnGitHub($$)
@@ -44,8 +45,7 @@ final class FBCommonFilters {
       |> self::restoreGitHubAuthor($$)
       |> self::filterMessageSections(
         $$,
-        $config['filterMessageSections/keepFields'] ??
-          self::getDefaultMessageSectionNames(),
+        self::getKeepSections($changeset, $config),
       )
       |> self::rewriteMentions($$)
       |> self::rewriteReviewers($$)
@@ -324,6 +324,21 @@ final class FBCommonFilters {
     };
   }
 
+  public static function getKeepSections(
+    ShipItChangeset $changeset,
+    shape(
+      ?'filterMessageSections/keepFields' => ImmSet<string>,
+      ...
+    ) $config = shape(),
+  ): ImmSet<string> {
+    $keep = $config['filterMessageSections/keepFields'] ??
+      self::getDefaultMessageSectionNames();
+    if (self::importedFromPullRequest($changeset)) {
+      $keep = $keep->toSet()->add('test plan')->toImmSet();
+    }
+    return $keep;
+  }
+
   public static function filterMessageSections(
     ShipItChangeset $changeset,
     ImmSet<string> $keep = self::getDefaultMessageSectionNames(),
@@ -475,5 +490,12 @@ final class FBCommonFilters {
     }
     return $changeset->withMessage(Str\join($out_message, "\n"))
       ->withCoAuthorLines($co_author_lines);
+  }
+
+  public static function importedFromPullRequest(
+    ShipItChangeset $changeset,
+  ): bool {
+    return self::referencePullRequestNumber($changeset) !== $changeset &&
+      self::restoreGitHubAuthor($changeset) !== $changeset;
   }
 }
