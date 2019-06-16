@@ -124,7 +124,7 @@ class ShipItRepoGIT
     $revs = \explode("\n", Str\trim($log));
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    list($rev) = \explode(' ', \array_pop(&$revs), 2);
+    list($rev) = \explode(' ', \array_pop(inout $revs), 2);
     return $rev;
   }
 
