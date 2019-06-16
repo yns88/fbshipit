@@ -298,7 +298,7 @@ class ShipItPhaseRunner {
     }
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \ksort(&$rows);
+    \ksort(inout $rows);
 
     $help = $rows['help'];
     $rows->removeKey('help');
