@@ -59,7 +59,7 @@ abstract class FBShipItConfig {
 
   public abstract function getDefaultPathMappings(): ImmMap<string, string>;
 
-  protected function defaultProjectFilterChangeset(
+  public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
@@ -332,7 +332,7 @@ abstract class FBShipItConfig {
    * By default, ImportIt will just update paths.  If a project wants to do
    * something more complicated, they can override this method.
    */
-  protected function projectImportChangeset(
+  public function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {

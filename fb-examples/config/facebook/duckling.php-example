@@ -33,7 +33,7 @@ final class FacebookDuckling extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function projectImportChangeset(
+  public function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): \Facebook\ShipIt\ShipItChangeset {

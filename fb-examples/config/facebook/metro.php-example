@@ -26,7 +26,7 @@ final class FacebookMetro extends FBShipItConfig {
   const string ROOT = 'xplat/js/metro/';
 
   <<__Override>>
-  protected function defaultProjectFilterChangeset(
+  public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
@@ -43,7 +43,7 @@ final class FacebookMetro extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function projectImportChangeset(
+  public function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {

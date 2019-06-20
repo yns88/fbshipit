@@ -24,7 +24,7 @@ use type Facebook\ShipIt\{
 
 abstract class FBWWWBase extends FBShipItConfig {
   <<__Override>>
-  protected function defaultProjectFilterChangeset(
+  public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
@@ -136,7 +136,7 @@ abstract class FBWWWBase extends FBShipItConfig {
   }
 
   <<__Override>>
-  protected function projectImportChangeset(
+  public function projectImportChangeset(
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {

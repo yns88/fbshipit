@@ -137,7 +137,7 @@ trait FBCodeBuilderTrait implements ISupportsFBCodeBuilder {
   }
 
   <<__Override>>
-  final protected function defaultProjectFilterChangeset(
+  final public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
