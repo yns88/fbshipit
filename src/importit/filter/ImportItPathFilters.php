@@ -60,7 +60,7 @@ abstract final class ImportItPathFilters {
     // for subdirectories always take precedence over less-specific mappings.
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \krsort(&$reverse_mapping);
+    \krsort(inout $reverse_mapping);
 
     return $reverse_mapping->toImmMap();
   }
