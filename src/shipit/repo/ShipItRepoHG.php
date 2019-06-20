@@ -131,7 +131,7 @@ class ShipItRepoHG
       !\preg_match_all(
         '/^ *fbshipit-source-id: ?(?<commit>[a-z0-9]+)$/m',
         $log,
-        &$matches,
+        inout $matches,
       )
     ) {
       return null;
@@ -339,7 +339,7 @@ class ShipItRepoHG
     \preg_match_all(
       '/^(?:rename|copy) (?:from|to) (?<files>.+)$/m',
       $patch,
-      &$matches,
+      inout $matches,
       \PREG_PATTERN_ORDER,
     );
     $has_rename_or_copy = new ImmSet($matches['files']);

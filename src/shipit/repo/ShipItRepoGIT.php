@@ -83,7 +83,7 @@ class ShipItRepoGIT
       !\preg_match_all(
         '/^ *(fb)?shipit-source-id: ?(?<commit>[a-z0-9]+)$/m',
         $log,
-        &$matches,
+        inout $matches,
       )
     ) {
       return null;
