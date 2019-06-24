@@ -142,7 +142,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
       "  If you have created a new file, please run `meerkat`.\n",
       $name,
     );
-    return $match::getInstance();
+    return $match;
   }
 
   private static function getRawOpts(
