@@ -29,8 +29,6 @@ abstract class FBWWWBase extends FBShipItConfig {
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
     return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
-      |> ShipItConditionalLinesFilter::commentLines($$, '@oss-disable', '//')
-      |> ShipItConditionalLinesFilter::uncommentLines($$, '@oss-enable', '//')
       |> ShipItPathFilters::rewritePaths(
         $$,
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
@@ -147,9 +145,12 @@ abstract class FBWWWBase extends FBShipItConfig {
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         $path ==> \preg_replace('@^tests/(.+/)?@', 'src/\1__tests__/', $path),
       )
-      |> ShipItConditionalLinesFilter::uncommentLines($$, '@oss-disable', '//')
-      |> ShipItConditionalLinesFilter::commentLines($$, '@oss-enable', '//')
       |> self::renameAsyncToGen($$)
       |> parent::projectImportChangeset($$, $branch_config);
+  }
+
+  <<__Override>>
+  public function getCommentMarker(): ?string {
+    return '//';
   }
 }

@@ -63,7 +63,7 @@ abstract class FBShipItConfig {
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
-    return $changeset
+    $standard_filters = $changeset
       |> FBCommonFilters::applyAll(
         $$,
         shape(
@@ -77,6 +77,23 @@ abstract class FBShipItConfig {
         $this->getDefaultStrippedFileExceptions(),
       )
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings());
+
+    $marker = $this->getCommentMarker();
+    if ($marker === null) {
+      return $standard_filters;
+    }
+
+    return $standard_filters
+      |> ShipItConditionalLinesFilter::commentLines(
+        $$,
+        $this->getCommentLine(),
+        $marker,
+      )
+      |> ShipItConditionalLinesFilter::uncommentLines(
+        $$,
+        $this->getUncommentLine(),
+        $marker,
+      );
   }
 
   /*
@@ -205,7 +222,8 @@ abstract class FBShipItConfig {
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
-    $roots = $this->getBaseConfig($branch_config)->getSourceRoots()
+    $roots = $this->getBaseConfig($branch_config)
+      ->getSourceRoots()
       ->filter($root ==> $root !== '');
     if (C\is_empty($roots)) {
       return $changeset;
@@ -336,7 +354,7 @@ abstract class FBShipItConfig {
     ShipItChangeset $changeset,
     FBSourceBranchConfig $branch_config,
   ): ShipItChangeset {
-    return $changeset
+    $standard_filters = $changeset
       |> $this->filterImportSubmodules($$)
       |> ImportItPathFilters::moveDirectories(
         $$,
@@ -344,6 +362,23 @@ abstract class FBShipItConfig {
         $this->getSubmoduleMappings()
           ->keys()
           ->map($path ==> '@^'.$path.'$@'),
+      );
+
+    $marker = $this->getCommentMarker();
+    if ($marker === null) {
+      return $standard_filters;
+    }
+
+    return $standard_filters
+      |> ShipItConditionalLinesFilter::uncommentLines(
+        $$,
+        $this->getCommentLine(),
+        $marker,
+      )
+      |> ShipItConditionalLinesFilter::commentLines(
+        $$,
+        $this->getUncommentLine(),
+        $marker,
       );
   }
 
@@ -635,5 +670,28 @@ abstract class FBShipItConfig {
       );
     }
     return $diffs_map->values()->toImmVector();
+  }
+
+  /**
+   * Override this function with '//' or similar to automatically comment
+   * and uncomment lines marked with oss-enable or oss-disable (configurable,
+   * see below) when exporting or importing commits
+   */
+  public function getCommentMarker(): ?string {
+    return null;
+  }
+
+  /**
+   * Automatically comment out lines that are marked with this when exporting
+   */
+  public function getCommentLine(): string {
+    return '@oss-disable';
+  }
+
+  /**
+   * Automatically comment out lines that are marked with this when importing
+   */
+  public function getUncommentLine(): string {
+    return '@oss-enable';
   }
 }
