@@ -82,7 +82,7 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
   }
 
   <<__Override>>
-  protected static function getExampleBranchMappings(
+  public static function getExampleBranchMappings(
   ): ImmMap<string, ImmMap<string, ?string>> {
     return ImmMap {
       'master' => static::getExamplePathMappings(),

@@ -31,7 +31,7 @@ final class PytorchPytorchTest extends FBConfigBaseTest {
   }
 
   <<__Override>>
-  protected static function getExampleBranchMappings(
+  public static function getExampleBranchMappings(
   ): ImmMap<string, ImmMap<string, ?string>> {
     $branch_mappings = Map {};
     // All branches have the same mapping logic.

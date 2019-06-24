@@ -120,7 +120,7 @@ abstract class FBConfigBaseTest
    * Example path mappings for each shipped destination branch.
    * Override this method if your project has custom branch configuration.
    */
-  protected static function getExampleBranchMappings(
+  public static function getExampleBranchMappings(
   ): ImmMap<string, ImmMap<string, ?string>> {
     return ImmMap {
       'master' => static::getExamplePathMappings(),

@@ -25,7 +25,7 @@ final class FacebookMysql56Test extends FBConfigBaseTest {
   }
 
   <<__Override>>
-  protected static function getExampleBranchMappings(
+  public static function getExampleBranchMappings(
   ): ImmMap<string, ImmMap<string, ?string>> {
     return ImmMap {
       'fb-mysql-5.6.35' => static::getExamplePathMappings(),
