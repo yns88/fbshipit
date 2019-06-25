@@ -1,0 +1,89 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+use type Facebook\ShipIt\{
+  FBShipItCLIStaticConfig,
+  FBShipItConfig,
+  FBSourceBranchConfig,
+  GetPathMappingsFn,
+  ShipItBaseConfig,
+  ShipItChangeset,
+};
+
+final class FacebookItCpe extends FBShipItConfig {
+  const string BASE_DIR = 'chef/itchef/cookbooks/core/';
+
+  # Add new open-source cookbooks here. Be sure to get sign-off
+  # from the OpenSource team.
+  static ImmSet<string> $cookbooks = ImmSet {
+  };
+
+  public static function getDirs(): ImmSet<string> {
+    return self::$cookbooks->map($cookbook ==> self::BASE_DIR.$cookbook.'/')
+      ->concat(vec['chef/itchef/github/'])
+      ->toImmSet();
+  }
+
+  public static function stripChefTestHostsHeader(
+    ShipItChangeset $changeset,
+  ): ShipItChangeset {
+    return $changeset->withMessage(
+      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      \preg_replace('/\s*chef_test_hosts:.*/', '', $changeset->getMessage()),
+    );
+  }
+
+  <<__Override>>
+  public function defaultProjectFilterChangeset(
+    ShipItChangeset $changeset,
+    GetPathMappingsFn $get_path_mappings,
+  ): ShipItChangeset {
+    return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
+      |> static::stripChefTestHostsHeader($$);
+  }
+
+  <<__Override>>
+  public function getDefaultStrippedFiles(): ImmVector<string> {
+    return ImmVector {
+      # filter all tests not marked as public because most of our
+      # test require our crazy hacked up chefspec... but allow
+      # pure rspec tests.
+      '@^.*/spec/(?!public_).*@',
+      '@README.facebook@',
+      '@(^|/)OWNERS$@',
+      '@(^|/)fb_metadata.json$@',
+    };
+  }
+
+  <<__Override>>
+  public function getDefaultPathMappings(): ImmMap<string, string> {
+    return ImmMap {
+      'chef/itchef/github/' => 'itchef/',
+      'chef/itchef/cookbooks/core/' => 'itchef/cookbooks/',
+    };
+  }
+
+  <<__Override>>
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
+    return shape(
+      'internalRepo' => 'opsfiles',
+      'githubOrg' => 'facebook',
+      'githubProject' => 'IT-CPE',
+    );
+  }
+
+  <<__Override>>
+  public function getBaseConfig(
+    FBSourceBranchConfig $branch_config,
+  ): ShipItBaseConfig {
+    return parent::getBaseConfig($branch_config)
+      ->withSourceRoots(self::getDirs());
+  }
+}

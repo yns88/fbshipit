@@ -1,0 +1,22 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+<<\Oncalls('open_source')>>
+final class FacebookItCpeTest extends FBConfigBaseTest {
+  <<__Override>>
+  public static function getExamplePathMappings(): ImmMap<string, ?string> {
+    return ImmMap {
+      # example of a cookbook not in the list
+      'chef/itchef/cookbooks/core/cpe_utils/README.md' => null,
+      'chef/itchef/cookbook/other/cpe_user_customizations/README.md' => null,
+      # examples of gh-only stuff
+      'chef/itchef/github/README.md' => 'itchef/README.md',
+    };
+  }
+}
