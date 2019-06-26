@@ -10,26 +10,14 @@
  * This file was moved from fbsource to www. View old history in diffusion:
  * https://fburl.com/931uorpb
  */
-namespace Facebook\ShipIt;
 
-require_once(__DIR__.'/../autoload.php'); // @oss-enable
-// @oss-disable: $_SERVER['PHP_ROOT'] = PHP\realpath(__DIR__.'/../../../');
-// @oss-disable: require_once $_SERVER['PHP_ROOT'].'/flib/init/script.php';
-/* @lint-ignore NO_FLIB_INIT_SCRIPT */
-// @oss-disable: \flib_init_script();
-// @oss-disable: PHP\ini_set('memory_limit', -1);
+<<__EntryPoint>>
+async function run_shipit_entrypoint(): Awaitable<void> {
+  GlobalSERVER::set('PHP_ROOT', PHP\realpath(__DIR__.'/../../../'));
+  require_once GlobalSERVER::getPHPRoot().'/flib/init/script.php';
+  /* HH_FIXME[4128] Found when moving things to use __EntryPoint */
+  flib_init_script();
+  PHP\ini_set('memory_limit', -1);
 
-final class RunShipIt {
-  use FBShipItCLITrait;
-
-  <<__Override>>
-  public static function cliMain(): void {
-    self::cliShipIt();
-  }
-}
-
-// Allow require() from unit test
-if (isset($argv) && \realpath($argv[0]) === \realpath(__FILE__)) {
-  FBShimPHP7::run($argv, $_ENV); // @oss-enable
-  RunShipIt::cliMain();
+  Facebook\ShipIt\RunShipIt::cliMain();
 }

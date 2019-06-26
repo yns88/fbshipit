@@ -10,35 +10,14 @@
  * This file was moved from fbsource to www. View old history in diffusion:
  * https://fburl.com/9igdtym3
  */
-namespace Facebook\ShipIt;
 
-require_once(__DIR__.'/../autoload.php'); // @oss-enable
-// @oss-disable: $_SERVER['PHP_ROOT'] = PHP\realpath(__DIR__.'/../../../');
-// @oss-disable: require_once $_SERVER['PHP_ROOT'].'/flib/init/script.php';
-/* @lint-ignore NO_FLIB_INIT_SCRIPT */
-// @oss-disable: \flib_init_script();
-// @oss-disable: PHP\ini_set('memory_limit', -1);
+<<__EntryPoint>>
+async function generate_stubs_entrypoint(): Awaitable<void> {
+  GlobalSERVER::set('PHP_ROOT', PHP\realpath(__DIR__.'/../../../'));
+  require_once GlobalSERVER::getPHPRoot().'/flib/init/script.php';
+  /* HH_FIXME[4128] Found when moving things to use __EntryPoint */
+  flib_init_script();
+  PHP\ini_set('memory_limit', -1);
 
-final class FBShipItGenerateStubsCLI {
-
-  final public static function cliMain(): void {
-    $runner = new ShipItPhaseRunner(
-      new ShipItBaseConfig(
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        \dirname(__DIR__), // @oss-enable
-         // @oss-disable: \dirname(\dirname(\dirname(__DIR__))).
-        // @oss-disable: '/flib/intern/opensource/shipit',
-        'shipit',
-        'shipit',
-        ImmSet {},
-      ),
-      ImmVector {
-        new ShipItGenerateConfigStubsPhase(),
-      },
-    );
-    $runner->run();
-  }
+  Facebook\ShipIt\FBShipItGenerateStubsCLI::cliMain();
 }
-
-FBShimPHP7::run($argv, $_ENV); // @oss-enable
-FBShipItGenerateStubsCLI::cliMain();
