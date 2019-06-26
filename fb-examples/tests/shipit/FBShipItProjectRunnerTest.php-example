@@ -34,7 +34,7 @@ final class FBShipItProjectRunnerTest extends FBBaseTest {
   public function testGetPhasesNoBranch(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::SHIP_IT,
-      FacebookPhabtest1Git::getInstance(),
+      self::getConfigObject(),
     )[0];
     invariant(
       $phase is FBShipItBranchResolutionPhase,
@@ -49,7 +49,7 @@ final class FBShipItProjectRunnerTest extends FBBaseTest {
   public function testGetPhasesWithBranch(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::SHIP_IT,
-      FacebookPhabtest1Git::getInstance(),
+      self::getConfigObject(),
       'side_branch',
     )[0];
     invariant(
@@ -66,7 +66,7 @@ final class FBShipItProjectRunnerTest extends FBBaseTest {
   public function testGetPhasesImportIt(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::IMPORT_IT,
-      FacebookPhabtest1Git::getInstance(),
+      self::getConfigObject(),
       'master',
     )[0];
     invariant(
@@ -83,7 +83,7 @@ final class FBShipItProjectRunnerTest extends FBBaseTest {
   public function testGetPhasesImportItRequiresBranch(): void {
     $phase = self::getPhases(
       FBShipItCLIAction::IMPORT_IT,
-      FacebookPhabtest1Git::getInstance(),
+      self::getConfigObject(),
     )[0];
     invariant(
       $phase is FBImportItBranchResolutionPhase,
@@ -94,5 +94,10 @@ final class FBShipItProjectRunnerTest extends FBBaseTest {
     \expect(() ==> $phase->getBranchConfigs())
       // @oss-disable: ->toThrow(\InvariantViolationException::class);
     ->toThrow(\HH\InvariantException::class); // @oss-enable
+  }
+
+  private static function getConfigObject(): FBShipItConfig {
+    return
+      \Facebook\ShipIt\FBShipItConfigeratorConfigClasses::getInstanceForTesting();
   }
 }
