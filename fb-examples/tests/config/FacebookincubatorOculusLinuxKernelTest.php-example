@@ -6,19 +6,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/**
+ /**
  * This file was moved from fbsource to www. View old history in diffusion:
  * https://fburl.com/ysb54zvr
  */
 namespace Facebook\ShipIt\Config;
 
 <<\Oncalls('open_source')>>
-final class FacebookincubatorOculusGoKernelTest extends FBConfigBaseTest {
+final class FacebookincubatorOculusLinuxKernelTest extends FBConfigBaseTest {
   <<__Override>>
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       'Documentation' => 'Documentation',
       'android' => 'android',
+    };
+  }
+
+  <<__Override>>
+  public static function getExampleBranchMappings(
+  ): ImmMap<string, ImmMap<string, ?string>> {
+    return ImmMap {
+      'master' => static::getExamplePathMappings(),
+      'oculus-quest-kernel-master' => static::getExamplePathMappings(),
     };
   }
 }
