@@ -23,6 +23,10 @@ enum FBShipItCLIAction: int {
 
 final class FBShipItProjectRunner extends ShipItPhaseRunner {
 
+  // Set this value to force configerator configs to be read directly from a
+  // folder on disk, this is primarily used for sandcastle jobs
+  private ?string $configeratorDir = null;
+
   public function __construct(
     private FBShipItCLIAction $action,
     private ?FBShipItConfig $configObject = null,
@@ -60,11 +64,25 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
         },
       ),
       shape(
+        'long_name' => 'configerator-dir::',
+        'description' =>
+          'Read configerator configs directly from the given folder',
+        'write' => $configerator_dir ==> {
+          print(
+            '--- Reading configerator configs from '.
+            $configerator_dir.
+            "\n"
+          );
+          $this->configeratorDir = $configerator_dir;
+          return true;
+        },
+      ),
+      shape(
         'long_name' => 'project::',
         'description' => "The project to run. For project-specific help, use ".
           "--project=project --help.",
         'write' => $x ==> {
-          $config_object = self::lookupConfigClass($x);
+          $config_object = $this->lookupConfigClass($x);
           $static_config = $config_object->getStaticConfig();
           print(
             '--- Running for '.
@@ -102,13 +120,14 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     }
   }
 
-  private static function lookupConfigClass(string $name): FBShipItConfig {
+  private function lookupConfigClass(string $name): FBShipItConfig {
     // owner/reponame
     $split = Str\split($name, '/');
     if (C\count($split) === 2) {
       $configerator_config = FBShipItConfigeratorConfigClasses::getConfig(
         $split[0],
         $split[1],
+        $this->configeratorDir,
       );
       if ($configerator_config !== null) {
         return $configerator_config;
@@ -121,7 +140,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     }
     // reponame OR FacebookReponame
     // Search for a unique match in repo name or class name
-    $config_objects = FBShipItConfigClasses::getConfigs();
+    $config_objects = FBShipItConfigClasses::getConfigs($this->configeratorDir);
     $match = null;
     foreach ($config_objects as $config_object) {
       if ($config_object->getClassName() === $name) {
