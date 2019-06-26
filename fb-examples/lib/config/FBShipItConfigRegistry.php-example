@@ -13,7 +13,11 @@
 namespace Facebook\ShipIt\Config;
 
 use namespace HH\Lib\{C, Keyset, Str, Vec};
-use type Facebook\ShipIt\{FBShipItConfig, ShipItShellCommand};
+use type Facebook\ShipIt\{
+  FBShipItConfig,
+  FBShipItConfigeratorConfig,
+  ShipItShellCommand,
+};
 
 final class FBShipItConfigRegistry {
 
@@ -123,7 +127,12 @@ final class FBShipItConfigRegistry {
   }
 
   public static function generateMapFileContents(): string {
-    $classes = self::loadConfigClasses();
+    $classes = self::loadConfigClasses()
+      |> Vec\filter($$, $class_name ==> {
+        $parent_class = (new \ReflectionClass($class_name))->getParentClass() as
+          \ReflectionClass;
+        return $parent_class->getName() !== FBShipItConfigeratorConfig::class;
+      });
     $classes_str = $classes
       |> Vec\map($$, $class_name ==> Str\format('\\%s::class,', $class_name))
       |> Vec\sort($$)
