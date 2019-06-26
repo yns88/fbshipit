@@ -163,8 +163,18 @@ final abstract class FBShipItConfigClasses {
     $tagit_classes_str
   ];
 
-  public static function getConfigs(): vec<FBShipItConfig> {
-    \$configerator_configs = FBShipItConfigeratorConfigClasses::getAllConfigs();
+  public static function getConfigs(
+    ?string \$configerator_dir = null,
+  ): vec<FBShipItConfig> {
+    if (\$configerator_dir === null) {
+      \$configerator_configs =
+        FBShipItConfigeratorConfigClasses::getAllConfigs();
+    } else {
+      \$configerator_configs = FBShipItConfigeratorConfigClasses::getAllConfigs(
+        true,
+        \$configerator_dir,
+      );
+    }
     \$hack_configs = Vec\\map(
       self::CONFIG_CLASSES,
       (\$class) ==> \$class::getInstance(),
