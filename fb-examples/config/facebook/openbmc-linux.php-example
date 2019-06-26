@@ -1,0 +1,88 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+use type Facebook\ShipIt\{
+  FBCommonFilters,
+  FBShipItCLIStaticConfig,
+  FBShipItConfig,
+  FBSourceBranchConfig,
+  GetPathMappingsFn,
+  ShipItChangeset,
+};
+
+final class FacebookOpenbmcLinux extends FBShipItConfig {
+
+  <<__Override>>
+  public function defaultProjectFilterChangeset(
+    ShipItChangeset $changeset,
+    GetPathMappingsFn $get_path_mappings,
+  ): ShipItChangeset {
+    return $changeset
+      |> FBCommonFilters::stripSummariesByDefault($$)
+      |> parent::defaultProjectFilterChangeset($$, $get_path_mappings);
+  }
+
+  <<__Override>>
+  public function getDefaultPathMappings(): ImmMap<string, string> {
+    return self::getPathMappingsLinux500();
+  }
+
+  <<__Override>>
+  public function getStaticConfig(): FBShipItCLIStaticConfig {
+    return shape(
+      'internalRepo' => 'meta-openbmc',
+      'githubOrg' => 'facebook',
+      'githubProject' => 'openbmc-linux',
+    );
+  }
+
+  <<__Override>>
+  public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
+    return ImmVector {
+      shape(
+        'internal' => 'helium',
+        'external' => 'dev-5.0',
+        'getPathMappings' => () ==> self::getPathMappingsLinux500(),
+      ),
+      shape(
+        'internal' => 'helium',
+        'external' => 'dev-4.18',
+        'getPathMappings' => () ==> self::getPathMappingsLinux418(),
+      ),
+      shape(
+        'internal' => 'helium',
+        'external' => 'dev-4.1',
+        'getPathMappings' => () ==> self::getPathMappingsLinux401(),
+      ),
+    };
+  }
+
+  <<__Override>>
+  public function getLandBranch(): ?string {
+    return 'helium';
+  }
+
+  private static function getPathMappingsLinux401(): ImmMap<string, string> {
+    return ImmMap {
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-4.1/' => '',
+    };
+  }
+
+  private static function getPathMappingsLinux418(): ImmMap<string, string> {
+    return ImmMap {
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-4.18/' => '',
+    };
+  }
+
+  private static function getPathMappingsLinux500(): ImmMap<string, string> {
+    return ImmMap {
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-5.0/' => '',
+    };
+  }
+}

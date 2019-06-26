@@ -1,0 +1,71 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+namespace Facebook\ShipIt\Config;
+
+<<\Oncalls('open_source')>>
+final class FacebookOpenbmcLinuxTest extends FBConfigBaseTest {
+
+  <<__Override>>
+  public static function getExamplePathMappings(): ImmMap<string, ?string> {
+    return self::getExamplePathMappingsLinux500();
+  }
+
+  private static function getExamplePathMappingsLinux401(
+  ): ImmMap<string, ?string> {
+    return ImmMap {
+      'meta-facebook/meta-yosemite/conf/layer.conf' => null,
+      'source_mirror/bash-4.3.tar.gz' => null,
+      'meta-aspeed/recipes-bsp/u-boot/files/u-boot-v2016.07/Makefile' => null,
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-4.18/Makefile' =>
+        null,
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-4.1/Makefile' =>
+        'Makefile',
+    };
+  }
+
+  private static function getExamplePathMappingsLinux418(
+  ): ImmMap<string, ?string> {
+    return ImmMap {
+      'meta-facebook/meta-yosemite/conf/layer.conf' => null,
+      'source_mirror/bash-4.3.tar.gz' => null,
+      'meta-aspeed/recipes-bsp/u-boot/files/u-boot-v2016.07/Makefile' => null,
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-5.0/Makefile' =>
+        null,
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-4.18/Makefile' =>
+        'Makefile',
+    };
+  }
+
+  private static function getExamplePathMappingsLinux500(
+  ): ImmMap<string, ?string> {
+    return ImmMap {
+      'meta-facebook/meta-yosemite/conf/layer.conf' => null,
+      'source_mirror/bash-4.3.tar.gz' => null,
+      'meta-aspeed/recipes-bsp/u-boot/files/u-boot-v2016.07/Makefile' => null,
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-4.18/Makefile' =>
+        null,
+      'meta-aspeed/recipes-kernel/linux/files/linux-aspeed-5.0/Makefile' =>
+        'Makefile',
+    };
+  }
+
+  <<__Override>>
+  protected function removesSummariesByDefault(): bool {
+    return true;
+  }
+
+  <<__Override>>
+  public static function getExampleBranchMappings(
+  ): ImmMap<string, ImmMap<string, ?string>> {
+    return ImmMap {
+      'dev-5.0' => self::getExamplePathMappingsLinux500(),
+      'dev-4.18' => self::getExamplePathMappingsLinux418(),
+      'dev-4.1' => self::getExamplePathMappingsLinux401(),
+    };
+  }
+}
