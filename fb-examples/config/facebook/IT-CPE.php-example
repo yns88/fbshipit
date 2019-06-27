@@ -22,6 +22,7 @@ final class FacebookItCpe extends FBShipItConfig {
   # Add new open-source cookbooks here. Be sure to get sign-off
   # from the OpenSource team.
   static ImmSet<string> $cookbooks = ImmSet {
+    'cpe_helpers',
   };
 
   public static function getDirs(): ImmSet<string> {
