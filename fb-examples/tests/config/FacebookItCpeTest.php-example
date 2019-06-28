@@ -22,6 +22,7 @@ final class FacebookItCpeTest extends FBConfigBaseTest {
       'chef/itchef/cookbook/other/cpe_user_customizations/README.md' => null,
       # examples of gh-only stuff
       'chef/itchef/github/README.md' => 'itchef/README.md',
+      'chef/itchef/github-deprecated/README.md' => 'README.md',
     };
   }
 }

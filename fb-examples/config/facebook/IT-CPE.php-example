@@ -24,11 +24,15 @@ final class FacebookItCpe extends FBShipItConfig {
   static ImmSet<string> $cookbooks = ImmSet {
     'cpe_helpers',
     'cpe_hosts',
+    'cpe_profiles',
   };
 
   public static function getDirs(): ImmSet<string> {
     return self::$cookbooks->map($cookbook ==> self::BASE_DIR.$cookbook.'/')
-      ->concat(vec['chef/itchef/github/'])
+      ->concat(vec[
+        'chef/itchef/github/',
+        'chef/itchef/github-deprecated/',
+        ])
       ->toImmSet();
   }
 
@@ -57,7 +61,7 @@ final class FacebookItCpe extends FBShipItConfig {
       # filter all tests not marked as public because most of our
       # test require our crazy hacked up chefspec... but allow
       # pure rspec tests.
-      '@^.*/spec/(?!public_).*@',
+      '@^itchef/.*/spec/(?!public_).*@',
       '@README.facebook@',
       '@(^|/)OWNERS$@',
       '@(^|/)fb_metadata.json$@',
@@ -67,6 +71,7 @@ final class FacebookItCpe extends FBShipItConfig {
   <<__Override>>
   public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
+      'chef/itchef/github-deprecated/' => '',
       'chef/itchef/github/' => 'itchef/',
       'chef/itchef/cookbooks/core/' => 'itchef/cookbooks/',
     };
