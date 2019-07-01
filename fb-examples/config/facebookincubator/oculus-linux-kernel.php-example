@@ -20,7 +20,7 @@ use type Facebook\ShipIt\{
 
 final class FacebookincubatorOculusLinuxKernel extends FBShipItConfig {
   const string ROOT = '';
-  const string SOURCE_BRANCH = 'shipit-sync-release';
+  const string GO_SOURCE_BRANCH = 'shipit-sync-release-go';
   const string QUEST_SOURCE_BRANCH = 'shipit-sync-release-quest';
 
   <<__Override>>
@@ -44,8 +44,8 @@ final class FacebookincubatorOculusLinuxKernel extends FBShipItConfig {
   public function getBranchConfigs(): ImmVector<FBSourceBranchConfig> {
     return ImmVector {
       shape(
-        'internal' => static::SOURCE_BRANCH,
-        'external' => 'master',
+        'internal' => static::GO_SOURCE_BRANCH,
+        'external' => 'oculus-go-kernel-master',
       ),
       shape(
         'internal' => static::QUEST_SOURCE_BRANCH,
@@ -56,6 +56,6 @@ final class FacebookincubatorOculusLinuxKernel extends FBShipItConfig {
 
   <<__Override>>
   public function getLandBranch(): ?string {
-    return static::SOURCE_BRANCH;
+    return static::GO_SOURCE_BRANCH;
   }
 }

@@ -26,7 +26,7 @@ final class FacebookincubatorOculusLinuxKernelTest extends FBConfigBaseTest {
   public static function getExampleBranchMappings(
   ): ImmMap<string, ImmMap<string, ?string>> {
     return ImmMap {
-      'master' => static::getExamplePathMappings(),
+      'oculus-go-kernel-master' => static::getExamplePathMappings(),
       'oculus-quest-kernel-master' => static::getExamplePathMappings(),
     };
   }
