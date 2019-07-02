@@ -403,7 +403,7 @@ Name2';
         "Blah blah summary here\nCo-authored-by: Jon Janzen <jonjanzen@fb.com>",
       );
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getMessage())->toNotContain("Co-authored-by");
+    \expect($out->getMessage())->toNotContainSubstring("Co-authored-by");
   }
 
   public function testImportedFromPullRequest(): void {
