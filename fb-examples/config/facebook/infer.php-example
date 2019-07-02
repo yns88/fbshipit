@@ -74,16 +74,6 @@ final class FacebookInfer extends FBShipItConfig {
     );
   }
 
-  <<__Override>>
-  public function getPhases(
-    FBSourceBranchConfig $branch_config,
-  ): ImmVector<ShipItPhase> {
-    // The SanityCheck is incompatible with the whitelist approach
-    return parent::getPhases($branch_config)->filter(
-      $phase ==> !($phase is ShipItFilterSanityCheckPhase),
-    );
-  }
-
   private static function matchesPrefixList(
     ShipItDiff $diff,
     ImmSet<string> $list,
