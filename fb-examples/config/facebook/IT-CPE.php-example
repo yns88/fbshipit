@@ -12,6 +12,7 @@ use type Facebook\ShipIt\{
   FBShipItConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
+  OSTeamFilters,
   ShipItBaseConfig,
   ShipItChangeset,
 };
@@ -30,6 +31,7 @@ final class FacebookItCpe extends FBShipItConfig {
   public static function getDirs(): ImmSet<string> {
     return self::$cookbooks->map($cookbook ==> self::BASE_DIR.$cookbook.'/')
       ->concat(vec[
+        'chef/cookbooks/core/fb_helpers/',
         'chef/itchef/github/',
         'chef/itchef/github-deprecated/',
         ])
@@ -52,6 +54,7 @@ final class FacebookItCpe extends FBShipItConfig {
     GetPathMappingsFn $get_path_mappings,
   ): ShipItChangeset {
     return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
+      |> OSTeamFilters::rewriteEmails($$)
       |> static::stripChefTestHostsHeader($$);
   }
 
@@ -74,6 +77,7 @@ final class FacebookItCpe extends FBShipItConfig {
       'chef/itchef/github-deprecated/' => '',
       'chef/itchef/github/' => 'itchef/',
       'chef/itchef/cookbooks/core/' => 'itchef/cookbooks/',
+      'chef/cookbooks/core/fb_helpers/' => 'itchef/cookbooks/fb_helpers/',
     };
   }
 

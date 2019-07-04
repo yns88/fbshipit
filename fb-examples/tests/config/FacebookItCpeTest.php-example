@@ -13,6 +13,8 @@ final class FacebookItCpeTest extends FBConfigBaseTest {
   public static function getExamplePathMappings(): ImmMap<string, ?string> {
     return ImmMap {
       # example of things that *should* make it through
+      'chef/cookbooks/core/fb_helpers/README.md' =>
+      'itchef/cookbooks/fb_helpers/README.md',
       'chef/itchef/cookbooks/core/cpe_helpers/README.md' =>
       'itchef/cookbooks/cpe_helpers/README.md',
       'chef/itchef/cookbooks/core/cpe_hosts/README.md' =>
