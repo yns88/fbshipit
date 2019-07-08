@@ -129,9 +129,7 @@ EOF;
       '/'.
       $github_project.
       '.php';
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \printf("  Generating %s\n", $config_path);
+    echo Str\format("  Generating %s\n", $config_path);
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $config_dir = \dirname($config_path);
@@ -186,9 +184,7 @@ EOF;
       '/'.
       $test_class_name.
       '.php';
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \printf("  Generating %s\n", $test_path);
+    echo Str\format("  Generating %s\n", $test_path);
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $test_dir = \dirname($test_path);

@@ -128,9 +128,7 @@ final class ShipItSync {
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         if (\file_exists($file)) {
-          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          \printf("Overwriting patch file: %s\n", $file);
+          echo Str\format("Overwriting patch file: %s\n", $file);
         }
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
@@ -146,9 +144,7 @@ final class ShipItSync {
       }
 
       if (!$this->isValidChangeToSync($changeset)) {
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \printf(
+        echo Str\format(
           "  SKIP %s %s\n",
           $changeset->getShortID(),
           $changeset->getSubject(),
@@ -159,9 +155,7 @@ final class ShipItSync {
 
       try {
         $dest->commitPatch($changeset);
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \printf(
+        echo Str\format(
           "  OK %s %s\n",
           $changeset->getShortID(),
           $changeset->getSubject(),
@@ -201,12 +195,10 @@ final class ShipItSync {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     if (\is_dir($filename)) {
       // Slashes are allowed in branch names but not filenames.
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      $namesafe_branch = \preg_replace(
-        '/[^a-zA-Z0-9_\-.]/',
-        '_',
+      $namesafe_branch = Regex\replace(
         $destination_branch,
+        re"/[^a-zA-Z0-9_\-.]/",
+        '_',
       );
       $filename = $filename.'/'.$namesafe_branch.'.json';
     }
@@ -260,9 +252,7 @@ final class ShipItSync {
         "Unable to determine last differential revision pushed to dest repo",
       );
     }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\preg_match('/^D[0-9]{6,}$/', $diff)) {
+    if (!Regex\matches($diff, re"/^D[0-9]{6,}$/")) {
       throw new ShipItException(
         "Last differential revision number ('{$diff}') is invalid",
       );

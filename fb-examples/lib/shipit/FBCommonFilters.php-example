@@ -156,26 +156,18 @@ final class FBCommonFilters {
     );
   }
 
-  const CLOSES_PR_REGEX =
-    '@^(?:Closes|Pull Request resolved:) https://github.com/.+/.+/pull/([0-9]+)@im';
   public static function referencePullRequestNumber(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    $matches = varray[];
-    if (
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_match(
-        self::CLOSES_PR_REGEX,
-        $changeset->getMessage(),
-        inout $matches,
-      ) !==
-        1
-    ) {
+    $matches = Regex\first_match(
+      $changeset->getMessage(),
+      re"@^(?:Closes|Pull Request resolved:) https://github.com/.+/.+/pull/([0-9]+)@im",
+    );
+    if ($matches === null) {
       return $changeset;
     }
     return $changeset->withSubject(
-      $changeset->getSubject().Str\format(' (#%d)', $matches[1]),
+      $changeset->getSubject().Str\format(' (#%s)', $matches[1]),
     );
   }
 
@@ -183,12 +175,10 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_replace(
-        '@https?://phabricator\.[^/]+/@i',
-        '',
+      Regex\replace(
         $changeset->getMessage(),
+        re"@https?://phabricator\.[^/]+/@i",
+        '',
       ),
     );
   }
@@ -223,12 +213,10 @@ final class FBCommonFilters {
     //   unixname merging SHA1 | unixname | ...
     //
     return $changeset->withSubject(
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_replace(
-        '/^\w+ merging \w+ \| \w+ \| /',
-        '',
+      Regex\replace(
         $changeset->getSubject(),
+        re"/^\w+ merging \w+ \| \w+ \| /",
+        '',
       ),
     );
   }
@@ -241,9 +229,7 @@ final class FBCommonFilters {
     // `-b`, so this is just maintaining that behavior since they sometimes
     // contain codenames.
     return $changeset->withSubject(
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_replace('/^(?:\[[^\]]+\]\s*)+/', '', $changeset->getSubject()),
+      Regex\replace($changeset->getSubject(), re"/^(?:\[[^\]]+\]\s*)+/", ''),
     );
   }
 
@@ -251,12 +237,10 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_replace(
-        '/(@override-unit-failures)|(@build\[.*\])/',
-        '',
+      Regex\replace(
         $changeset->getMessage(),
+        re"/(@override-unit-failures)|(@build\[.*\])/",
+        '',
       ),
     );
   }
@@ -265,9 +249,7 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     return $changeset->withMessage(
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_replace("/#accept2ship\n?/", '', $changeset->getMessage()),
+      Regex\replace($changeset->getMessage(), re"/#accept2ship\n?/", ''),
     );
   }
 
@@ -275,12 +257,8 @@ final class FBCommonFilters {
     ShipItChangeset $changeset,
   ): ShipItChangeset {
     if (
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      !\preg_match('/This reverts commit/', $changeset->getMessage()) ||
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      !\preg_match('/cause_a_sev_many_files/', $changeset->getMessage())
+      !Regex\matches($changeset->getMessage(), re"/This reverts commit/") ||
+      !Regex\matches($changeset->getMessage(), re"/cause_a_sev_many_files/")
     ) {
       return $changeset;
     }
@@ -374,13 +352,11 @@ final class FBCommonFilters {
   public static function rewriteFBMentions(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $message = \preg_replace_callback(
-      // @[123:Name]
-      '/@\[(\d+):([^\]]+)\]/',
-      $matches ==> $matches[2],
+    $message = Regex\replace_with(
       $changeset->getMessage(),
+      // @[123:Name]
+      re"/@\[(\d+):([^\]]+)\]/",
+      $matches ==> $matches[2],
     );
     return $changeset->withMessage($message);
   }
@@ -397,22 +373,14 @@ final class FBCommonFilters {
   public static function restoreGitHubAuthor(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\preg_match('/^Github author:/mi', $changeset->getMessage())) {
+    if (!Regex\matches($changeset->getMessage(), re"/^Github author:/mi")) {
       return $changeset;
     }
 
     $pulled_by_unixname = null;
-    $matches = darray[];
+    $matches = Regex\first_match($changeset->getAuthor(), re"/<(?<author>[^@]*)@fb\.com>/");
     if (
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_match(
-        '/<(?<author>[^@]*)@fb\.com>/',
-        $changeset->getAuthor(),
-        inout $matches,
-      ) &&
+      $matches !== null &&
       !self::isBotUser($matches['author'])
     ) {
       $pulled_by_unixname = $matches['author'];
@@ -422,9 +390,7 @@ final class FBCommonFilters {
         self::getSupportedMessageSectionNames(),
       );
       if ($sections->containsKey('reviewed by')) {
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        $names = (new Vector(\explode(', ', $sections['reviewed by'])));
+        $names = (new Vector(Str\split($sections['reviewed by'], ', ')));
         if (C\count($names) === 1) {
           $pulled_by_unixname = $names[0];
         }
@@ -457,9 +423,7 @@ final class FBCommonFilters {
     if (!$sections->containsKey('reviewed by')) {
       return $changeset;
     }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $names = (new Vector(\explode(', ', $sections['reviewed by'])))
+    $names = (new Vector(Str\split($sections['reviewed by'], ', ')))
       // No project reviewers e.g., #WDT in D2407623
       ->filter($name ==> Str\slice(Str\trim($name), 0, 1) !== '#')
       ->map(

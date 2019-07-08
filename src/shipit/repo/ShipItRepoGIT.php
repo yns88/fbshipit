@@ -76,30 +76,15 @@ class ShipItRepoGIT
       ...$roots
     );
     $log = Str\trim($log);
-    $matches = null;
-    if (
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      !\preg_match_all(
-        '/^ *(fb)?shipit-source-id: ?(?<commit>[a-z0-9]+)$/m',
-        $log,
-        inout $matches,
-      )
-    ) {
+    $matches = Regex\every_match(
+      $log,
+      re"/^ *(fb)?shipit-source-id: ?(?<commit>[a-z0-9]+)$/m",
+    );
+    $last_match = C\last($matches);
+    if ($last_match === null) {
       return null;
     }
-    if (!\is_array($matches)) {
-      return null;
-    }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\array_key_exists('commit', $matches)) {
-      return null;
-    }
-    if (!\is_array($matches['commit'])) {
-      return null;
-    }
-    return C\last($matches['commit']);
+    return $last_match['commit'];
   }
 
   public function findNextCommit(
@@ -119,19 +104,13 @@ class ShipItRepoGIT
     if (Str\trim($log) === '') {
       return null;
     }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $revs = \explode("\n", Str\trim($log));
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    list($rev) = \explode(' ', \array_pop(inout $revs), 2);
+    $revs = Str\split(Str\trim($log), "\n");
+    list($rev) = Str\split(C\lastx($revs), ' ', 2);
     return $rev;
   }
 
   private static function parseHeader(string $header): ShipItChangeset {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $parts = \explode("\n\n", Str\trim($header), 2);
+    $parts = Str\split(Str\trim($header), "\n\n", 2);
     $envelope = $parts[0];
     $message = C\count($parts) === 2 ? Str\trim($parts[1]) : '';
 
@@ -145,16 +124,12 @@ class ShipItRepoGIT
     $changeset = (new ShipItChangeset())->withMessage($message);
 
     $envelope = Str\replace_every($envelope, dict["\n\t" => ' ', "\n " => ' ']);
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    foreach (\explode("\n", $envelope) as $line) {
+    foreach (Str\split($envelope, "\n") as $line) {
       $colon = Str\search($line, ':');
       if ($colon === null) {
         continue;
       }
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      list($key, $value) = \explode(':', $line, 2);
+      list($key, $value) = Str\split($line, ':', 2);
       $value = Str\trim($value);
       switch (Str\lowercase(Str\trim($key))) {
         case 'from':
@@ -268,12 +243,10 @@ class ShipItRepoGIT
      *
      * https://github.com/git/git/blob/77bd3ea9f54f1584147b594abc04c26ca516d987/builtin/mailinfo.c#L701
      */
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $message = \preg_replace(
-      '/^(diff -|Index: |---(?:\s\S|\s*$))/m',
-      ' $1',
+    $message = Regex\replace(
       $patch->getMessage(),
+      re"/^(diff -|Index: |---(?:\s\S|\s*$))/m",
+      ' $1',
     );
 
     // Mon Sep 17 is a magic date used by format-patch to distinguish from real
@@ -282,7 +255,7 @@ class ShipItRepoGIT
       "From: {$patch->getAuthor()}\n".
       "Date: ".
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-            /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \date('r', $patch->getTimestamp()).
       "\n".
       "Subject: [PATCH] {$patch->getSubject()}\n\n".
@@ -513,12 +486,8 @@ class ShipItRepoGIT
       $sha = $status
         // Strip any -, +, or U at the start of the status (see the man page for
         // git-submodule).
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        |> \preg_replace('@^[\-\+U]@', '', $$)
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        |> \explode(' ', $$)[0];
+        |> Regex\replace($$, re"@^[\-\+U]@", '')
+        |> Str\split($$, ' ')[0];
       $dest_submodule_path = $dest->getPath().'/'.$submodule['path'];
       // This removes the empty directory for the submodule that gets created
       // by the git-archive command.

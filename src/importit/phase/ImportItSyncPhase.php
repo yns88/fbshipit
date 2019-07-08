@@ -139,48 +139,36 @@ final class ImportItSyncPhase extends \Facebook\ShipIt\ShipItPhase {
       $config->getDestinationBranch(),
     );
     if ($base_rev !== null) {
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \printf("  Updating destination branch to new base revision...\n");
+      echo "  Updating destination branch to new base revision...\n";
       $destination_repo->updateBranchTo($base_rev);
     }
     invariant(
       $destination_repo is ShipItDestinationRepo,
       'The destination repository must implement ShipItDestinationRepo!',
     );
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \printf("  Filtering...\n",);
+    echo "  Filtering...\n";
     $filter_fn = $this->filter;
     $changeset = $filter_fn($changeset);
     if ($config->isVerboseEnabled()) {
       $changeset->dumpDebugMessages();
     }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \printf("  Exporting...\n",);
+    echo "  Exporting...\n";
     $this->maybeSavePatch($destination_repo, $changeset);
     try {
       $rev = $destination_repo->commitPatch($changeset);
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \printf(
+      echo Str\format(
         "  Done.  %s committed in %s\n",
         $rev,
         $destination_repo->getPath(),
       );
     } catch (\Exception $e) {
       if ($this->patchesDirectory !== null) {
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \printf(
+        echo Str\format(
           "  Failure to apply patch at %s\n",
           $this->getPatchLocationForChangeset($changeset),
         );
       } else {
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \printf(
+        echo Str\format(
           "  Failure to apply patch:\n%s\n",
           $destination_repo::renderPatch($changeset),
         );

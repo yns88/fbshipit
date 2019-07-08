@@ -124,30 +124,16 @@ class ShipItRepoHG
       ...$roots
     );
     $log = Str\trim($log);
-    $matches = null;
-    if (
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      !\preg_match_all(
-        '/^ *fbshipit-source-id: ?(?<commit>[a-z0-9]+)$/m',
-        $log,
-        inout $matches,
-      )
-    ) {
+    $matches = Regex\every_match(
+      $log,
+      re"/^ *fbshipit-source-id: ?(?<commit>[a-z0-9]+)$/m",
+    );
+
+    $match = C\last($matches);
+    if ($match === null) {
       return null;
     }
-    if (!\is_array($matches)) {
-      return null;
-    }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\array_key_exists('commit', $matches)) {
-      return null;
-    }
-    if (!\is_array($matches['commit'])) {
-      return null;
-    }
-    return C\last($matches['commit']);
+    return $match['commit'];
   }
 
   public function commitPatch(ShipItChangeset $patch): string {
@@ -210,21 +196,15 @@ class ShipItRepoHG
    */
   private static function parseHgRegions(string $patch): Iterator<string> {
     $contents = '';
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    foreach (\explode("\n", $patch) as $line) {
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      $line = \preg_replace('/(\r\n|\n)/', "\n", $line);
+    foreach (Str\split($patch, "\n") as $line) {
+      $line = Regex\replace($line, re"/(\\\\r\\\\n|\\\\n)/", "\n");
 
       if (
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \preg_match(
-          '@^diff --git( ([ab]/(.*?)|/dev/null)){2}@',
-          Str\trim_right($line),
-        ) &&
         $contents !== ''
+        && Regex\matches(
+          Str\trim_right($line),
+          re"@^diff --git( ([ab]/(.*?)|/dev/null)){2}@",
+        )
       ) {
         yield $contents;
         $contents = '';
@@ -242,9 +222,7 @@ class ShipItRepoHG
     $subject = null;
     $message = '';
     $past_separator = false;
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    foreach (\explode("\n", $header) as $line) {
+    foreach (Str\split($header, "\n") as $line) {
       if (!$past_separator && $line === self::COMMIT_SEPARATOR) {
         $past_separator = true;
         continue;
@@ -333,21 +311,14 @@ class ShipItRepoHG
     //
     // If we have any matching files, re-create their diffs using git, which
     // will do full diffs for both sides of the copy/rename.
-    $matches = darray[];
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \preg_match_all(
-      '/^(?:rename|copy) (?:from|to) (?<files>.+)$/m',
+    $matches = Regex\every_match(
       $patch,
-      inout $matches,
-      \PREG_PATTERN_ORDER,
+      re"/^(?:rename|copy) (?:from|to) (?<files>.+)$/m",
     );
-    $has_rename_or_copy = new ImmSet($matches['files']);
+    $has_rename_or_copy = new ImmSet(Vec\map($matches, $m ==> $m['files']));
     $has_mode_change = $changeset
       ->getDiffs()
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      ->filter($diff ==> \preg_match('/^old mode/m', $diff['body']) === 1)
+      ->filter($diff ==> Regex\matches($diff['body'], re"/^old mode/m"))
       ->map($diff ==> $diff['path'])
       ->toImmSet();
 

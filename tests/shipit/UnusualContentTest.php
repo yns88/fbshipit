@@ -52,9 +52,7 @@ final class UnusualContentTest extends BaseTest {
   ): void {
     $header = \file_get_contents($header_file);
     $patch = \file_get_contents($patch_file);
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $lines = \explode("\n", Str\trim($patch));
+    $lines = Str\split(Str\trim($patch), "\n");
     $git_version = Str\trim($lines[C\count($lines) - 1]);
 
     $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
@@ -70,9 +68,7 @@ final class UnusualContentTest extends BaseTest {
   public function testNoNewlineAtEOF(): void {
     $header = \file_get_contents(__DIR__.'/git-diffs/no-newline-at-eof.header');
     $patch = \file_get_contents(__DIR__.'/git-diffs/no-newline-at-eof.patch');
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $lines = \explode("\n", Str\trim($patch));
+    $lines = Str\split(Str\trim($patch), "\n");
     $git_version = Str\trim($lines[C\count($lines) - 1]);
 
     $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);

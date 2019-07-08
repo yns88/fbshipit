@@ -200,9 +200,7 @@ abstract class ShipItGitHubUtils {
       $results[] = Str\slice($response, $header_len);
 
       $url = null;
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      foreach (\explode("\n", Str\trim($response_header)) as $header_line) {
+      foreach (Str\split(Str\trim($response_header), "\n") as $header_line) {
         if (Str\slice($header_line, 0, 5) === 'HTTP/') {
           continue;
         }
@@ -213,16 +211,11 @@ abstract class ShipItGitHubUtils {
 
         $name = Str\lowercase(Str\slice($header_line, 0, $sep));
         if ($name === 'link') {
-          $matches = darray[];
-          if (
-            /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-            /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-            \preg_match(
-              '@<(?<next>https://api.github.com[^>]+)>; rel="next"@',
-              $header_line,
-              inout $matches,
-            )
-          ) {
+          $matches = Regex\first_match(
+            $header_line,
+            re"@<(?<next>https://api.github.com[^>]+)>; rel=\"next\"@",
+          );
+          if ($matches !== null) {
             $url = $matches['next'];
             break;
           }
