@@ -197,7 +197,7 @@ class ShipItRepoHG
   private static function parseHgRegions(string $patch): Iterator<string> {
     $contents = '';
     foreach (Str\split($patch, "\n") as $line) {
-      $line = Regex\replace($line, re"/(\\\\r\\\\n|\\\\n)/", "\n");
+      $line = Regex\replace($line, re"/(\r\n|\n)/", "\n");
 
       if (
         $contents !== ''
