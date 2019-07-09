@@ -15,7 +15,7 @@ namespace Facebook\ShipIt\Config;
 use namespace HH\Lib\Str;
 use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   OSTeamFilters,
@@ -23,12 +23,7 @@ use type Facebook\ShipIt\{
   ShipItChangeset,
 };
 
-final class FacebookChefUtils extends FBShipItConfig {
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookChefUtilsPlugin::class;
-  }
-
+final class FacebookChefUtilsPlugin extends FBShipItConfigeratorConfig {
   public static function getDirs(): ImmSet<string> {
     return ImmSet {
       'chef-utils-github/',
@@ -54,45 +49,6 @@ final class FacebookChefUtils extends FBShipItConfig {
     return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
       |> OSTeamFilters::rewriteEmails($$)
       |> static::stripChefTestHostsHeader($$);
-  }
-
-  <<__Override>>
-  public function getDefaultStrippedFiles(): ImmVector<string> {
-    # Unlike most shipit plugins we effectively whitelist because we can't
-    # easily move chefctl.rb (yet)
-    #
-    # Therefore, below we do a NegativeLookAhead regex and anything that's not
-    # in this list gets rejected.
-    #
-    # For scripts/chefctl-github/ the entire directory is included, so that all
-    # works normally. But for scripts/chef/ we only include a single file, so
-    # for that directory we ALSO have to explicitly allow the shipit test file
-    # or it will crash.
-    $valid = vec[
-      'chef/chefctl.rb',
-      'chef/shipit_test_file.txt',
-    ];
-    return ImmVector {
-      '@^scripts\/(?!('.Str\join($valid, '|').'))@',
-    };
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      # order is important - most specific first
-      'chef-utils-github/' => '',
-      'scripts/chef/' => 'chefctl/src/',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'opsfiles',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'chef-utils',
-    );
   }
 
   <<__Override>>
