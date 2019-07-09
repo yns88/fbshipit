@@ -23,21 +23,7 @@ use type Facebook\ShipIt\{
   ShipItPathFilters,
 };
 
-final class FacebookFbshipit extends FBWWWBase {
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookFbshipitPlugin::class;
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'www',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'fbshipit',
-    );
-  }
-
+final class FacebookFbshipitPlugin extends FBWWWBasePlugin {
   <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -51,49 +37,6 @@ final class FacebookFbshipit extends FBWWWBase {
       )
       |> parent::defaultProjectFilterChangeset($$, $get_path_mappings)
       |> self::changeExampleExtensions($$);
-  }
-
-  <<__Override>>
-  public function getStripCommonFileExceptions(): ImmVector<string> {
-    return ImmVector {
-      '@^flib/intern/opensource/shipit/config/.*$@',
-    };
-  }
-
-  <<__Override>>
-  public function getDefaultStrippedFiles(): ImmVector<string> {
-    return ImmVector {
-      '@/fb-private/@',
-      '@(^|/)fb_.+\.sh$@',
-      '@(^|/)fb_.+\.py$@',
-      // Do not sync examples for old-style projects
-      '@(^|/)scripts/opensource/shipit/(shipit_|importit_).*\.php@',
-      '@(^|/)__tests__/(shipit|importit)/.*/projects/.*\.php@',
-    };
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      'flib/intern/opensource/shipit/public_tld/' => '',
-      'scripts/opensource/shipit/' => 'fb-examples/bin/',
-      'flib/intern/opensource/shipit/config/fb-specific-but-public/' =>
-        'fb-examples/config/',
-      'flib/intern/opensource/shipit/src/config/fb-specific-but-public/' =>
-        'fb-examples/lib/config/',
-      'flib/intern/opensource/shipit/src/importit/fb-specific-but-public/' =>
-        'fb-examples/lib/importit/',
-      'flib/intern/opensource/shipit/src/shipit/fb-specific-but-public/' =>
-        'fb-examples/lib/shipit/',
-      'flib/intern/opensource/shipit/__tests__/importit/fb-specific-but-public/' =>
-        'fb-examples/tests/importit/',
-      'flib/intern/opensource/shipit/__tests__/shipit/fb-specific-but-public/' =>
-        'fb-examples/tests/shipit/',
-      'flib/intern/opensource/shipit/__tests__/config/fb-specific-but-public/' =>
-        'fb-examples/tests/config/',
-      'flib/intern/opensource/shipit/src/' => 'src/',
-      'flib/intern/opensource/shipit/__tests__/' => 'tests/',
-    };
   }
 
   <<__Override>>
