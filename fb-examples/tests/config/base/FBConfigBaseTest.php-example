@@ -76,7 +76,7 @@ abstract class FBConfigBaseTest
     );
   }
 
-  final protected static function getConfigObject(): this::TConfigClassBase {
+  protected static function getConfigObject(): this::TConfigClassBase {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $config_class = \preg_replace(
