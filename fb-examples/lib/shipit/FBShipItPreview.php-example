@@ -45,16 +45,6 @@ final class FBShipItPreview {
     $this->allConfigClasses = FBShipItConfigClasses::getConfigs();
   }
 
-  private static function decodeInput(string $in): ShipItPreviewInput {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    return \json_decode($in, true);
-  }
-
-  private static function encodeOutput(vec<ShipItPreviewOutput> $out): string {
-    return \json_encode($out);
-  }
-
   final public function handleChangeset(
     string $arcanist_project,
     string $internal_branch,
@@ -138,38 +128,5 @@ order to preview the full patch.';
       }
     }
     return $result;
-  }
-
-  private static function getInStream(?string $in_name): resource {
-    if ($in_name === null) {
-      $in_name = 'php://stdin';
-    }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    $resource = \fopen($in_name, 'r');
-    invariant($resource !== false, 'Failed to open file: %s', $resource);
-    return $resource;
-  }
-
-  private static function printHelp(): void {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \printf(
-      "Preview ShipIt actions for a given changeset.
-
-The input should be JSON ShipItChangesetData objects,
-separated by '%s' terminators.
-
-Usage: %s [-i] [--help]
-
-Options:
-  -i      The filename to parse for input (default stdin)
-  --help  Print this help message
-",
-      self::OBJECT_TERMINATOR,
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \basename(__FILE__, ""),
-    );
   }
 }
