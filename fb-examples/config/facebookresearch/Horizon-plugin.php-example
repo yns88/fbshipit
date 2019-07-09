@@ -15,27 +15,14 @@ namespace Facebook\ShipIt\Config;
 use namespace HH\Lib\{Str, Dict};
 use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
   ShipItPathFilters,
 };
 
-final class FacebookresearchHorizon extends FBShipItConfig {
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookresearchHorizonPlugin::class;
-  }
-
-  <<__Override>>
-  public function getDefaultStrippedFiles(): ImmVector<string> {
-    return ImmVector {
-      '@^fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/fb-pom.xml@',
-      '@^fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/sandcastle.ini@',
-    };
-  }
-
+final class FacebookresearchHorizonPlugin extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -64,29 +51,5 @@ final class FacebookresearchHorizon extends FBShipItConfig {
         $$,
         $path ==> Str\replace($path, 'pom.xml', 'oss-pom.xml'),
       );
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      # Put the oss directory into root
-      "fbcode/ml/rl/oss/" => "",
-
-      # We want the contents of fbcode/ml/rl/... to appear in ml/rl/...
-      "fbcode/ml/rl/" => "ml/rl/",
-
-      # Put the dqn-preprocessing in preprocessing
-      "fbcode/fbjava/fb-spark-applications/rl/dqn-preprocessing/" =>
-        "preprocessing/",
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'fbsource',
-      'githubOrg' => 'facebookresearch',
-      'githubProject' => 'Horizon',
-    );
   }
 }
