@@ -15,28 +15,12 @@ namespace Facebook\ShipIt\Config;
 use namespace HH\Lib\Str;
 use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   ShipItChangeset,
 };
 
-final class FacebookDuckling extends FBShipItConfig {
-  const string ROOT = 'duckling/';
-
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookDucklingPlugin::class;
-  }
-
-  <<__Override>>
-  public function getDefaultStrippedFiles(): ImmVector<string> {
-    return ImmVector {
-      '@^'.self::ROOT.'Duckling/Engine/Regex.hs@',
-      '@^'.self::ROOT.'Duckling/Custom@',
-      '@^'.self::ROOT.'tests/Duckling/Custom@',
-    };
-  }
-
+final class FacebookDucklingPlugin extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function projectImportChangeset(
     ShipItChangeset $changeset,
@@ -52,23 +36,5 @@ final class FacebookDuckling extends FBShipItConfig {
         ),
       )
       |> parent::projectImportChangeset($$, $branch_config);
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      self::ROOT.'github/Duckling/Engine/Regex.hs' =>
-        'Duckling/Engine/Regex.hs',
-      self::ROOT => '',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'si_sigma',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'duckling',
-    );
   }
 }
