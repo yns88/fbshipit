@@ -16,7 +16,7 @@ use namespace HH\Lib\Str;
 use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
@@ -25,12 +25,7 @@ use type Facebook\ShipIt\{
   ShipItPhase,
 };
 
-final class FacebookInfer extends FBShipItConfig {
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookInferPlugin::class;
-  }
-
+final class FacebookInferPlugin extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -52,30 +47,6 @@ final class FacebookInfer extends FBShipItConfig {
           $diff ==> !self::matchesPrefixList($diff, self::getBlacklist()),
         ),
       );
-  }
-
-  <<__Override>>
-  public function getStripCommonFileExceptions(): ImmVector<string> {
-    return ImmVector {
-      '@(^|/)BUCK$@',
-      '@\.mk$@',
-    };
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      '' => '',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'infer-fb',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'infer',
-    );
   }
 
   private static function matchesPrefixList(
