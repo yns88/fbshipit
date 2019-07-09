@@ -14,19 +14,14 @@ namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
   ShipItPathFilters,
 };
 
-final class FacebookDraftJs extends FBShipItConfig {
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookDraftJsPlugin::class;
-  }
-
+final class FacebookDraftJsPlugin extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -55,23 +50,5 @@ final class FacebookDraftJs extends FBShipItConfig {
         $path ==> \preg_replace('@^\.@', 'dot_', $path),
       )
       |> parent::projectImportChangeset($$, $branch_config);
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      'scripts/draft-js/__github__/' => '',
-      'html/shared/draft-js/component/' => 'src/component/',
-      'html/shared/draft-js/model/' => 'src/model/',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'www',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'draft-js',
-    );
   }
 }
