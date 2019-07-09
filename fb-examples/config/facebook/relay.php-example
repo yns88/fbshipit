@@ -36,6 +36,11 @@ final class FacebookRelay extends FBShipItConfig {
   const string RELAY_CONFIG = self::RELAY_OSS.'relay-config/';
 
   <<__Override>>
+  public function forceConfigeratorGenerationWithHackPlugin(): string {
+    return FacebookRelayPlugin::class;
+  }
+
+  <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
