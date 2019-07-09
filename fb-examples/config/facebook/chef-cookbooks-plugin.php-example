@@ -14,7 +14,7 @@ namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   OSTeamFilters,
@@ -22,13 +22,8 @@ use type Facebook\ShipIt\{
   ShipItChangeset,
 };
 
-final class FacebookChefCookbooks extends FBShipItConfig {
+final class FacebookChefCookbooksPlugin extends FBShipItConfigeratorConfig {
   const string BASE_DIR = 'chef/cookbooks/core/';
-
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookChefCookbooksPlugin::class;
-  }
 
   # Add new open-source cookbooks here. Be sure to get sign-off
   # from the OpenSource team.
@@ -102,37 +97,6 @@ final class FacebookChefCookbooks extends FBShipItConfig {
     return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
       |> OSTeamFilters::rewriteEmails($$)
       |> static::stripChefTestHostsHeader($$);
-  }
-
-  <<__Override>>
-  public function getDefaultStrippedFiles(): ImmVector<string> {
-    return ImmVector {
-      # filter all tests not marked as public because most of our
-      # test require our crazy hacked up chefspec... but allow
-      # pure rspec tests.
-      '@^.*/spec/(?!public_).*@',
-      '@README.facebook@',
-      '@(^|/)OWNERS$@',
-      '@(^|/)fb_metadata.json$@',
-    };
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      'chef/github/' => '',
-      'chef/cookbooks/core/' => 'cookbooks/',
-      'chef/github/cookbooks/fb_init_sample' => 'cookbooks/fb_init_sample',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'opsfiles',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'chef-cookbooks',
-    );
   }
 
   <<__Override>>
