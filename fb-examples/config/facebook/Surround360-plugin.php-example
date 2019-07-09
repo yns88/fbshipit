@@ -17,21 +17,14 @@ use type Facebook\ImportIt\ImportItPathFilters;
 use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
   ShipItPathFilters,
 };
 
-final class FacebookSurround360 extends FBShipItConfig {
-  const string ROOT = 'fbcode/surround360/';
-
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookSurround360Plugin::class;
-  }
-
+final class FacebookSurround360Plugin extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function projectImportChangeset(
     ShipItChangeset $changeset,
@@ -81,21 +74,5 @@ final class FacebookSurround360 extends FBShipItConfig {
         ),
       )
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings());
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      self::ROOT => '',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'fbsource',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'Surround360',
-    );
   }
 }
