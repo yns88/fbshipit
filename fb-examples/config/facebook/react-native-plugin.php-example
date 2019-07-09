@@ -14,21 +14,14 @@ namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
   ShipItPathFilters,
 };
 
-final class FacebookReactNative extends FBShipItConfig {
-  const string ROOT = 'xplat/js/react-native-github/';
-
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookReactNativePlugin::class;
-  }
-
+final class FacebookReactNativePlugin extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -52,46 +45,6 @@ final class FacebookReactNative extends FBShipItConfig {
         ),
       )
       |> parent::defaultProjectFilterChangeset($$, $get_path_mappings);
-  }
-
-  <<__Override>>
-  public function getStripCommonFileExceptions(): ImmVector<string> {
-    // FBCommonFilters defines a common set of files to ignore
-    // across all fb projects, such as BUCK files and others.
-    // We want to export *all* of the react-native-github folder
-    // to GitHub, except for a few specific paths
-    // (see getDefaultStrippedFiles()).
-    return ImmVector {
-      '/.*/',
-    };
-  }
-
-  <<__Override>>
-  public function getDefaultStrippedFiles(): ImmVector<string> {
-    return ImmVector {
-      '@^'.self::ROOT.'BUCK$@',
-      '@(^|/)node_modules/@',
-      '@(^|/)npm-shrinkwrap.json@',
-      '@(^|/)packager/react-packager/src/packager_experimental/@',
-      '@(^|/)Libraries/Renderer/fb/@',
-      '@(^|/)RNTester/Pods/@',
-    };
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      self::ROOT => '',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'fbsource',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'react-native',
-    );
   }
 
   <<__Override>>
