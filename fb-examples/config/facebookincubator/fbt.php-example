@@ -24,6 +24,11 @@ final class FacebookincubatorFbt extends FBShipItConfig {
   const BABEL = 'scripts/static_resources/js/fb-transforms/babel-7';
 
   <<__Override>>
+  public function forceConfigeratorGenerationWithHackPlugin(): string {
+    return FacebookincubatorFbtPlugin::class;
+  }
+
+  <<__Override>>
   public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::BABEL.'/babel-plugin-fbt/' => 'transform/babel-plugin-fbt/',
