@@ -58,7 +58,10 @@ abstract class FBConfigBaseTest
   }
 
   final public function testFileNameMatchesRepo(): void {
-    $config_object = self::getConfigObject();
+    $config_object = static::getConfigObject();
+    if (Str\ends_with($config_object->getClassName(), 'Plugin')) {
+      return; // These tests are not relevant to plugins
+    }
     $config = $config_object->getStaticConfig();
     $reflector = new \ReflectionClass($config_object);
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
