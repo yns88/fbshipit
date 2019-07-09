@@ -12,6 +12,8 @@
  */
 namespace Facebook\ImportIt;
 
+use namespace HH\Lib\Dict;
+
 abstract final class ImportItPathFilters {
   /**
    * Change directory paths in a diff using a mapping.  This is a convenience
@@ -58,10 +60,8 @@ abstract final class ImportItPathFilters {
     // that if two src path entries exist such that one of them is a prefix of
     // the other, the prefix always appears last.  This ensures that mappings
     // for subdirectories always take precedence over less-specific mappings.
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \krsort(inout $reverse_mapping);
-
-    return $reverse_mapping->toImmMap();
+    return Dict\sort_by_key($reverse_mapping)
+      |> Dict\reverse($$)
+      |> new ImmMap($$);
   }
 }

@@ -12,7 +12,7 @@
  */
 namespace Facebook\ShipIt;
 
-use namespace HH\Lib\{Str, Math};
+use namespace HH\Lib\{Str, Math, Dict};
 
 class ShipItPhaseRunner {
   public function __construct(
@@ -296,9 +296,7 @@ class ShipItPhaseRunner {
 
       $rows[$long] = tuple($left, $description);
     }
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \ksort(inout $rows);
+    $rows = Dict\sort_by_key($rows) |> new Map($$);
 
     $help = $rows['help'];
     $rows->removeKey('help');
