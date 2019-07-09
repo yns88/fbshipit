@@ -14,20 +14,14 @@ namespace Facebook\ShipIt\Config;
 
 use type Facebook\ShipIt\{
   FBCommonFilters,
-  FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   GetPathMappingsFn,
   ShipItChangeset,
   ShipItPathFilters,
 };
 
-final class FacebookresearchWav2letter extends FBShipItConfig {
-  const string ROOT = 'fbcode/deeplearning/projects/wav2letter/';
-
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookresearchWav2letterPlugin::class;
-  }
+final class FacebookresearchWav2letterPlugin
+  extends FBShipItConfigeratorConfig {
 
   <<__Override>>
   public function defaultProjectFilterChangeset(
@@ -45,22 +39,5 @@ final class FacebookresearchWav2letter extends FBShipItConfig {
         },
       )
       |> ShipItPathFilters::moveDirectories($$, $get_path_mappings());
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    // fb/ and TARGETS are already ignored. See https://fburl.com/1ux6jmnz.
-    return ImmMap {
-      self::ROOT => '',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'fbsource',
-      'githubOrg' => 'facebookresearch',
-      'githubProject' => 'wav2letter',
-    );
   }
 }
