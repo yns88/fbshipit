@@ -26,6 +26,10 @@ use type Facebook\ShipIt\{
 };
 
 final class FacebookOpenbmc extends FBShipItConfig {
+  <<__Override>>
+  public function forceConfigeratorGenerationWithHackPlugin(): string {
+    return FacebookOpenbmcPlugin::class;
+  }
 
   <<__Override>>
   public function defaultProjectFilterChangeset(
