@@ -18,6 +18,11 @@ final class HhvmHsl extends HhvmHslBase {
   const string ROOT = 'flib/core/hack/lib/';
 
   <<__Override>>
+  public function forceConfigeratorGenerationWithHackPlugin(): string {
+    return HhvmHslPlugin::class;
+  }
+
+  <<__Override>>
   public function getDefaultStrippedFiles(): ImmVector<string> {
     return ImmVector {
       '@^flib/core/hack/lib/(legacy|unreleased|experimental)/@',
