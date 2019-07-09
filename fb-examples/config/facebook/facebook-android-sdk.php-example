@@ -25,6 +25,11 @@ final class FacebookFacebookAndroidSdk extends FBShipItConfig {
   const string ROOT = 'fbandroid/first-party/java/androidsdk/';
 
   <<__Override>>
+  public function forceConfigeratorGenerationWithHackPlugin(): string {
+    return FacebookFacebookAndroidSdkPlugin::class;
+  }
+
+  <<__Override>>
   public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       self::ROOT => '',
