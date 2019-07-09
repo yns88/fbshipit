@@ -15,18 +15,15 @@ namespace Facebook\ShipIt\Config;
 use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
   ShipItPathFilters,
 };
 
-final class FacebookexperimentalBuckit extends FBShipItConfig {
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookexperimentalBuckitPlugin::class;
-  }
+final class FacebookexperimentalBuckitPlugin
+  extends FBShipItConfigeratorConfig {
 
   <<__Override>>
   public function defaultProjectFilterChangeset(
@@ -126,28 +123,6 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
           return $path;
         }
       },
-    );
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      'fbcode/experimental/pjameson/buckit/buckit/LICENSE' => 'LICENSE',
-      'fbcode/experimental/pjameson/buckit/buckit/PATENTS' => 'PATENTS',
-      'fbcode/experimental/pjameson/buckit/buckit/README' => 'README',
-      'fbcode/experimental/pjameson/buckit/buckit/' => 'buckit/',
-      'fbcode/experimental/pjameson/buckit/specs/' => 'specs/',
-      'fbcode/fs_image/' => 'fs_image/', # Used by `image_*` macros.
-      'fbcode/tools/build/buck/infra_macros/' => 'infra_macros/',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'fbsource',
-      'githubOrg' => 'facebookexperimental',
-      'githubProject' => 'buckit',
     );
   }
 
