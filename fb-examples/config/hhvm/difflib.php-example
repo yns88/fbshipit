@@ -18,6 +18,11 @@ final class HhvmDifflib extends FBWWWBase {
   const string ROOT = 'flib/intern/diffs/difflib/opensource/';
 
   <<__Override>>
+  public function forceConfigeratorGenerationWithHackPlugin(): string {
+    return HhvmDifflibPlugin::class;
+  }
+
+  <<__Override>>
   public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap {
       static::ROOT.'__github__/dot_' => '.',
