@@ -12,6 +12,7 @@
  */
 namespace Facebook\ImportIt;
 
+use namespace HH\Lib\Str;
 use type Facebook\ShipIt\{
   ShipItBaseConfig,
   ShipItChangeset,
