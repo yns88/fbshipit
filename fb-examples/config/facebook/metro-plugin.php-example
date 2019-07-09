@@ -15,21 +15,14 @@ namespace Facebook\ShipIt\Config;
 use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
-  FBShipItConfig,
+  FBShipItConfigeratorConfig,
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
   ShipItPathFilters,
 };
 
-final class FacebookMetro extends FBShipItConfig {
-  const string ROOT = 'xplat/js/metro/';
-
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return FacebookMetroPlugin::class;
-  }
-
+final class FacebookMetroPlugin extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -60,21 +53,5 @@ final class FacebookMetro extends FBShipItConfig {
           \preg_replace('@(^|/)\.flowconfig$@', '\1.github.flowconfig', $path),
       )
       |> parent::projectImportChangeset($$, $branch_config);
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      self::ROOT => '',
-    };
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'fbsource',
-      'githubOrg' => 'facebook',
-      'githubProject' => 'metro',
-    );
   }
 }
