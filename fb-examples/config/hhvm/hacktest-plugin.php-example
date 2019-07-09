@@ -21,28 +21,7 @@ use type Facebook\ShipIt\{
   ShipItPathFilters,
 };
 
-final class HhvmHacktest extends FBWWWBase {
-  const string ROOT = 'flib/intern/testinfra/hacktest/opensource/';
-
-  <<__Override>>
-  public function forceConfigeratorGenerationWithHackPlugin(): string {
-    return HhvmHacktestPlugin::class;
-  }
-
-  <<__Override>>
-  public function getDefaultPathMappings(): ImmMap<string, string> {
-    return ImmMap {
-      static::ROOT.'__github__/tests/' => 'tests/',
-      static::ROOT.'__github__/src/HackTestCLI_dot_php' =>
-        'src/HackTestCLI.php',
-      static::ROOT.'__github__/src/Retriever/' => 'src/Retriever/',
-      static::ROOT.'__github__/src/Runner/' => 'src/Runner/',
-      static::ROOT.'__github__/dot_' => '.',
-      static::ROOT.'__github__/' => '',
-      static::ROOT => 'src/',
-    };
-  }
-
+final class HhvmHacktestPlugin extends FBWWWBasePlugin {
   <<__Override>>
   final public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
@@ -91,14 +70,5 @@ final class HhvmHacktest extends FBWWWBase {
         $$,
         $path ==> Str\replace($path, '__github__/__github__', '__github__'),
       );
-  }
-
-  <<__Override>>
-  public function getStaticConfig(): FBShipItCLIStaticConfig {
-    return shape(
-      'internalRepo' => 'www',
-      'githubOrg' => 'hhvm',
-      'githubProject' => 'hacktest',
-    );
   }
 }
