@@ -1,0 +1,40 @@
+<?hh // strict
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * This file was moved from fbsource to www. View old history in diffusion:
+ * https://fburl.com/sniaqbsn
+ */
+namespace Facebook\ShipIt\Config;
+
+use type Facebook\ImportIt\ImportItRustPathFilters;
+use type Facebook\ShipIt\{
+  FBShipItCLIStaticConfig,
+  FBShipItConfigeratorConfig,
+  FBSourceBranchConfig,
+  ShipItChangeset,
+};
+
+final class FacebookexperimentalMononokePlugin
+  extends FBShipItConfigeratorConfig {
+  <<__Override>>
+  public function projectImportChangeset(
+    ShipItChangeset $changeset,
+    FBSourceBranchConfig $branch_config,
+  ): ShipItChangeset {
+    return $changeset
+      |> $this->filterImportSubmodules($$)
+      |> ImportItRustPathFilters::moveDirectories(
+        $$,
+        ($this->getPathMappingsFn($branch_config))(),
+        $this->getSubmoduleMappings()
+          ->keys()
+          ->map($path ==> '@^'.$path.'$@'),
+      );
+  }
+}
