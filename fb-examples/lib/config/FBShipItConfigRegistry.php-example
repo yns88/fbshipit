@@ -129,9 +129,15 @@ final class FBShipItConfigRegistry {
   public static function generateMapFileContents(): string {
     $classes = self::loadConfigClasses()
       |> Vec\filter($$, $class_name ==> {
-        $parent_class = (new \ReflectionClass($class_name))->getParentClass() as
-          \ReflectionClass;
-        return $parent_class->getName() !== FBShipItConfigeratorConfig::class;
+        $parent_class = (new \ReflectionClass($class_name));
+        // ReflectionClass::getParentClass is either the parent or **false** WTF
+        while ($parent_class is \ReflectionClass) {
+          if ($parent_class->getName() === FBShipItConfigeratorConfig::class) {
+            return false;
+          }
+          $parent_class = $parent_class->getParentClass();
+        }
+        return true;
       });
     $classes_str = $classes
       |> Vec\map($$, $class_name ==> Str\format('\\%s::class,', $class_name))
