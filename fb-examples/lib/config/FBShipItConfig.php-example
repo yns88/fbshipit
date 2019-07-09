@@ -59,6 +59,10 @@ abstract class FBShipItConfig {
 
   public abstract function getDefaultPathMappings(): ImmMap<string, string>;
 
+  public function forceConfigeratorGenerationWithHackPlugin(): ?string {
+    return null;
+  }
+
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,
     GetPathMappingsFn $get_path_mappings,
