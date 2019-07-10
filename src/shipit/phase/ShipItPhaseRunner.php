@@ -12,7 +12,7 @@
  */
 namespace Facebook\ShipIt;
 
-use namespace HH\Lib\{Str, Math, Dict};
+use namespace HH\Lib\{Str, Math, Dict, C};
 
 class ShipItPhaseRunner {
   public function __construct(
@@ -173,14 +173,10 @@ class ShipItPhaseRunner {
       $short = Str\trim_right(Shapes::idx($opt, 'short_name', ''), ':');
       $long = Str\trim_right($opt['long_name'], ':');
 
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      if ($short is nonnull && \array_key_exists($short, $raw_opts)) {
+      if ($short is nonnull && C\contains_key($raw_opts, $short)) {
         $key = '-'.$short;
         $value = $is_bool ? true : $raw_opts[$short];
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      } else if (\array_key_exists($long, $raw_opts)) {
+      } else if (C\contains_key($raw_opts, $long)) {
         $key = '--'.$long;
         $value = $is_bool ? true : $raw_opts[$long];
       } else {

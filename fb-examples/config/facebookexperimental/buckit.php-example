@@ -12,6 +12,7 @@
  */
 namespace Facebook\ShipIt\Config;
 
+use namespace HH\Lib\Regex;
 use type Facebook\ShipIt\{
   FBCommonFilters,
   FBShipItCLIStaticConfig,
@@ -69,12 +70,10 @@ final class FacebookexperimentalBuckit extends FBShipItConfig {
       |> static::rewriteRemovingOssExtension($$)
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $path ==> \preg_replace(
-          '@^((?!infra_macros/fbcode_macros).*)/TARGETS$@',
-          '\1/BUCK',
+        $path ==> Regex\replace(
           $path,
+          re"@^((?!infra_macros/fbcode_macros).*)/TARGETS$@",
+          '\1/BUCK',
         ),
       );
   }

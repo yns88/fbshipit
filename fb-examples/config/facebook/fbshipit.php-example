@@ -12,7 +12,7 @@
  */
 namespace Facebook\ShipIt\Config;
 
-use namespace HH\Lib\Str;
+use namespace HH\Lib\{Str, Regex};
 use type Facebook\ShipIt\{
   FBShipItCLIStaticConfig,
   FBShipItConfig,
@@ -108,9 +108,8 @@ final class FacebookFbshipit extends FBWWWBase {
       // ShipIt tests are currently all in a root __tests__ above src/.
       |> ShipItPathFilters::rewritePaths(
         $$,
-        $path ==> /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          \preg_replace('@src/(.+/)?(__tests__)/(.+)@', '\2/\1\3', $path),
+        $path ==>
+          Regex\replace($path, re"@src/(.+/)?(__tests__)/(.+)@", '\2/\1\3'),
       )
       |> ShipItPathFilters::rewritePaths(
         $$,
@@ -129,9 +128,8 @@ final class FacebookFbshipit extends FBWWWBase {
   ): ShipItChangeset {
     return ShipItPathFilters::rewritePaths(
       $changeset,
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      $path ==> \preg_replace('@^(fb-examples/.+\.php)-example$@', '\1', $path),
+      $path ==>
+        Regex\replace($path, re"@^(fb-examples/.+\.php)-example$@", '\1'),
     );
   }
 

@@ -12,7 +12,7 @@
  */
 namespace Facebook\ShipIt;
 
-use namespace HH\Lib\Str;
+use namespace HH\Lib\{Str, Regex};
 
 type ShipItAffectedFile = string;
 type ShipItDiffAsString = string;
@@ -40,19 +40,13 @@ abstract class ShipItUtil {
     $plus_lines = 0;
     $seen_range_header = false;
 
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    foreach (\explode("\n", $patch) as $line) {
-      /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-      /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      $line = \preg_replace('/(\r\n|\n)/', "\n", $line);
+    foreach (Str\split($patch, "\n") as $line) {
+      $line = Regex\replace($line, re"/(\r\n|\n)/", "\n");
 
       if (
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \preg_match(
-          '@^diff --git [ab]/(.*?) [ab]/(.*?)$@',
+        Regex\matches(
           Str\trim_right($line),
+          re"@^diff --git [ab]/(.*?) [ab]/(.*?)$@",
         )
       ) {
         if ($contents !== '') {
@@ -62,15 +56,11 @@ abstract class ShipItUtil {
         $contents = $line."\n";
         continue;
       }
-      if (
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        \preg_match(
-          '/^@@ -\d+(,(?<minus_lines>\d+))? \+\d+(,(?<plus_lines>\d+))? @@/',
-          $line,
-          inout $matches,
-        )
-      ) {
+      $matches = Regex\first_match(
+        $line,
+        re"/^@@ -\d+(,(?<minus_lines>\d+))? \+\d+(,(?<plus_lines>\d+))? @@/",
+      );
+      if ($matches !== null) {
         $minus_lines = $matches['minus_lines'] ?? '';
         $minus_lines = $minus_lines === '' ? 1 : (int)$minus_lines;
         $plus_lines = $matches['plus_lines'] ?? '';
@@ -121,15 +111,11 @@ abstract class ShipItUtil {
   }
 
   public static function isNewFile(string $body): bool {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    return (bool) \preg_match('@^new file@m', $body);
+    return Regex\matches($body, re"@^new file@m");
   }
 
   public static function isFileRemoval(string $body): bool {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    return (bool) \preg_match('@^deleted file@m', $body);
+    return Regex\matches($body, re"@^deleted file@m");
   }
 
   // 0 is runtime log rate - typechecker is sufficient.

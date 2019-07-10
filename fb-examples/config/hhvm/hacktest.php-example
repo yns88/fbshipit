@@ -12,7 +12,7 @@
  */
 namespace Facebook\ShipIt\Config;
 
-use namespace HH\Lib\Str;
+use namespace HH\Lib\{Str, Regex};
 use type Facebook\ShipIt\{
   FBSourceBranchConfig,
   FBShipItCLIStaticConfig,
@@ -66,24 +66,18 @@ final class HhvmHacktest extends FBWWWBase {
     return $changeset
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        $path ==> \preg_replace('@^tests/@', '__github__/tests/', $path),
+        $path ==> Regex\replace($path, re"@^tests/@", '__github__/tests/'),
       )
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        $path ==> \preg_replace('/^\\./', 'dot_', $path),
+        $path ==> Regex\replace($path, re"/^\\./", 'dot_'),
       )
       |> ShipItPathFilters::rewritePaths(
         $$,
-        /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-        /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-        $path ==> \preg_replace(
-          '@^((src/(Retriever|Runner)|__github__/tests)/.+)\.php$@',
-          '\1_dot_php',
+        $path ==> Regex\replace(
           $path,
+          re"@^((src/(Retriever|Runner)|__github__/tests)/.+)\.php$@",
+          '\1_dot_php',
         ),
       )
       |> parent::projectImportChangeset($$, $branch_config)
