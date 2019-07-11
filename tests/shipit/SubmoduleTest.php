@@ -31,7 +31,7 @@ final class SubmoduleTest extends ShellTest {
       'third-party',
     );
 
-    \expect($changeset->getDiffs()->keys()->count())->toBeSame(1);
+    \expect($changeset->getDiffs()->keys()->count())->toEqual(1);
     $diff = $changeset->getDiffs()
       ->filter($diff ==> $diff['path'] === 'third-party')
       ->firstValue();

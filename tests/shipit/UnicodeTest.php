@@ -47,7 +47,7 @@ final class UnicodeTest extends ShellTest {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \expect(\hash('sha256', $content, /* raw output = */ false))
-      ->toBeSame(self::CONTENT_SHA256);
+      ->toEqual(self::CONTENT_SHA256);
     return $content;
   }
 
@@ -78,7 +78,7 @@ final class UnicodeTest extends ShellTest {
       \file_get_contents($patch_file),
     );
     $changeset = \expect($changeset)->toNotBeNull();
-    \expect($changeset->getMessage())->toBeSame(
+    \expect($changeset->getMessage())->toEqual(
       Str\trim($this->getExpectedContent()),
     );
   }
@@ -97,7 +97,7 @@ final class UnicodeTest extends ShellTest {
     $repo->commitPatch($changeset);
 
     \expect(\file_get_contents($tempdir->getPath().'/unicode-example.txt'))
-      ->toBeSame($this->getExpectedContent());
+      ->toEqual($this->getExpectedContent());
   }
 
   public function testCreatedFileWithMercurial(): void {
@@ -114,7 +114,7 @@ final class UnicodeTest extends ShellTest {
     $repo->commitPatch($changeset);
 
     \expect(\file_get_contents($tempdir->getPath().'/unicode-example.txt'))
-      ->toBeSame($this->getExpectedContent());
+      ->toEqual($this->getExpectedContent());
   }
 
   public function testCreatingCommitWithGit(): void {
@@ -143,7 +143,7 @@ final class UnicodeTest extends ShellTest {
     $repo = new ShipItRepoGIT($tempdir->getPath(), 'master');
     $changeset = $repo->getChangesetFromID('HEAD');
     \expect($changeset->getMessage())
-      ->toBeSame(Str\trim($this->getExpectedContent()));
+      ->toEqual(Str\trim($this->getExpectedContent()));
   }
 
   public function testCreatingCommitWithHG(): void {
@@ -170,7 +170,7 @@ final class UnicodeTest extends ShellTest {
 
     $repo = new ShipItRepoHG($tempdir->getPath(), 'master');
     $changeset = $repo->getChangesetFromID('.');
-    \expect($changeset?->getMessage())->toBeSame(
+    \expect($changeset?->getMessage())->toEqual(
       Str\trim($this->getExpectedContent()),
     );
   }

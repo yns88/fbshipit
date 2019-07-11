@@ -71,7 +71,7 @@ final class MessageSectionsTest extends BaseTest {
     ImmMap<string, string> $sections,
     string $expected,
   ): void {
-    \expect(ShipItMessageSections::buildMessage($sections))->toBeSame(
+    \expect(ShipItMessageSections::buildMessage($sections))->toEqual(
       $expected,
     );
   }
@@ -91,6 +91,6 @@ final class MessageSectionsTest extends BaseTest {
       ->withMessage($in)
       |> ShipItMessageSections::getSections($$, ImmSet {'summary'})
       |> ShipItMessageSections::buildMessage($$->toImmMap());
-    \expect($message)->toBeSame($expected);
+    \expect($message)->toEqual($expected);
   }
 }

@@ -79,7 +79,7 @@ final class FBGitHubUtilsTest extends FBBaseTest {
       $project,
     );
 
-    \expect($credentials['email'])->toBeSame($email);
+    \expect($credentials['email'])->toEqual($email);
 
     // We're using tokens exclusively.
     \expect($credentials['user'])->toBeNull();
@@ -91,7 +91,7 @@ final class FBGitHubUtilsTest extends FBBaseTest {
     \expect($credentials['name'])
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      ->toBeSame(Str\capitalize_words(\strtr($user, '-', ' ')));
+      ->toEqual(Str\capitalize_words(\strtr($user, '-', ' ')));
   }
 
   private function assertLooksLikeAPIToken(?string $token): void {

@@ -27,7 +27,7 @@ abstract class FBPublicProjectBaseTest extends FBProjectBaseTest {
     $in = (new ShipItChangeset())
       ->withMessage("Summary: ".$message_in);
     $out = static::map($in);
-    \expect($out->getMessage())->toBeSame("Summary: ".$expected_message_out);
+    \expect($out->getMessage())->toEqual("Summary: ".$expected_message_out);
   }
 
   <<\DataProvider('examplesForSectionHandling')>>
@@ -37,7 +37,7 @@ abstract class FBPublicProjectBaseTest extends FBProjectBaseTest {
     }
     $in = (new ShipItChangeset())->withMessage($in);
     $out = static::map($in);
-    \expect($out->getMessage())->toBeSame($expected);
+    \expect($out->getMessage())->toEqual($expected);
   }
 
   public static function examplesForSectionHandling(): vec<(string, string)> {
@@ -62,7 +62,7 @@ abstract class FBPublicProjectBaseTest extends FBProjectBaseTest {
 
     $in = (new ShipItChangeset())->withMessage('Summary: foo @public');
     $out = static::map($in);
-    \expect($out->getMessage())->toBeSame('Summary: foo');
+    \expect($out->getMessage())->toEqual('Summary: foo');
   }
 
 }

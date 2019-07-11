@@ -18,7 +18,7 @@ use namespace HH\Lib\Str;
 final class ShipItShellCommandTest extends ShellTest {
   public function testExitCodeZero(): void {
     $result = (new ShipItShellCommand('/', 'true'))->runSynchronously();
-    \expect($result->getExitCode())->toBeSame(0);
+    \expect($result->getExitCode())->toEqual(0);
   }
 
   public function testExitOneException(): void {
@@ -26,7 +26,7 @@ final class ShipItShellCommandTest extends ShellTest {
       (new ShipItShellCommand('/', 'false'))->runSynchronously();
       self::fail('Expected exception');
     } catch (ShipItShellCommandException $e) {
-      \expect($e->getExitCode())->toBeSame(1);
+      \expect($e->getExitCode())->toEqual(1);
     }
   }
 
@@ -34,15 +34,15 @@ final class ShipItShellCommandTest extends ShellTest {
     $result = (new ShipItShellCommand('/', 'false'))
       ->setNoExceptions()
       ->runSynchronously();
-    \expect($result->getExitCode())->toBeSame(1);
+    \expect($result->getExitCode())->toEqual(1);
   }
 
   public function testStdIn(): void {
     $result = (new ShipItShellCommand('/', 'cat'))
       ->setStdIn('Hello, world.')
       ->runSynchronously();
-    \expect($result->getStdOut())->toBeSame('Hello, world.');
-    \expect($result->getStdErr())->toBeSame('');
+    \expect($result->getStdOut())->toEqual('Hello, world.');
+    \expect($result->getStdErr())->toEqual('');
   }
 
   public function testSettingEnvironmentVariable(): void {
@@ -93,7 +93,7 @@ final class ShipItShellCommandTest extends ShellTest {
         ->runSynchronously()
         ->getStdOut()
         |> Str\trim($$),
-    )->toBeSame('/');
+    )->toEqual('/');
 
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
@@ -110,7 +110,7 @@ final class ShipItShellCommandTest extends ShellTest {
     $output = (new ShipItShellCommand('/', 'echo', 'foo', 'bar'))
       ->runSynchronously()
       ->getStdOut();
-    \expect($output)->toBeSame("foo bar\n");
+    \expect($output)->toEqual("foo bar\n");
   }
 
   public function testEscaping(): void {
@@ -118,7 +118,7 @@ final class ShipItShellCommandTest extends ShellTest {
       ->setEnvironmentVariables(ImmMap {'FOO' => 'variable value'})
       ->runSynchronously()
       ->getStdOut();
-    \expect($output)->toBeSame("foo \$FOO\n");
+    \expect($output)->toEqual("foo \$FOO\n");
   }
 
   public function testFailureHandlerNotCalledWhenNoFailure(): void {
@@ -156,7 +156,7 @@ final class ShipItShellCommandTest extends ShellTest {
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \unlink($file);
-    \expect($result->getExitCode())->toBeSame(1);
+    \expect($result->getExitCode())->toEqual(1);
   }
 
   public function testRetries(): void {
@@ -180,7 +180,7 @@ final class ShipItShellCommandTest extends ShellTest {
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \unlink($file);
     }
-    \expect($result->getExitCode())->toBeSame(0);
+    \expect($result->getExitCode())->toEqual(0);
   }
 
   public function testRetriesNotUsedOnSuccess(): void {
@@ -207,6 +207,6 @@ final class ShipItShellCommandTest extends ShellTest {
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \unlink($file);
     }
-    \expect($result->getExitCode())->toBeSame(0);
+    \expect($result->getExitCode())->toEqual(0);
   }
 }

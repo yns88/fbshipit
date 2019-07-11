@@ -20,7 +20,7 @@ final class NewlinesTest extends ShellTest {
   const WINDOWS_TXT = "foo\r\nbar\r\nbaz\r\n";
 
   public function testTestData(): void {
-    \expect(Str\length(self::WINDOWS_TXT))->toBeSame(
+    \expect(Str\length(self::WINDOWS_TXT))->toEqual(
       Str\length(self::UNIX_TXT) + 3,
     );
   }
@@ -110,11 +110,11 @@ final class NewlinesTest extends ShellTest {
     foreach ($repos as $repo) {
       $repo->commitPatch($changeset);
 
-      \expect(\file_get_contents($repo->getPath().'/unix.txt'))->toBeSame(
+      \expect(\file_get_contents($repo->getPath().'/unix.txt'))->toEqual(
         self::UNIX_TXT,
         'Unix test file',
       );
-      \expect(\file_get_contents($repo->getPath().'/windows.txt'))->toBeSame(
+      \expect(\file_get_contents($repo->getPath().'/windows.txt'))->toEqual(
         self::WINDOWS_TXT,
         'Windows text file',
       );

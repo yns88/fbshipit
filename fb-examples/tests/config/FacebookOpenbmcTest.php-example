@@ -176,7 +176,7 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
     $in = (new ShipItChangeset())
       ->withAuthor('Jubin Mehta <jmehta@fb.com>');
     $out = static::map($in);
-    \expect($out->getAuthor())->toBeSame('Jubin Mehta <jmehta@fb.com>');
+    \expect($out->getAuthor())->toEqual('Jubin Mehta <jmehta@fb.com>');
   }
 
   public function testNoReviwedBy(): void {

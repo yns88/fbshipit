@@ -27,7 +27,7 @@ final class FacebookReactNativeTest extends FBConfigBaseTest {
     $in = \expect($in)->toNotBeNull();
     $out = static::map($in);
 
-    \expect($out->getAuthor())->toBeSame('Brent Vatne <brentvatne@gmail.com>');
+    \expect($out->getAuthor())->toEqual('Brent Vatne <brentvatne@gmail.com>');
   }
 
   <<__Override>>

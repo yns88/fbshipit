@@ -86,7 +86,7 @@ final class UserFiltersTest extends BaseTest {
     $changeset = (new ShipItChangeset())->withMessage($message);
     \expect(
       ShipItMentions::rewriteMentions($changeset, $callback)->getMessage(),
-    )->toBeSame($expected_message);
+    )->toEqual($expected_message);
   }
 
   public function testContainsMention(): void {
@@ -111,6 +111,6 @@ final class UserFiltersTest extends BaseTest {
         $$,
         UserInfoTestImplementation::class,
       );
-    \expect($changeset->getAuthor())->toBeSame($expected);
+    \expect($changeset->getAuthor())->toEqual($expected);
   }
 }

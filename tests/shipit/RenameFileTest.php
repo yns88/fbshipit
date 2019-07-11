@@ -49,7 +49,7 @@ final class RenameFileTest extends ShellTest {
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     \shell_exec('rm -rf '.\escapeshellarg($temp_dir->getPath()));
 
-    \expect($changeset->getSubject())->toBeSame('moved file');
+    \expect($changeset->getSubject())->toEqual('moved file');
 
     $diffs = Map {};
     foreach ($changeset->getDiffs() as $diff) {

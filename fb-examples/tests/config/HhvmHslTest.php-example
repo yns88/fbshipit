@@ -49,7 +49,7 @@ final class HhvmHslTest extends FBWWWConfigBaseTest {
           ),
         }),
     );
-    \expect($changeset->getDiffs()->at(0)['body'])->toBeSame(
+    \expect($changeset->getDiffs()->at(0)['body'])->toEqual(
       " herp(); // @oss-enable\n".
       " // @oss-disable: derp();\n".
       " \n".
@@ -68,7 +68,7 @@ final class HhvmHslTest extends FBWWWConfigBaseTest {
           ),
         }),
     );
-    \expect($changeset->getDiffs()->at(0)['body'])->toBeSame(
+    \expect($changeset->getDiffs()->at(0)['body'])->toEqual(
       " // @oss-enable: herp();\n"." derp(); // @oss-disable\n",
     );
   }

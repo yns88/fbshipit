@@ -41,7 +41,7 @@ final class SubmoduleTest extends \Facebook\ShipIt\ShellTest {
       'fbcode/hphp/facebook/third-party-rev.txt',
     );
 
-    \expect($changeset->getDiffs()->keys()->count())->toBeSame(1);
+    \expect($changeset->getDiffs()->keys()->count())->toEqual(1);
     $change = $changeset->getDiffs()->firstValue();
     $change = \expect($change)->toNotBeNull();
     $change = $change['body'];

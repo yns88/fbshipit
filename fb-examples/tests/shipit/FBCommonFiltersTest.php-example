@@ -21,7 +21,7 @@ final class FBCommonFiltersTest extends FBBaseTest {
     $in = (new ShipItChangeset())
       ->withAuthor('Joel Marcey <joelm@fb.com>');
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getAuthor())->toBeSame($in->getAuthor());
+    \expect($out->getAuthor())->toEqual($in->getAuthor());
   }
 
   public function testFBAuthorWithGitHubAuthor(): void {
@@ -29,8 +29,8 @@ final class FBCommonFiltersTest extends FBBaseTest {
       ->withAuthor('Joel Marcey <joelm@fb.com>')
       ->withMessage('GitHub Author: Fred Emmott <fe@fb.com>');
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getAuthor())->toBeSame('Fred Emmott <fe@fb.com>');
-    \expect($out->getMessage())->toBeSame("Pulled By: JoelMarcey");
+    \expect($out->getAuthor())->toEqual('Fred Emmott <fe@fb.com>');
+    \expect($out->getMessage())->toEqual("Pulled By: JoelMarcey");
   }
 
   public static function examplesForAuthorEmailCorrection(
@@ -58,7 +58,7 @@ final class FBCommonFiltersTest extends FBBaseTest {
     $changeset = (new ShipItChangeset())
       ->withAuthor($in_author)
       |> FBCommonFilters::applyAll($$);
-    \expect($changeset->getAuthor())->toBeSame($expected_author);
+    \expect($changeset->getAuthor())->toEqual($expected_author);
   }
 
   public function testSVNAuthor(): void {
@@ -66,7 +66,7 @@ final class FBCommonFiltersTest extends FBBaseTest {
     $in = (new ShipItChangeset())
       ->withAuthor('fredemmott@'.$fake_uuid);
     $out = ShipItUserFilters::rewriteSVNAuthor($in, FBToGitHubUserInfo::class);
-    \expect($out->getAuthor())->toBeSame('Fred Emmott <fe@fb.com>');
+    \expect($out->getAuthor())->toEqual('Fred Emmott <fe@fb.com>');
   }
 
   public static function exampleFacebookDirectories(): vec<(string, bool)> {
@@ -122,21 +122,21 @@ final class FBCommonFiltersTest extends FBBaseTest {
     $in = (new ShipItChangeset())
       ->withMessage('Summary: @override-unit-failures');
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getMessage())->toBeSame('');
+    \expect($out->getMessage())->toEqual('');
   }
 
   public function testBuildDirectiveStripped(): void {
     $in = (new ShipItChangeset())
       ->withMessage("Summary: Test diff\nblah @build[project1,project2]");
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getMessage())->toBeSame("Summary:\nTest diff\nblah");
+    \expect($out->getMessage())->toEqual("Summary:\nTest diff\nblah");
   }
 
   public function testAccept2ShipStripped(): void {
     $in = (new ShipItChangeset())
       ->withMessage('Summary: #accept2ship');
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getMessage())->toBeSame('');
+    \expect($out->getMessage())->toEqual('');
 
     // testing multi-line strings
     $in = (new ShipItChangeset())
@@ -146,7 +146,7 @@ final class FBCommonFiltersTest extends FBBaseTest {
     some_suffix',
       );
     $out = FBCommonFilters::stripAccept2Ship($in);
-    \expect($out->getMessage())->toBeSame(
+    \expect($out->getMessage())->toEqual(
       'some_prefix
         some_suffix',
     );
@@ -154,7 +154,7 @@ final class FBCommonFiltersTest extends FBBaseTest {
     $in = (new ShipItChangeset())
       ->withMessage("some_prefix\n#accept2ship\nsome_suffix");
     $out = FBCommonFilters::stripAccept2Ship($in);
-    \expect($out->getMessage())->toBeSame("some_prefix\nsome_suffix");
+    \expect($out->getMessage())->toEqual("some_prefix\nsome_suffix");
   }
 
   public function testSevRevertSummaryStripped(): void {
@@ -164,7 +164,7 @@ final class FBCommonFiltersTest extends FBBaseTest {
         'Summary: This reverts commit abcdabcdabcdabcdabcdabcdabcdabcdabcdabcd',
       );
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getMessage())->toBeSame(
+    \expect($out->getMessage())->toEqual(
       'Summary: This reverts commit abcdabcdabcdabcdabcdabcdabcdabcdabcdabcd',
     );
 
@@ -172,7 +172,7 @@ final class FBCommonFiltersTest extends FBBaseTest {
     $in = (new ShipItChangeset())
       ->withMessage('Summary: cause_a_sev_many_files');
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getMessage())->toBeSame('Summary: cause_a_sev_many_files');
+    \expect($out->getMessage())->toEqual('Summary: cause_a_sev_many_files');
 
     // both
     $in = (new ShipItChangeset())
@@ -183,7 +183,7 @@ cause_a_sev_many_files
 Differential Revision: D1234567',
       );
     $out = FBCommonFilters::applyAll($in);
-    \expect($out->getMessage())->toBeSame("Differential Revision: D1234567");
+    \expect($out->getMessage())->toEqual("Differential Revision: D1234567");
   }
 
   public function testTestPlanSectionStripped(): void {

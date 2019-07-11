@@ -64,7 +64,7 @@ abstract class FBWWWConfigBaseTest extends FBConfigBaseTest {
         }),
     );
     $diff = $changeset->getDiffs()->at(0);
-    \expect($diff['body'])->toBeSame(
+    \expect($diff['body'])->toEqual(
       "namespace HH\\Lib\\Vec;\n".
       "async function from_async(\$_): Awaitable<stuff> {}\n".
       "async function foo_async(\$_): Awaitable<stuff> {}\n".
@@ -98,6 +98,6 @@ abstract class FBWWWConfigBaseTest extends FBConfigBaseTest {
       ->withDiffs(ImmVector {$diff})
       |> $config_object::renameAsyncToGen($$);
     $diff = $changeset->getDiffs()->at(0);
-    \expect($diff['body'])->toBeSame($body, 'reverse translation (importit)');
+    \expect($diff['body'])->toEqual($body, 'reverse translation (importit)');
   }
 }

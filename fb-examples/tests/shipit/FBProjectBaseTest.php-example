@@ -79,7 +79,7 @@ abstract class FBProjectBaseTest extends FBBaseTest {
     $changeset = (new ShipItChangeset())->withSubject($in);
     $changeset = static::map($changeset);
     $out = $changeset->getSubject();
-    \expect($out)->toBeSame($expected);
+    \expect($out)->toEqual($expected);
   }
 
   public function testGitHubAuthor(): void {
@@ -145,8 +145,8 @@ abstract class FBProjectBaseTest extends FBBaseTest {
     $in = (new ShipItChangeset())
       ->withAuthor('Fred Emmott <fe@fb.com>');
     $out = static::map($in);
-    \expect($out->getAuthor())->toBeSame('Fred Emmott <fe@fb.com>');
-    \expect($out->getMessage())->toBeSame('');
+    \expect($out->getAuthor())->toEqual('Fred Emmott <fe@fb.com>');
+    \expect($out->getMessage())->toEqual('');
   }
 
   public function testReviewerMapping(): void {

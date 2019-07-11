@@ -57,7 +57,7 @@ final class UnusualContentTest extends BaseTest {
 
     $changeset = ShipItRepoGIT::getChangesetFromExportedPatch($header, $patch);
     $changeset = \expect($changeset)->toNotBeNull();
-    \expect($changeset->getDiffs()->count())->toBeSame(1);
+    \expect($changeset->getDiffs()->count())->toEqual(1);
     $hunk = $changeset->getDiffs()->at(0)['body'];
     \expect($hunk)->toContainSubstring($pre);
     \expect($hunk)->toContainSubstring($special);

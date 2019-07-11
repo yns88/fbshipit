@@ -66,7 +66,7 @@ final class FacebookChefCookbooksTest extends FBConfigBaseTest {
         "Reviewers: phild\n",
       );
     $out = FacebookChefCookbooks::stripChefTestHostsHeader($in);
-    \expect($out->getMessage())->toBeSame(
+    \expect($out->getMessage())->toEqual(
       "Summary: stuff here\n\nReviewers: phild\n",
     );
     $in = (new ShipItChangeset())
@@ -75,14 +75,14 @@ final class FacebookChefCookbooksTest extends FBConfigBaseTest {
         "Reviewers: phild\n",
       );
     $out = FacebookChefCookbooks::stripChefTestHostsHeader($in);
-    \expect($out->getMessage())->toBeSame("Summary:\n\nReviewers: phild\n");
+    \expect($out->getMessage())->toEqual("Summary:\n\nReviewers: phild\n");
     $in = (new ShipItChangeset())
       ->withMessage(
         "Summary:\nSome Message here\n\nchef_test_hosts: ".
         "hostname1, hostname2\n\nReviewers: phild\n",
       );
     $out = FacebookChefCookbooks::stripChefTestHostsHeader($in);
-    \expect($out->getMessage())->toBeSame(
+    \expect($out->getMessage())->toEqual(
       "Summary:\nSome Message here\n\nReviewers: phild\n",
     );
   }
