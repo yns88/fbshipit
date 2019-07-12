@@ -85,7 +85,7 @@ final class ConditionalLinesFilterTest extends BaseTest {
       $comment_start,
       $comment_end,
     );
-    \expect($commented->getDiffs()->at(0)['body'])->toNotBeSame(
+    \expect($commented->getDiffs()->at(0)['body'])->toNotEqual(
       $changeset->getDiffs()->at(0)['body'],
     );
     \expect($uncommented->getDiffs()->at(0)['body'])->toEqual(
