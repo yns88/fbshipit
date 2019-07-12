@@ -129,7 +129,7 @@ index %s..0000000
     $subproject_line = '[-+]Subproject commit [0-9a-fA-F]+';
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    return (bool) \preg_match(
+    return (bool)\preg_match(
       '@'.
       // Submodule file mode
       '(new file mode 160\d+ *\n)?'.
@@ -161,7 +161,7 @@ index %s..0000000
     $subproject_line = '[-+]Subproject commit [0-9a-fA-F]+';
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    return (bool) \preg_match(
+    return (bool)\preg_match(
       '@'.
       // Regular file mode
       '(new file mode 100\d+ *\n)?'.

@@ -150,10 +150,7 @@ final class UnusualContentTest extends BaseTest {
     $patch = \file_get_contents(
       __DIR__.'/hg-diffs/has-pound-sign-in-subject-and-message.patch',
     );
-    $changeset = ShipItRepoHG::getChangesetFromExportedPatch(
-      $header,
-      $patch,
-    );
+    $changeset = ShipItRepoHG::getChangesetFromExportedPatch($header, $patch);
     \expect($changeset->getSubject())->toBePHPEqual('# Testing pound signs');
     \expect($changeset->getMessage())->toBePHPEqual(
       "```\n# This is a code comment\n```",

@@ -50,7 +50,9 @@ final class ShipItTempDir {
       \sys_get_temp_dir(),
       /* stdin = */ null,
       ShipItUtil::DONT_VERBOSE,
-      'rm', '-rf', $this->path,
+      'rm',
+      '-rf',
+      $this->path,
     );
     $this->mode = ShipItTempDirMode::REMOVED;
   }

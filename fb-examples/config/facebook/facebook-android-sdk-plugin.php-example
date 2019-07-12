@@ -20,7 +20,8 @@ use type Facebook\ShipIt\{
   ShipItConditionalLinesFilter,
 };
 
-final class FacebookFacebookAndroidSdkPlugin extends FBShipItConfigeratorConfig {
+final class FacebookFacebookAndroidSdkPlugin
+  extends FBShipItConfigeratorConfig {
   <<__Override>>
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,

@@ -40,7 +40,7 @@ final class FacebookRelayTest extends FBConfigBaseTest {
       self::RELAY_OSS.'/relay-test-utils/MockEnvironment.js' =>
         'packages/relay-test-utils/MockEnvironment.js',
       self::RELAY_OSS.'/relay-test-utils-internal/index.js' =>
-          'packages/relay-test-utils-internal/index.js',
+        'packages/relay-test-utils-internal/index.js',
       self::RELAY_OSS.'/relay-config/index.js' =>
         'packages/relay-config/index.js',
 

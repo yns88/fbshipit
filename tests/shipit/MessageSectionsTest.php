@@ -71,12 +71,11 @@ final class MessageSectionsTest extends BaseTest {
     ImmMap<string, string> $sections,
     string $expected,
   ): void {
-    \expect(ShipItMessageSections::buildMessage($sections))->toEqual(
-      $expected,
-    );
+    \expect(ShipItMessageSections::buildMessage($sections))->toEqual($expected);
   }
 
-  public static function getExamplesForWhitespaceEndToEnd(): vec<(string, string)> {
+  public static function getExamplesForWhitespaceEndToEnd(
+  ): vec<(string, string)> {
     return vec[
       tuple("Summary: foo", 'Summary: foo'),
       tuple("Summary:\nfoo", 'Summary: foo'),

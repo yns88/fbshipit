@@ -128,8 +128,7 @@ trait FBCodeBuilderTrait implements ISupportsFBCodeBuilder {
   // Adds fbcode_builder's path mappings to the per-project path mappings.
   // `projectFilterChangesetNonFBCodeBuilder` will `moveDirectories` for us.
   <<__Override>>
-  final public function getDefaultPathMappings(
-  ): ImmMap<string, string> {
+  final public function getDefaultPathMappings(): ImmMap<string, string> {
     return ImmMap::fromItems(
       static::getPathMappingsNonFBCodeBuilder()->items()
         ->concat(self::getFBCodeBuilderPathMappings()->items()),

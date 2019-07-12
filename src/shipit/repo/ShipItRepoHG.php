@@ -200,8 +200,8 @@ class ShipItRepoHG
       $line = Regex\replace($line, re"/(\r\n|\n)/", "\n");
 
       if (
-        $contents !== ''
-        && Regex\matches(
+        $contents !== '' &&
+        Regex\matches(
           Str\trim_right($line),
           re"@^diff --git( ([ab]/(.*?)|/dev/null)){2}@",
         )
@@ -283,7 +283,9 @@ class ShipItRepoHG
       '# User {author}
 # Date {date}
 # Node ID {node}
-'.self::COMMIT_SEPARATOR.'
+'.
+      self::COMMIT_SEPARATOR.
+      '
 {desc}',
     );
   }

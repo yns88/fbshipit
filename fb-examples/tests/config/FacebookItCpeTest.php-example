@@ -14,11 +14,11 @@ final class FacebookItCpeTest extends FBConfigBaseTest {
     return ImmMap {
       # example of things that *should* make it through
       'chef/cookbooks/core/fb_helpers/README.md' =>
-      'itchef/cookbooks/fb_helpers/README.md',
+        'itchef/cookbooks/fb_helpers/README.md',
       'chef/itchef/cookbooks/core/cpe_helpers/README.md' =>
-      'itchef/cookbooks/cpe_helpers/README.md',
+        'itchef/cookbooks/cpe_helpers/README.md',
       'chef/itchef/cookbooks/core/cpe_hosts/README.md' =>
-      'itchef/cookbooks/cpe_hosts/README.md',
+        'itchef/cookbooks/cpe_hosts/README.md',
       # example of a cookbook not in the list
       'chef/itchef/cookbooks/core/cpe_utils/README.md' => null,
       'chef/itchef/cookbook/other/cpe_user_customizations/README.md' => null,

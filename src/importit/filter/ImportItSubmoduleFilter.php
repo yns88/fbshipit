@@ -21,7 +21,7 @@ final class ImportItSubmoduleFilter {
    * Like ShipItSubmoduleFilter, but produces a plain file instead of a
    * real submodule.
    */
-   public static function makeSubmoduleDiff(
+  public static function makeSubmoduleDiff(
     string $path,
     ?string $old_rev,
     ?string $new_rev,

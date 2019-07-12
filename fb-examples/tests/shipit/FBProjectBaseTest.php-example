@@ -289,7 +289,8 @@ abstract class FBProjectBaseTest extends FBBaseTest {
     // no expected exception
   }
 
-  final public static function examplePathMappings(): dict<string, (string, ?string)> {
+  final public static function examplePathMappings(
+  ): dict<string, (string, ?string)> {
     return static::getExamplePathMappings()
       ->mapWithKey(($k, $v) ==> tuple($k, $v))
       |> dict($$);

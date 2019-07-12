@@ -33,7 +33,8 @@ final class UserInfoTestImplementation extends ShipItUserInfo {
 
 <<\Oncalls('open_source')>>
 final class UserFiltersTest extends BaseTest {
-  public static function examplesForGetMentions(): vec<(string, ImmSet<string>)> {
+  public static function examplesForGetMentions(
+  ): vec<(string, ImmSet<string>)> {
     return vec[
       tuple('@foo', ImmSet {'@foo'}),
       tuple('@foo @bar', ImmSet {'@foo', '@bar'}),

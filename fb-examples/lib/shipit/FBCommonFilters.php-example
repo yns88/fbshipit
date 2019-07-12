@@ -378,11 +378,11 @@ final class FBCommonFilters {
     }
 
     $pulled_by_unixname = null;
-    $matches = Regex\first_match($changeset->getAuthor(), re"/<(?<author>[^@]*)@fb\.com>/");
-    if (
-      $matches !== null &&
-      !self::isBotUser($matches['author'])
-    ) {
+    $matches = Regex\first_match(
+      $changeset->getAuthor(),
+      re"/<(?<author>[^@]*)@fb\.com>/",
+    );
+    if ($matches !== null && !self::isBotUser($matches['author'])) {
       $pulled_by_unixname = $matches['author'];
     } else {
       $sections = ShipItMessageSections::getSections(

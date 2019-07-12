@@ -19,7 +19,7 @@ final class FbsamplesOriginalCoastClothingTest extends FBConfigBaseTest {
       self::ROOT.'package.json' => 'package.json',
       self::ROOT.'app.js' => 'app.js',
       self::ROOT.'locales/en_US.json' => 'locales/en_US.json',
-      self::ROOT.'services/response.js' => 'services/response.js'
+      self::ROOT.'services/response.js' => 'services/response.js',
     };
   }
 }

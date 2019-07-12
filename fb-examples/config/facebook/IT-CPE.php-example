@@ -39,7 +39,7 @@ final class FacebookItCpe extends FBShipItConfig {
         'chef/cookbooks/core/fb_helpers/',
         'chef/itchef/github/',
         'chef/itchef/github-deprecated/',
-        ])
+      ])
       ->toImmSet();
   }
 

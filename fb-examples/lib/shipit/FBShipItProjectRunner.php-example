@@ -69,9 +69,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
           'Read configerator configs directly from the given folder',
         'write' => $configerator_dir ==> {
           print(
-            '--- Reading configerator configs from '.
-            $configerator_dir.
-            "\n"
+            '--- Reading configerator configs from '.$configerator_dir."\n"
           );
           $this->configeratorDir = $configerator_dir;
           return true;

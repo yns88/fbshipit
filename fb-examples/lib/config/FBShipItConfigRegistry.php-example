@@ -121,8 +121,10 @@ final class FBShipItConfigRegistry {
     );
     return Keyset\filter(
       $classes,
-      $class ==>
-        C\contains($tagit_projects, $class::getInstance()->getStaticConfig()['githubProject']),
+      $class ==> C\contains(
+        $tagit_projects,
+        $class::getInstance()->getStaticConfig()['githubProject'],
+      ),
     );
   }
 

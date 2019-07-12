@@ -126,9 +126,7 @@ final class SyncTrackingTest extends ShellTest {
       (new ShipItChangeset())->withID($fake_commit_id_2),
     )->getMessage();
     $repo = $this->getGITRepoWithCommit($message_1."\n\n".$message_2);
-    \expect($repo->findLastSourceCommit(ImmSet {}))->toEqual(
-      $fake_commit_id_2,
-    );
+    \expect($repo->findLastSourceCommit(ImmSet {}))->toEqual($fake_commit_id_2);
   }
 
   public function testLastSourceCommitWithWhitespace(): void {

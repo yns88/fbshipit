@@ -32,7 +32,7 @@ final class FacebookItCpePlugin extends FBShipItConfigeratorConfig {
       ->concat(vec[
         'chef/itchef/github/',
         'chef/itchef/github-deprecated/',
-        ])
+      ])
       ->toImmSet();
   }
 
