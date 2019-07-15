@@ -45,7 +45,7 @@ abstract final class FBShimPHP7 {
       $pipes = varray[];
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      $process = \proc_open($command, $descriptorspec, &$pipes);
+      $process = \proc_open($command, $descriptorspec, inout $pipes);
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \fclose($pipes[0]);

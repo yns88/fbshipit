@@ -99,7 +99,7 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
         1 => varray['file', '/dev/null', 'w'],
         2 => varray['file', '/dev/null', 'w'],
       ],
-      &$pipes,
+      inout $pipes,
       $sourcePath,
     );
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
