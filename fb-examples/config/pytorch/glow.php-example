@@ -7,7 +7,13 @@
  */
 namespace Facebook\ShipIt\Config;
 
-use type Facebook\ShipIt\{FBShipItCLIStaticConfig, FBShipItConfig};
+use type Facebook\ShipIt\{
+  FBShipItCLIStaticConfig,
+  FBShipItConfig,
+  ShipItChangeset,
+  GetPathMappingsFn,
+  ShipItPathFilters,
+};
 
 final class PytorchGlow extends FBShipItConfig {
   const string ROOT = 'fbcode/glow/glow/';
@@ -17,6 +23,23 @@ final class PytorchGlow extends FBShipItConfig {
     return ImmMap {
       self::ROOT => '',
     };
+  }
+
+  private function getStrippedFiles(): ImmVector<string> {
+    return ImmVector {"@lib/Backends/ROCm/.*@"};
+  }
+
+  <<__Override>>
+  public function defaultProjectFilterChangeset(
+    ShipItChangeset $changeset,
+    GetPathMappingsFn $get_path_mappings,
+  ): ShipItChangeset {
+    $changeset = parent::defaultProjectFilterChangeset(
+      $changeset,
+      $get_path_mappings,
+    );
+    $res = ShipItPathFilters::stripPaths($changeset, $this->getStrippedFiles());
+    return $res;
   }
 
   <<__Override>>
