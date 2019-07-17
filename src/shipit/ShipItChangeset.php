@@ -158,7 +158,7 @@ final class ShipItChangeset {
   }
 
   public function withCoAuthorLines(string $co_author_lines): ShipItChangeset {
-    /* HH_IGNORE_ERROR[5562] */
+    /* @lint-ignore HackLint5562 */
     $out = clone $this;
     $out->coAuthorLines = $co_author_lines;
     return $out;

@@ -191,7 +191,7 @@ abstract class ShipItGitHubUtils {
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \curl_setopt($ch, \CURLOPT_HEADER, 1);
-      /* HH_IGNORE_ERROR[5583] Intentional serial await */
+      /* @lint-ignore HackLint5583 Intentional serial await */
       $response = await \HH\Asio\curl_exec($ch);
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
