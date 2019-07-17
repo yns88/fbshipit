@@ -17,25 +17,6 @@ use type Facebook\ShipIt\{
 };
 
 final class FacebookItCpePlugin extends FBShipItConfigeratorConfig {
-  const string BASE_DIR = 'chef/itchef/cookbooks/core/';
-
-  # Add new open-source cookbooks here. Be sure to get sign-off
-  # from the OpenSource team.
-  static ImmSet<string> $cookbooks = ImmSet {
-    'cpe_helpers',
-    'cpe_hosts',
-    'cpe_profiles',
-  };
-
-  public static function getDirs(): ImmSet<string> {
-    return self::$cookbooks->map($cookbook ==> self::BASE_DIR.$cookbook.'/')
-      ->concat(vec[
-        'chef/itchef/github/',
-        'chef/itchef/github-deprecated/',
-      ])
-      ->toImmSet();
-  }
-
   public static function stripChefTestHostsHeader(
     ShipItChangeset $changeset,
   ): ShipItChangeset {
@@ -53,13 +34,5 @@ final class FacebookItCpePlugin extends FBShipItConfigeratorConfig {
   ): ShipItChangeset {
     return parent::defaultProjectFilterChangeset($changeset, $get_path_mappings)
       |> static::stripChefTestHostsHeader($$);
-  }
-
-  <<__Override>>
-  public function getBaseConfig(
-    FBSourceBranchConfig $branch_config,
-  ): ShipItBaseConfig {
-    return parent::getBaseConfig($branch_config)
-      ->withSourceRoots(self::getDirs());
   }
 }
