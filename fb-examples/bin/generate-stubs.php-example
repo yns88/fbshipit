@@ -14,7 +14,7 @@
 <<__EntryPoint>>
 async function generate_stubs_entrypoint(): Awaitable<void> {
   GlobalSERVER::set('PHP_ROOT', PHP\realpath(__DIR__.'/../../../'));
-  require_once GlobalSERVER::getPHPRoot().'/flib/init/script.php';
+  require_once GlobalSERVER::getPHPRoot().'/flib/intern/init/script.php';
   /* HH_FIXME[4128] Found when moving things to use __EntryPoint */
   flib_init_script();
   PHP\ini_set('memory_limit', -1);
