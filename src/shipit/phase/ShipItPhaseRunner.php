@@ -309,10 +309,10 @@ class ShipItPhaseRunner {
     );
     echo <<<EOF
 Usage:
-${filename} [options]
+{$filename} [options]
 
 Options:
-${opt_help}
+{$opt_help}
 
 EOF;
   }
