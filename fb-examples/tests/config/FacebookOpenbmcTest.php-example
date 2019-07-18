@@ -61,6 +61,13 @@ final class FacebookOpenbmcTest extends FBConfigBaseTest {
         'meta-aspeed/recipes-kernel/linux/linux-aspeed.inc',
       'github/sync_yocto.sh' => 'sync_yocto.sh',
       'github/yocto/.gitignore' => 'yocto/.gitignore',
+      'github/meta-aspeed/recipes-bsp/u-boot/u-boot_2019.01.bb' =>
+        'meta-aspeed/recipes-bsp/u-boot/u-boot_2019.01.bb',
+      'github/meta-aspeed/recipes-bsp/u-boot/u-boot-fw-utils_2019.01.bb' =>
+        'meta-aspeed/recipes-bsp/u-boot/u-boot-fw-utils_2019.01.bb',
+      'github/meta-aspeed/recipes-bsp/u-boot/u-boot-mkimage_2019.01.bb' =>
+        'meta-aspeed/recipes-bsp/u-boot/u-boot-mkimage_2019.01.bb',
+      'github/meta-aspeed/abcd' => 'meta-aspeed/abcd',
     };
   }
 
