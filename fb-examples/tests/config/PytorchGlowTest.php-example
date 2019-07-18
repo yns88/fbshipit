@@ -16,6 +16,7 @@ final class PytorchGlowTest extends FBConfigBaseTest {
       'fbcode/glow/glow/bar/baz' => 'bar/baz',
       'fbcode/glow/other' => null,
       'fbcode/glow/glow/lib/Backends/ROCm/Foo.h' => null,
+      'fbcode/glow/glow/lib/tests/unittests/ROCmTest.cpp' => null,
     };
   }
 }

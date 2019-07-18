@@ -26,7 +26,7 @@ final class PytorchGlow extends FBShipItConfig {
   }
 
   private function getStrippedFiles(): ImmVector<string> {
-    return ImmVector {"@lib/Backends/ROCm/.*@"};
+    return ImmVector {"@lib/Backends/ROCm/.*@", "@tests/unittests/ROCm.*@"};
   }
 
   <<__Override>>
