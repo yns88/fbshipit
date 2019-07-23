@@ -22,7 +22,7 @@ final class FacebookincubatorMvfst extends FBShipItConfig {
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
       'facebook/folly',
-      'facebook/fizz',
+      'facebookincubator/fizz',
     };
   }
 

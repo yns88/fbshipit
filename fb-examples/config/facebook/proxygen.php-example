@@ -26,6 +26,8 @@ final class FacebookProxygen extends FBShipItConfig {
     return ImmSet {
       'facebook/folly',
       'facebook/wangle',
+      'facebookincubator/fizz',
+      'facebookincubator/mvfst',
     };
   }
 

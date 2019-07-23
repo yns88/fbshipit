@@ -25,6 +25,7 @@ final class FacebookWangle extends FBShipItConfig {
   protected static function getFBCodeBuilderDependencies(): ImmSet<string> {
     return ImmSet {
       'facebook/folly',
+      'facebookincubator/fizz',
     };
   }
 
