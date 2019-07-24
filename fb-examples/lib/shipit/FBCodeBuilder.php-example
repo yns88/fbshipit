@@ -154,3 +154,55 @@ trait FBCodeBuilderTrait implements ISupportsFBCodeBuilder {
       );
   }
 }
+
+final class FBCodeBuilderPlugin extends FBShipItConfigeratorConfig {
+  // Implement the same as you would write a vanilla projectFilterChangeset()
+  protected function projectFilterChangesetNonFBCodeBuilder(
+    ShipItChangeset $changeset,
+    GetPathMappingsFn $get_path_mappings,
+  ): ShipItChangeset {
+    return parent::defaultProjectFilterChangeset(
+      $changeset,
+      $get_path_mappings,
+    );
+  }
+
+  protected function getFBCodeBuilderTravisConfig(): string {
+    return FBCodeBuilder::SRC_FBCODE_BUILDER.'travis.yml';
+  }
+
+  public function getFBCodeBuilderPathMappings(): ImmMap<string, string> {
+    return FBCodeBuilder::getPathMappings(
+      $this->getFBCodeBuilderTravisConfig(),
+    );
+  }
+
+  // Adds fbcode_builder's path mappings to the per-project path mappings.
+  // `projectFilterChangesetNonFBCodeBuilder` will `moveDirectories` for us.
+  <<__Override>>
+  final public function getDefaultPathMappings(): ImmMap<string, string> {
+    return ImmMap::fromItems(
+      parent::getDefaultPathMappings()->items()
+        ->concat($this->getFBCodeBuilderPathMappings()->items()),
+    );
+  }
+
+  <<__Override>>
+  final public function defaultProjectFilterChangeset(
+    ShipItChangeset $changeset,
+    GetPathMappingsFn $get_path_mappings,
+  ): ShipItChangeset {
+    $dependencies = $this->getFBCodeBuilderDependencies();
+    return $changeset
+      // We are counting on this to call
+      //   ShipItPathFilters::moveDirectories($$, static::getPathMappings())
+      |> $this->projectFilterChangesetNonFBCodeBuilder($$, $get_path_mappings)
+      // Strip all project_hashes except those of our dependencies.
+      // Strip code specific to Facebook's internal continuous integration.
+      |> ShipItPathFilters::stripPaths(
+        $$,
+        FBCodeBuilder::getDestStrippedFiles(),
+        FBCodeBuilder::getDestStrippedFileExceptions($dependencies),
+      );
+  }
+}
