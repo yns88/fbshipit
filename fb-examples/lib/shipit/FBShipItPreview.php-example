@@ -67,11 +67,9 @@ final class FBShipItPreview {
     if ($patch !== null) {
       // Assume phabricator patch was exported in git format
       $diffs = ShipItRepoGIT::getDiffsFromPatch($patch);
-      $rename_str = 'rename from ';
       $no_renames = $diffs
         ->filter(
-          $diff ==> (Str\slice($diff['body'], 0, Str\length($rename_str))) ===
-            $rename_str,
+          $diff ==> \Regex::isMatch('/^(rename|copy) from /', $diff['body']),
         )
         ->isEmpty();
       if ($no_renames) {
