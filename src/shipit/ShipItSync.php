@@ -14,7 +14,9 @@ namespace Facebook\ShipIt;
 
 use namespace HH\Lib\{Str, Regex};
 
-final class ShipItException extends \Exception {}
+class ShipItException extends \Exception {}
+
+final class ShipItImportDisallowedException extends ShipItException {}
 
 final class ShipItSync {
   public function __construct(

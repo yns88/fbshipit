@@ -20,7 +20,7 @@ use type Facebook\ShipIt\{
   FBSourceBranchConfig,
   GetPathMappingsFn,
   ShipItChangeset,
-  ShipItException,
+  ShipItImportDisallowedException,
   ShipItPathFilters,
   ShipItUtil,
 };
@@ -98,8 +98,7 @@ final class FacebookOpenbmcPlugin extends FBShipItConfigeratorConfig {
       $match = ShipItUtil::matchesAnyPattern($path, $unsupported_path_patterns);
 
       if ($match !== null) {
-        // This could be handled more gracefully in the future.
-        throw new ShipItException("Importing changes unsupported: ".$path);
+        throw new ShipItImportDisallowedException($path);
       }
     }
 
