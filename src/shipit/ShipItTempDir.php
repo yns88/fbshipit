@@ -61,13 +61,6 @@ final class ShipItTempDir {
     return $this->path;
   }
 
-  <<__OptionalDestruct>>
-  public function __destruct() {
-    if ($this->mode === ShipItTempDirMode::AUTO_REMOVE) {
-      $this->remove();
-    }
-  }
-
   public function __clone(): noreturn {
     invariant_violation("Can't touch^Wclone this");
   }
