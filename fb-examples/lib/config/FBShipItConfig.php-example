@@ -43,12 +43,6 @@ abstract class FBShipItConfig {
   const string UPDATE_SUBMODULE_AUTHOR = 'svcscm <svcscm@fb.com>';
   const string UPDATE_SUBMODULE_SUBJECT = 'Updating submodules';
 
-  public function getClassName(): classname<FBShipItConfig> {
-    // Dynamic access to class name is not permitted in Hack, so this provides
-    // a way to sneak around it
-    return static::class;
-  }
-
   private function __construct() {}
 
   public static function getInstance(): this {
@@ -58,10 +52,6 @@ abstract class FBShipItConfig {
   public abstract function getStaticConfig(): FBShipItCLIStaticConfig;
 
   public abstract function getDefaultPathMappings(): ImmMap<string, string>;
-
-  public function forceConfigeratorGenerationWithHackPlugin(): ?string {
-    return null;
-  }
 
   public function defaultProjectFilterChangeset(
     ShipItChangeset $changeset,

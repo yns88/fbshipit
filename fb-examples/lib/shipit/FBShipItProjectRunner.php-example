@@ -144,7 +144,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     );
     $match = null;
     foreach ($config_objects as $config_object) {
-      if ($config_object->getClassName() === $name) {
+      if ($config_object->getConfigeratorName() === $name) {
         return $config_object;
       }
       if ($config_object->getStaticConfig()['githubProject'] === $name) {
