@@ -188,7 +188,6 @@ final abstract class FBShipItConfigClasses {
         FBShipItConfigeratorConfigClasses::getAllConfigs();
     } else {
       \$configerator_configs = FBShipItConfigeratorConfigClasses::getAllConfigs(
-        true,
         \$configerator_dir,
       );
     }
