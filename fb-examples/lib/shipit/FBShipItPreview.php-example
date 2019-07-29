@@ -42,7 +42,8 @@ final class FBShipItPreview {
   private vec<FBShipItConfig> $allConfigClasses;
 
   public function __construct(): void {
-    $this->allConfigClasses = FBShipItConfigClasses::getConfigs();
+    $this->allConfigClasses =
+      FBShipItConfigeratorConfigClasses::getAllConfigs();
   }
 
   final public function handleChangeset(

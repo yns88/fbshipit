@@ -130,15 +130,18 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
       if ($configerator_config !== null) {
         return $configerator_config;
       }
-      $config_class = FBShipItConfigRegistry::getRepoShipItConfig(
-        $split[0],
-        $split[1],
+      return \nullthrows(
+        \Facebook\ShipIt\FBShipItConfigeratorConfigClasses::getConfig(
+          $split[0],
+          $split[1],
+        ),
       );
-      return $config_class::getInstance();
     }
     // reponame OR FacebookReponame
     // Search for a unique match in repo name or class name
-    $config_objects = FBShipItConfigClasses::getConfigs($this->configeratorDir);
+    $config_objects = FBShipItConfigeratorConfigClasses::getAllConfigs(
+      $this->configeratorDir,
+    );
     $match = null;
     foreach ($config_objects as $config_object) {
       if ($config_object->getClassName() === $name) {

@@ -51,14 +51,15 @@ trait FBShipItCLITrait {
   }
 
   final public static function cliShipIt(
-    ?classname<FBShipItConfig> $config_class = null,
+    ?FBShipItConfigeratorConfig $config = null,
     ?string $_external_branch = null,
   ): void {
     self::initForCli();
-    print('--- Starting ShipIt: '.$config_class."\n");
+    $config_name = $config === null ? '' : $config->getConfigeratorName();
+    print('--- Starting ShipIt: '.$config_name."\n");
     $runner = new FBShipItProjectRunner(
       FBShipItCLIAction::SHIP_IT,
-      self::nullOrConfigObject($config_class),
+      $config,
     );
     self::executeRunner($runner);
   }

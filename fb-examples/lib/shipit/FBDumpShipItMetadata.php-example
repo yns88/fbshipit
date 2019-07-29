@@ -39,7 +39,7 @@ final class FBDumpShipItMetadata {
 
   final public static function dumpMetadata(): void {
     $metadatas = vec[];
-    $config_objects = FBShipItConfigClasses::getConfigs();
+    $config_objects = FBShipItConfigeratorConfigClasses::getAllConfigs();
     foreach ($config_objects as $config_object) {
       $branch_resolver = new FBShipItBranchResolutionPhase($config_object);
       $repo_metadata = $branch_resolver->getRepoMetadata();
