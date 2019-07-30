@@ -131,6 +131,13 @@ final class FBCommonFilters {
     return $changeset;
   }
 
+  /**
+   * File patterns to strip from projects by default.
+   *
+   * WARNING: Changing this list may break synchronization for a large number
+   * of repositories! Make sure that you follow up to add/remove the relevant
+   * files on GitHub itself.
+   */
   public static function stripCommonFiles(
     ShipItChangeset $changeset,
     vec<string> $exception_patterns = vec[],
