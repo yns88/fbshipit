@@ -147,6 +147,7 @@ final class FBCommonFilters {
         '@\.mk$@',
         '@pull_request_metadata_DO_NOT_COMMIT_THIS_FILE_OR_YOU_WILL_BE_FIRED\.json@',
         '@/\.pyre_configuration\.local$@',
+        '@re_worker_requirements$@',
       },
       $exception_patterns->concat(ImmVector {
         // Various Facebook projects depend on this project hashes to update
