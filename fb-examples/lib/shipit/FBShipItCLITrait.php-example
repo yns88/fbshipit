@@ -43,7 +43,6 @@ trait FBShipItCLITrait {
   final public static function cliForBinary(
     classname<IShipItConfig> $config_class,
   ): void {
-    self::initForCli();
     print('--- Starting '.$config_class."\n");
     $config = $config_class::getBaseConfig();
     $runner = new ShipItPhaseRunner($config, $config_class::getPhases());
@@ -54,7 +53,6 @@ trait FBShipItCLITrait {
     ?FBShipItConfigeratorConfig $config = null,
     ?string $_external_branch = null,
   ): void {
-    self::initForCli();
     $config_name = $config === null ? '' : $config->getConfigeratorName();
     print('--- Starting ShipIt: '.$config_name."\n");
     $runner = new FBShipItProjectRunner(
@@ -68,7 +66,6 @@ trait FBShipItCLITrait {
     ?classname<FBShipItConfig> $config_class = null,
     ?string $external_branch = null,
   ): void {
-    self::initForCli();
     print('--- Starting ImportIt: '.$config_class."\n");
     $runner = new FBShipItProjectRunner(
       FBShipItCLIAction::IMPORT_IT,
@@ -76,31 +73,6 @@ trait FBShipItCLITrait {
       $external_branch,
     );
     self::executeRunner($runner);
-  }
-
-  private static function initForCli(): void {
-    /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-    /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (\get_current_user() === 'svcscm') {
-      throw new \Exception(
-        "\n=================================================================\n".
-        'This executable must be ran as an individual user, or via a hipster '.
-        "account.\n".
-        "\n".
-        "If you are seeing this in an On Demand instance:\n".
-        "  Unfortunately, ShipIt does not work in On Demand, because it\n".
-        "  depends on access to your personal .gitconfig and SSH keys for\n".
-        "  authentication. Until On Demand supports user certs, you'll need\n".
-        "  to use a devserver.\n".
-        "\n".
-        "If you are seeing this from Chronos:\n".
-        "  1. disable this job permanently\n".
-        "  2. find your repository on bunnylol `oss reponame`\n".
-        "  3. open workflow settings\n".
-        "  4. tick the 'ShipIt Chronos Job' box.\n".
-        "=================================================================\n",
-      );
-    }
   }
 
   private static function executeRunner(ShipItPhaseRunner $runner): void {
