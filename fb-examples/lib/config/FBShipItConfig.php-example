@@ -373,14 +373,6 @@ abstract class FBShipItConfig {
       );
   }
 
-  // Public so that you can add a unit test
-  final public function importChangeset(
-    ShipItChangeset $changeset,
-    FBSourceBranchConfig $branch_config,
-  ): ShipItChangeset {
-    return $this->projectImportChangeset($changeset, $branch_config);
-  }
-
   final public function getImportBaseConfig(
     FBSourceBranchConfig $branch_config,
   ): ShipItBaseConfig {
@@ -460,7 +452,7 @@ abstract class FBShipItConfig {
       new ShipItCleanPhase(ShipItRepoSide::DESTINATION),
       new ShipItPullPhase(ShipItRepoSide::DESTINATION),
       new ImportItSyncPhase(
-        $changeset ==> $this->importChangeset($changeset, $branch_config),
+        $changeset ==> $this->projectImportChangeset($changeset, $branch_config),
       ),
     ];
   }
