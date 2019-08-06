@@ -63,6 +63,8 @@ abstract class FBShipItConfig {
         shape(
           'stripCommonFiles/exceptions' =>
             $this->getStripCommonFileExceptions(),
+          'filterMessageSections/keepFields' =>
+            $this->keepMessageSectionNames(),
         ),
       )
       |> ShipItPathFilters::stripPaths(
@@ -123,6 +125,13 @@ abstract class FBShipItConfig {
    */
   public function hasCommitMarkerPrefix(): bool {
     return true;
+  }
+
+  /**
+   * Names of sections to keep in the commit message (e.g. summary)
+   */
+  public function keepMessageSectionNames(): keyset<string> {
+    return FBCommonFilters::DEFAULT_MESSAGE_SECTION_NAMES;
   }
 
   // Public so that you can add a unit test

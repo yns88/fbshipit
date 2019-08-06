@@ -287,15 +287,6 @@ final class FBCommonFilters {
     );
   }
 
-  public static function getDefaultMessageSectionNames(): keyset<string> {
-    return keyset[
-      'summary',
-      'reviewed by',
-      'differential revision',
-      'pulled by',
-    ];
-  }
-
   public static function getSupportedMessageSectionNames(): keyset<string> {
     return keyset[
       'summary',

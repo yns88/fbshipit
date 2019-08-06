@@ -241,7 +241,7 @@ Test Plan: run all code paths',
     // use default section names
     $keep = FBCommonFilters::getKeepSections($changeset);
     \expect(C\count($keep))->toEqual(
-      1 + C\count(FBCommonFilters::getDefaultMessageSectionNames()),
+      1 + C\count(FBCommonFilters::DEFAULT_MESSAGE_SECTION_NAMES),
     );
     \expect(C\contains($keep, 'test plan'))->toBeTrue();
 
@@ -268,7 +268,7 @@ Test Plan: run all code paths',
     // use default section names
     $keep = FBCommonFilters::getKeepSections($changeset);
     \expect(C\count($keep))->toEqual(
-      C\count(FBCommonFilters::getDefaultMessageSectionNames()),
+      C\count(FBCommonFilters::DEFAULT_MESSAGE_SECTION_NAMES),
     );
     \expect(C\contains($keep, 'test plan'))->toBeFalse();
 
