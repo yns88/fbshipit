@@ -78,7 +78,6 @@ final class PathFiltersTest extends \Facebook\ShipIt\BaseTest {
         dict['somewhere/' => '', 'elsewhere/' => ''],
       );
     })
-      // @oss-disable: ->toThrow(\InvariantViolationException::class);
-    ->toThrow(\HH\InvariantException::class); // @oss-enable
+      ->toThrow(\Facebook\ShipIt\ShipItImportDisallowedException::class);
   }
 }

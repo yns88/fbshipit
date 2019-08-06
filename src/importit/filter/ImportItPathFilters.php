@@ -47,13 +47,16 @@ abstract final class ImportItPathFilters {
   ): dict<string, string> {
     $reverse_mapping = dict[];
     foreach ($shipit_mapping as $dest_path => $src_path) {
-      invariant(
-        !C\contains_key($reverse_mapping, $src_path),
-        'Mulitiple paths map from "%s" ("%s" and "%s")!',
-        $src_path,
-        $dest_path,
-        $reverse_mapping[$src_path],
-      );
+      if (C\contains_key($reverse_mapping, $src_path)) {
+        throw new \Facebook\ShipIt\ShipItImportDisallowedException(
+          Str\format(
+            'Multiple paths map from "%s" ("%s" and "%s")!',
+            $src_path,
+            $dest_path,
+            $reverse_mapping[$src_path],
+          ),
+        );
+      }
       $reverse_mapping[$src_path] = $dest_path;
     }
     // Sort the mapping in reverse order.  The purpose of this is to make sure
