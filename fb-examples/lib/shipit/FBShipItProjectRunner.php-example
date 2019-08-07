@@ -159,7 +159,7 @@ final class FBShipItProjectRunner extends ShipItPhaseRunner {
     invariant(
       $match !== null,
       "Could not find any project that matches %s. \n".
-      "  If you have created a new file, please run `meerkat`.\n",
+      "  You may have to canary if your config hasn't landed yet.\n",
       $name,
     );
     return $match;
