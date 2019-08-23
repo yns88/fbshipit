@@ -22,12 +22,15 @@ final class ShipItMentions {
     ShipItChangeset $changeset,
     (function(string): string) $callback,
   ): ShipItChangeset {
+    $_count = null;
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
     $message = \preg_replace_callback(
       self::MENTIONS_PATTERN,
       $matches ==> $callback($matches[1]),
       $changeset->getMessage(),
+      -1,
+      inout $_count,
     );
 
     return $changeset->withMessage(Str\trim($message));

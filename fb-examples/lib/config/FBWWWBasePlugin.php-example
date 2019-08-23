@@ -83,14 +83,20 @@ abstract class FBWWWBasePlugin extends FBShipItConfigeratorConfig {
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
         |> \explode("\n", $$)
         |> (new ImmVector($$))->map(
-          /* HH_IGNORE_ERROR[2049] __PHPStdLib */
-          /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-          $line ==> \preg_replace_callback(
-            // Comma and dot for doc comments
-            '/(function |\\\\|\\|>| |->|::)([a-zA-Z0-9_]+)(\\(|<|,|\\.)/',
-            $matches ==> $matches[1].$renamer($matches[2]).$matches[3],
-            $line,
-          ),
+          $line ==> {
+            $_count = null;
+            /* HH_IGNORE_ERROR[2049] __PHPStdLib */
+            /* HH_IGNORE_ERROR[4107] __PHPStdLib */
+            $result = \preg_replace_callback(
+              // Comma and dot for doc comments
+              '/(function |\\\\|\\|>| |->|::)([a-zA-Z0-9_]+)(\\(|<|,|\\.)/',
+              $matches ==> $matches[1].$renamer($matches[2]).$matches[3],
+              $line,
+              -1,
+              inout $_count,
+            );
+            return $result;
+          },
         )
         |> Str\join($$, "\n");
       $diffs[] = $diff;

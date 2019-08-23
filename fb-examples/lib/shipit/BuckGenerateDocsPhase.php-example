@@ -120,6 +120,8 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       $status = \proc_get_status($proc);
       if ($status !== null) {
+        $_output = null;
+        $_return_var = null;
         // kill whole tree of docs/soyweb-prod.sh
         /* HH_IGNORE_ERROR[2049] __PHPStdLib */
         /* HH_IGNORE_ERROR[4107] __PHPStdLib */
@@ -127,6 +129,8 @@ final class BuckGenerateDocsPhase extends ShipItPhase {
           'pstree -pl '.
           $status['pid'].
           ' | grep -o "([0-9]\+)" | sed "s/(\|)//g" | xargs kill',
+          inout $_output,
+          inout $_return_var,
         );
       }
     }

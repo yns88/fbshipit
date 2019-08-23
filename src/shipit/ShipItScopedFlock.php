@@ -86,9 +86,11 @@ final class ShipItScopedFlock {
         throw new \Exception('Invalid lock operation');
     }
 
+    $_wouldblock = null;
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\flock($fp, $constructBehavior)) {
+    $flock_result = \flock($fp, $constructBehavior, inout $_wouldblock);
+    if (!$flock_result) {
       throw new \Exception('Failed to acquire lock');
     }
   }
@@ -107,9 +109,11 @@ final class ShipItScopedFlock {
         throw new \Exception('Invalid release operation');
     }
 
+    $_wouldblock = null;
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (!\flock($this->fp, $this->destructBehavior)) {
+    $flock_result = \flock($this->fp, $this->destructBehavior, inout $_wouldblock);
+    if (!$flock_result) {
       throw new \Exception('Failed to weaken lock');
     }
     $this->released = true;
