@@ -28,7 +28,7 @@ final class ShipItUserFilters {
     if (
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-      \preg_match($pattern, $changeset->getAuthor(), inout $matches) &&
+      \preg_match_with_matches($pattern, $changeset->getAuthor(), inout $matches) &&
       /* HH_IGNORE_ERROR[2049] __PHPStdLib */
       /* HH_IGNORE_ERROR[4107] __PHPStdLib */
       \array_key_exists('user', $matches)
@@ -92,7 +92,7 @@ final class ShipItUserFilters {
     $matches = darray[];
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    if (\preg_match($pattern, $changeset->getMessage(), inout $matches)) {
+    if (\preg_match_with_matches($pattern, $changeset->getMessage(), inout $matches)) {
       return $changeset->withAuthor($matches['author']);
     }
     return $changeset;

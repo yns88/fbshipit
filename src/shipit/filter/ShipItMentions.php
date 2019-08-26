@@ -59,7 +59,7 @@ final class ShipItMentions {
     $matches = varray[];
     /* HH_IGNORE_ERROR[2049] __PHPStdLib */
     /* HH_IGNORE_ERROR[4107] __PHPStdLib */
-    \preg_match_all(
+    \preg_match_all_with_matches(
       self::MENTIONS_PATTERN,
       $changeset->getMessage(),
       inout $matches,
