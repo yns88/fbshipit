@@ -12,7 +12,7 @@
  */
 namespace Facebook\ImportIt;
 
-use namespace HH\Lib\{Dict, C};
+use namespace HH\Lib\{Dict, C, Str};
 
 abstract final class ImportItPathFilters {
   /**

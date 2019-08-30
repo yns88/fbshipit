@@ -204,8 +204,8 @@ class ShipItPhaseRunner {
         continue;
       }
 
-      $deprecated = !Shapes::idx($opt, 'description');
-      if (!$deprecated) {
+      $description = Shapes::idx($opt, 'description');
+      if ($description !== null && !Str\is_empty($description)) {
         continue;
       }
 
