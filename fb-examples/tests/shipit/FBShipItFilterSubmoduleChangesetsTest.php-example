@@ -28,6 +28,22 @@ final class FBShipItFilterSubmoduleChangesetsTest extends ShellTest {
     return (new ShipItChangeset())
       ->withAuthor(FBShipItConfig::UPDATE_SUBMODULE_AUTHOR)
       ->withSubject(FBShipItConfig::UPDATE_SUBMODULE_SUBJECT)
+      ->withMessage(
+        'Updating submodules
+Summary:
+GitHub commits:
+'.
+        (
+          Vec\map(
+            $diffs,
+            $diff ==> Str\format('https://github.com/%s', $diff['path']),
+          )
+          |> Str\join($$, "\n")
+        ).
+        '
+Test Plan: n/a
+Reviewed By: nobody',
+      )
       ->withDiffs($diffs);
   }
 
@@ -84,6 +100,15 @@ final class FBShipItFilterSubmoduleChangesetsTest extends ShellTest {
         shape('path' => 'dep_b.txt', 'body' => '01'),
         shape('path' => 'dep_c.txt', 'body' => '1'),
       ],
+    );
+    \expect($merged_changesets[0]->getMessage())->toContainSubstring(
+      'GitHub commits:
+
+https://github.com/dep_a.txt
+https://github.com/dep_b.txt
+https://github.com/dep_c.txt
+
+Test Plan:',
     );
     \expect($merged_changesets[1])->toBePHPEqual($changesets[2]);
     \expect($merged_changesets[2])->toBePHPEqual($changesets[3]);

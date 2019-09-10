@@ -565,7 +565,9 @@ abstract class FBShipItConfig {
               ->withTimestamp($changeset->getTimestamp())
               ->withAuthor($changeset->getAuthor())
               ->withSubject($changeset->getSubject())
-              ->withMessage($changeset->getMessage())
+              ->withMessage(
+                self::mergeSubmoduleMessage($submodules_changeset, $changeset),
+              )
               ->withDebugMessage(
                 'MERGE %s %s',
                 $submodules_changeset->getShortID(),
@@ -667,6 +669,63 @@ abstract class FBShipItConfig {
       );
     }
     return vec($diffs_map);
+  }
+
+  /**
+   * Given two submodule update changesets, create a new commit message that
+   * includes GitHub commit links from both changesets.
+   */
+  private static function mergeSubmoduleMessage(
+    ShipItChangeset $old_changeset,
+    ShipItChangeset $new_changeset,
+  ): string {
+    $old_parsed = self::getSubmoduleCommitLinks(
+      $old_changeset->getMessage(),
+    );
+    $new_parsed = self::getSubmoduleCommitLinks(
+      $new_changeset->getMessage(),
+    );
+    $prefix = null;
+    $suffix = null;
+    if ($old_parsed !== null) {
+      list($prefix, $old_links, $suffix) = $old_parsed;
+    } else {
+      $old_links = keyset[];
+    }
+    if ($new_parsed !== null) {
+      list($prefix, $new_links, $suffix) = $new_parsed;
+    } else {
+      $new_links = keyset[];
+    }
+    if ($prefix is null || $suffix is null) {
+      // No parsed links to merge.
+      return $new_changeset->getMessage();
+    }
+    return Str\format(
+      "%sGitHub commits:\n\n%s\n\nTest Plan:%s",
+      $prefix,
+      Keyset\union($old_links, $new_links) |> Str\join($$, "\n"),
+      $suffix,
+    );
+  }
+
+  private static function getSubmoduleCommitLinks(
+    string $commit_message,
+  ): ?(string, keyset<string>, string) {
+    $split = Str\split($commit_message, 'GitHub commits:');
+    if (C\count($split) !== 2) {
+      return null;
+    }
+    list($prefix, $rest) = $split;
+    $split = Str\split($rest, 'Test Plan:');
+    if (C\count($split) !== 2) {
+      return null;
+    }
+    list($links, $suffix) = $split;
+    $links = Str\split($links, "\n")
+      |> Keyset\map($$, $s ==> Str\trim($s))
+      |> Keyset\filter($$, $s ==> !Str\is_empty($s));
+    return tuple($prefix, $links, $suffix);
   }
 
   /**
