@@ -15,6 +15,10 @@ namespace Facebook\ShipIt;
 use namespace HH\Lib\{Str, Keyset, C};
 
 abstract final class ShipItPathFilters {
+  // Skip debug messages on very large changesets, as that can cause
+  // excessive delays in runtime.
+  const int LARGE_CHANGESET = 3000;
+
   public static function stripPaths(
     ShipItChangeset $changeset,
     vec<string> $strip_patterns,
@@ -24,6 +28,7 @@ abstract final class ShipItPathFilters {
       return $changeset;
     }
     $diffs = vec[];
+    $use_debug = C\count($changeset->getDiffs()) < self::LARGE_CHANGESET;
     foreach ($changeset->getDiffs() as $diff) {
       $path = $diff['path'];
 
@@ -31,21 +36,25 @@ abstract final class ShipItPathFilters {
 
       if ($match !== null) {
         $diffs[] = $diff;
-        $changeset = $changeset->withDebugMessage(
-          'STRIP FILE EXCEPTION: "%s" matches pattern "%s"',
-          $path,
-          $match,
-        );
+        if ($use_debug) {
+          $changeset = $changeset->withDebugMessage(
+            'STRIP FILE EXCEPTION: "%s" matches pattern "%s"',
+            $path,
+            $match,
+          );
+        }
         continue;
       }
 
       $match = ShipItUtil::matchesAnyPattern($path, $strip_patterns);
       if ($match !== null) {
-        $changeset = $changeset->withDebugMessage(
-          'STRIP FILE: "%s" matches pattern "%s"',
-          $path,
-          $match,
-        );
+        if ($use_debug) {
+          $changeset = $changeset->withDebugMessage(
+            'STRIP FILE: "%s" matches pattern "%s"',
+            $path,
+            $match,
+          );
+        }
         continue;
       }
 
@@ -136,6 +145,7 @@ abstract final class ShipItPathFilters {
       $root ==> Str\slice($root, -1) === '/' ? $root : $root.'/',
     );
     $diffs = vec[];
+    $use_debug = C\count($changeset->getDiffs()) < self::LARGE_CHANGESET;
     foreach ($changeset->getDiffs() as $diff) {
       $path = $diff['path'];
       $match = false;
@@ -150,11 +160,13 @@ abstract final class ShipItPathFilters {
         continue;
       }
 
-      $changeset = $changeset->withDebugMessage(
-        'STRIP FILE: "%s" is not in a listed root (%s)',
-        $path,
-        Str\join($roots, ', '),
-      );
+      if ($use_debug) {
+        $changeset = $changeset->withDebugMessage(
+          'STRIP FILE: "%s" is not in a listed root (%s)',
+          $path,
+          Str\join($roots, ', '),
+        );
+      }
     }
     return $changeset->withDiffs($diffs);
   }
