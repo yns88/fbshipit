@@ -27,7 +27,7 @@ final class ShipItShellCommand {
 
   public function __construct(
     private ?string $path,
-    /* HH_FIXME[4033] type hint */ ...$command
+    string ...$command
   ) {
     $this->command = vec($command);
   }
