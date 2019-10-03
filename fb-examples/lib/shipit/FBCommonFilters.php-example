@@ -439,7 +439,7 @@ final class FBCommonFilters {
         async $name ==>
           await FBToGitHubUserInfo::getDestinationUserFromLocalUser($name),
       );
-    // @oss-disable: $names = \Asio::awaitSynchronously(\vAsync($names))
+    // @oss-disable: $names = \Asio::awaitSynchronously(\genv($names))
       $names = \HH\Asio\join(\HH\Asio\v($names)) // @oss-enable
       ->filter($x ==> Str\length($x ?? '') > 0);
     $names = Vec\filter_nulls($names);
